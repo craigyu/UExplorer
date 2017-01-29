@@ -24,7 +24,7 @@ export default class InsightFacade implements IInsightFacade {
             if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
             //console.log(new Buffer(content, 'base64').toString());
             if (ids.length == 0) {
-                //new_zip.file(id, content);
+                
                 cached.folder(id).loadAsync(content, options)
                     .then(function (write: any) {
                         ids.push(id);
