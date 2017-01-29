@@ -22,7 +22,7 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             var options = { base64: true };
             if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
-            //console.log(new Buffer(content, 'base64').toString());
+            
             if (ids.length == 0) {
                 
                 cached.folder(id).loadAsync(content, options)
