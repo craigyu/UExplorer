@@ -23,20 +23,8 @@ export default class InsightFacade implements IInsightFacade {
             var options = { base64: true };
             if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
 
-            if (ids.length == 0) {
-
-                cached.folder(id).loadAsync(content, options)
-                    .then(function (write: any) {
-                        ids.push(id);
-                        fulfill({ code: 204, body: {} });
-
-                    })
-
-                    .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString() } });
-                    });
-            }
-            else if (ids.includes(id)) {
+            // id contains given id
+            if (ids.includes(id)) {
                 cached.remove(id);       //remove for overwrite 
 
                 cached.folder(id).loadAsync(content, options)
@@ -71,11 +59,16 @@ export default class InsightFacade implements IInsightFacade {
 
     removeDataset(id: string): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
-            if (ids.includes(id)){
-                cached.remove(id);
+            if (ids.includes(id)) {
+                cached.remove(id);  // remove dataset associated with the id
+
+                for (var i = ids.length - 1; i--;) {            // delete the id from ids
+                    if (ids[i] === id) ids.splice(i, 1);
+                }  
+
                 fulfill({ code: 204, body: {} });
             }
-            else (reject ({ code: 400, body: { 'error': 'The id does not exist'} }));
+            else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
         });
     }
 
