@@ -10,6 +10,8 @@ var ids = new Array();
 var zip = new JSZip();
 var cached = zip.folder("cachedDataset");
 var fs = require("fs");
+var whereFilters = new Array[];
+var toFilter = new Array[];
 
 
 
@@ -99,9 +101,68 @@ export default class InsightFacade implements IInsightFacade {
         });
     }
 
+
+
     performQuery(query: QueryRequest): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
+            //check if query is valid
+            if (query == null || !('WHERE' in query) || !('OPTIONS' in query)) {
+                reject({ code: 400, body: { 'error': 'The query is invalid' } });
+            }
+
+            try { JSON.parse(query.toString()) }
+            catch (err) { reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } }); }
+
+            // check if the dataset exists, !!!this is only of D1!!!
+            if (ids.includes('courses') == false) {
+                reject({ code: 424, body: { 'missing': ['courses'] } });
+            }
+
+            //variable to be updated to perform on query
+            var isLogic = false;
+            var logic = null;
+            var isMcomp = false;
+            var mcomp = null;
+            var isScomp = false;
+            var scomp = null;
+            var isNeg = false;
+            var neg = null;
+            try {
+
+                if (Object.keys(query.WHERE).length > 0) {
+                    for (let filter of Object.keys(query.WHERE)) {
+                        this.whereParser(query.WHERE, filter);
+                    }
+                }
+                else (reject({ code: 424, body: { 'missing': ['courses'] } }));
+            }
+            catch (err) { }
+
+
+            //cached.file('courses'). ... ; get the data here somehow
+
+
+
 
         });
     }
+
+
+    // helper function to parse WHERE in query
+    private whereParser(where: any, filter: string) {
+          if (filter == 'AND' || filter == 'OR') {
+              whereFilters.push(filter);
+              for(let subFilter of Object.keys(where)){
+                  this.whereParser(Object.keys(where), subFilter);
+              }
+        }
+        else if (filter == 'LT' || filter == 'GT' || filter == 'EQ'){
+            whereFilters.push(filter);
+            var itemToFilter = Object.values(where[filter]);
+
+        }
+        else if (filter == 'IS')
+        
+    }
+
 }
