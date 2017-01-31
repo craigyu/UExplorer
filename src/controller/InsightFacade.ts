@@ -5,14 +5,12 @@ import { IInsightFacade, InsightResponse, QueryRequest } from "./IInsightFacade"
 
 import Log from "../Util";
 
-var ebnfParser = require('ebnf-parser');
 var JSZip = require("jszip");
 var ids = new Array();
 var zip = new JSZip();
 var cached = zip.folder("cachedDataset");
 var fs = require("fs");
-var jison = require("jison");
-var isJSON = require('is-json');
+
 
 
 export default class InsightFacade implements IInsightFacade {
@@ -32,16 +30,18 @@ export default class InsightFacade implements IInsightFacade {
 
                 cached.folder(id).loadAsync(content, options)
                     .then(function (files: any) {
-                        for (let i of files) {
-                            var decoded = i.toString();
+
+                        cached.folder(id).forEach(function(relativePath:any , file:any){
+                            var decoded = file.toString();
                             try {
                                 
                                 JSON.parse(decoded);
                             }
                             catch (err) {
+                                cached.remove(id);
                                 reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
                             }
-                        }
+                        });
 
 
                         fulfill({ code: 201, body: {} });
@@ -55,15 +55,17 @@ export default class InsightFacade implements IInsightFacade {
             else {
                 cached.folder(id).loadAsync(content, options)
                     .then(function (files: any) {
-                        for (let i of files) {
-                            var decoded = i.toString();
+                        cached.folder(id).forEach(function(relativePath:any , file:any){
+                            var decoded = file.toString();
                             try {
+                                
                                 JSON.parse(decoded);
                             }
                             catch (err) {
+                                cached.remove(id);
                                 reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
                             }
-                        }
+                        });
                         ids.push(id);
                         fulfill({ code: 204, body: {} });
 
