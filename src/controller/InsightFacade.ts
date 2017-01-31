@@ -10,8 +10,10 @@ var ids = new Array();
 var zip = new JSZip();
 var cached = zip.folder("cachedDataset");
 var fs = require("fs");
-var whereFilters = new Array[];
-var toFilter = new Array[];
+var whereFilters = new Array();
+var mToFilter = new Array();
+var sToFilter = new Array();
+var negToFilter = new Array();
 
 
 
@@ -133,6 +135,7 @@ export default class InsightFacade implements IInsightFacade {
                     for (let filter of Object.keys(query.WHERE)) {
                         this.whereParser(query.WHERE, filter);
                     }
+                    
                 }
                 else (reject({ code: 424, body: { 'missing': ['courses'] } }));
             }
@@ -158,10 +161,22 @@ export default class InsightFacade implements IInsightFacade {
         }
         else if (filter == 'LT' || filter == 'GT' || filter == 'EQ'){
             whereFilters.push(filter);
-            var itemToFilter = Object.values(where[filter]);
+            let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
+            mToFilter.push(itemToFilter);
 
         } 
-        //else if (filter == 'IS'){}
+        else if(filter == 'IS'){
+            whereFilters.push(filter);
+            let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
+            sToFilter.push(itemToFilter);
+        }
+        else if (filter == 'NOT'){
+            whereFilters.push(filter);
+            let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
+            negToFilter.push(itemToFilter);
+        }
+
+
         
     }
 
