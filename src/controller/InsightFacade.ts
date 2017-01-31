@@ -33,8 +33,10 @@ export default class InsightFacade implements IInsightFacade {
                 cached.folder(id).loadAsync(content, options)
                     .then(function (files: any) {
                         for (let i of files) {
+                            var decoded = i.toString();
                             try {
-                                JSON.parse(i);
+                                
+                                JSON.parse(decoded);
                             }
                             catch (err) {
                                 reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
@@ -47,15 +49,16 @@ export default class InsightFacade implements IInsightFacade {
                     })
 
                     .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString() } });
+                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     });
             }
             else {
                 cached.folder(id).loadAsync(content, options)
                     .then(function (files: any) {
                         for (let i of files) {
+                            var decoded = i.toString();
                             try {
-                                JSON.parse(i);
+                                JSON.parse(decoded);
                             }
                             catch (err) {
                                 reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
@@ -67,7 +70,7 @@ export default class InsightFacade implements IInsightFacade {
                     })
 
                     .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString() } });
+                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     });
             }
 
