@@ -31,10 +31,11 @@ export default class InsightFacade implements IInsightFacade {
                 cached.folder(id).loadAsync(content, options)
                     .then(function (files: any) {
 
-                        cached.folder(id).forEach(function(relativePath:any , file:any){
-                            var decoded = file.toString();
+                        cached.folder(id).forEach(function (relativePath: any, file: any) {
+                            var encoded = fs.readFileSync(file, "base64");
+                            var decoded = encoded.toString();
                             try {
-                                
+
                                 JSON.parse(decoded);
                             }
                             catch (err) {
@@ -55,10 +56,11 @@ export default class InsightFacade implements IInsightFacade {
             else {
                 cached.folder(id).loadAsync(content, options)
                     .then(function (files: any) {
-                        cached.folder(id).forEach(function(relativePath:any , file:any){
-                            var decoded = file.toString();
+                        cached.folder(id).forEach(function (relativePath: any, file: any) {
+                            var encoded = fs.readFileSync(file, "base64");
+                            var decoded = encoded.toString();
                             try {
-                                
+
                                 JSON.parse(decoded);
                             }
                             catch (err) {
