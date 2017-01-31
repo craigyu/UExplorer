@@ -161,7 +161,7 @@ export default class InsightFacade implements IInsightFacade {
             var itemToFilter = Object.values(where[filter]);
 
         }
-        else if (filter == 'IS')
+        //else if (filter == 'IS')
         
     }
 
