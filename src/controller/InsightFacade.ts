@@ -5,11 +5,14 @@ import { IInsightFacade, InsightResponse, QueryRequest } from "./IInsightFacade"
 
 import Log from "../Util";
 
+var ebnfParser = require('ebnf-parser');
 var JSZip = require("jszip");
 var ids = new Array();
 var zip = new JSZip();
 var cached = zip.folder("cachedDataset");
 var fs = require("fs");
+var jison = require("jison");
+var isJSON = require('is-json');
 
 
 export default class InsightFacade implements IInsightFacade {
@@ -28,7 +31,16 @@ export default class InsightFacade implements IInsightFacade {
                 cached.remove(id);       //remove for overwrite 
 
                 cached.folder(id).loadAsync(content, options)
-                    .then(function (write: any) {
+                    .then(function (files: any) {
+                        for (let i of files) {
+                            try {
+                                JSON.parse(i);
+                            }
+                            catch (err) {
+                                reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
+                            }
+                        }
+
 
                         fulfill({ code: 201, body: {} });
 
@@ -40,7 +52,15 @@ export default class InsightFacade implements IInsightFacade {
             }
             else {
                 cached.folder(id).loadAsync(content, options)
-                    .then(function (write: any) {
+                    .then(function (files: any) {
+                        for (let i of files) {
+                            try {
+                                JSON.parse(i);
+                            }
+                            catch (err) {
+                                reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
+                            }
+                        }
                         ids.push(id);
                         fulfill({ code: 204, body: {} });
 
@@ -64,7 +84,7 @@ export default class InsightFacade implements IInsightFacade {
 
                 for (var i = ids.length - 1; i--;) {            // delete the id from ids
                     if (ids[i] === id) ids.splice(i, 1);
-                }  
+                }
 
                 fulfill({ code: 204, body: {} });
             }
@@ -73,6 +93,8 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     performQuery(query: QueryRequest): Promise<InsightResponse> {
-        return null;
+        return new Promise(function (fulfill, reject) {
+
+        });
     }
 }
