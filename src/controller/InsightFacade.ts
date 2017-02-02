@@ -43,19 +43,24 @@ export default class InsightFacade implements IInsightFacade {
                 cached.loadAsync(content, options).then(function (files: JSZip) {
                     cached.remove("__MACOSX");
                     cached.forEach(function (relativePath: any, file: any) {
-                        allFiles.push(file.async('string'))
-
+                        var promise = file.async("string").then(function success(data:any) {
+                            return data;
+                        })
+                        allFiles.push(promise);
+                    })
                     Promise.all(allFiles)
                         .then(function (alltheData: any) {
                             fs.writeFileSync(dataPath + id, alltheData);
                             fulfill({ code: 201, body: {} });
                         })
-                        .catch(function(err:any) {
-                            
+                        .catch(function (err: any) {
+                            console.log(err);
+                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
+
                         })
-                    })
 
                 })
+
             }
             else {
                 let allFiles: Promise<any>[] = [];
