@@ -41,22 +41,22 @@ export default class InsightFacade implements IInsightFacade {
                             var subFile = file.async('string').then(function read(data: any) {
                                 try {
                                     JSON.parse(data);
+                                    this.allFiles.push(subFile);
                                 }
                                 catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
-                            });
+                            })
+                                .catch(function (err: any) {
+                                    reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                });
 
-                            this.allFiles.push(subFile);
 
-                            fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
-                            fulfill({ code: 201, body: {} });
                         })
-
-
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                            });
+                        fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
+                        fulfill({ code: 201, body: {} });
 
                     })
+
+
 
                     .catch(function (err: any) {
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
@@ -69,21 +69,19 @@ export default class InsightFacade implements IInsightFacade {
                             var subFile = file.async('string').then(function read(data: any) {
                                 try {
                                     JSON.parse(data);
+                                    this.allFiles.push(subFile);
                                 }
                                 catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
-                            });
+                            })
+                                .catch(function (err: any) {
+                                    reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                });
 
-                            this.allFiles.push(subFile);
 
-                            fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
-                            ids.push(id);
-                            fulfill({ code: 201, body: {} });
                         })
-
-
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                            });
+                        fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
+                        ids.push(id);
+                        fulfill({ code: 201, body: {} });
 
                     })
 
