@@ -9,9 +9,14 @@ var JSZip = require("jszip");
 var ids = new Array();
 //var zip = new JSZip();
 var fs = require("fs");
-var toCache = fs.mkdirSync('./cachedDatasets/');
+
+
+if (!fs.existsSync("./cachedDatasets")) {
+    fs.mkdirSync('./cachedDatasets/');
+}
+
 var dataPath = './cachedDatasets/';
-var allFiles = [];
+let allFiles: any[] = [];
 var whereFilters = new Array();
 var mToFilter = new Array();
 var sToFilter = new Array();
@@ -33,27 +38,28 @@ export default class InsightFacade implements IInsightFacade {
             // id contains given id
             var cached = new JSZip();
             if (ids.includes(id)) {
-                delete this.cacheFolder[id];       //remove for overwrite 
-
+                fs.unlinkSync(dataPath + id);
                 cached.loadAsync(content, options)
                     .then(function (files: JSZip) {
                         cached.forEach(function (relativePath: any, file: any) {
-                            var subFile = file.async('string').then(function read(data: any) {
+                            var subFile = file.async('string')
+                            
+                            .then(function read(data: any) {
                                 try {
                                     JSON.parse(data);
-                                    
+
                                 }
                                 catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
                             })
-                            .catch(function (err: any) {
+                                .catch(function (err: any) {
                                     reject({ code: 400, body: { 'error': err.toString('utf8') } });
                                 });
-                            this.allFiles.push(subFile);
-                                
+                            allFiles.push(subFile);
+
 
 
                         })
-                        fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
+                        fs.writeFile(dataPath + id, JSON.stringify(allFiles));
                         fulfill({ code: 201, body: {} });
 
                     })
@@ -67,21 +73,46 @@ export default class InsightFacade implements IInsightFacade {
             else {
                 cached.loadAsync(content, options)
                     .then(function (files: JSZip) {
+                        cached.remove("__MACOSX");
+                        //fs.mkdirSync("./cachedDataset/" + id)
                         cached.forEach(function (relativePath: any, file: any) {
                             var subFile = file.async('string').then(function read(data: any) {
                                 try {
-                                    JSON.parse(data);
+                                    var parsed = JSON.parse(data);
+
+
+                                    if (Object.keys(parsed.result).length > 0) {
+                                        console.log("Hi");
+                                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    //filter
                                 }
                                 catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
                             })
                                 .catch(function (err: any) {
                                     reject({ code: 400, body: { 'error': err.toString('utf8') } });
                                 });
-                                this.allFiles.push(subFile);
+                            allFiles.push(subFile);
 
 
                         })
-                        fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
+                        fs.writeFile(dataPath + id, JSON.stringify(allFiles));
                         ids.push(id);
                         fulfill({ code: 201, body: {} });
 
@@ -101,7 +132,7 @@ export default class InsightFacade implements IInsightFacade {
     removeDataset(id: string): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
             if (ids.includes(id)) {
-                cached.remove(id);  // remove dataset associated with the id
+                //   cached.remove(id);  // remove dataset associated with the id
 
                 for (var i = ids.length - 1; i--;) {            // delete the id from ids
                     if (ids[i] === id) ids.splice(i, 1);
