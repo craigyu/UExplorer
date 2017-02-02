@@ -16,7 +16,7 @@ if (!fs.existsSync("./cachedDatasets")) {
 }
 
 var dataPath = './cachedDatasets/';
-let allFiles: any[] = [];
+let allFiles: Promise<any>[] = [];
 var whereFilters = new Array();
 var mToFilter = new Array();
 var sToFilter = new Array();
@@ -39,88 +39,50 @@ export default class InsightFacade implements IInsightFacade {
             var cached = new JSZip();
             if (ids.includes(id)) {
                 fs.unlinkSync(dataPath + id);
-                cached.loadAsync(content, options)
-                    .then(function (files: JSZip) {
-                        cached.forEach(function (relativePath: any, file: any) {
-                            var subFile = file.async('string')
-                            
+                cached.loadAsync(content, options).then(function (files: JSZip) {
+                    cached.forEach(function (relativePath: any, file: any) {
+                        allFiles.push(file.async('string')
                             .then(function read(data: any) {
-                                try {
-                                    JSON.parse(data);
-
-                                }
-                                catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
+                                return data;
                             })
-                                .catch(function (err: any) {
-                                    reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                                });
-                            allFiles.push(subFile);
 
-
-
-                        })
-                        fs.writeFile(dataPath + id, JSON.stringify(allFiles));
-                        fulfill({ code: 201, body: {} });
-
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                console.log(err);
+                            }))
                     })
-
-
-
-                    .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                    });
+                })
             }
             else {
-                cached.loadAsync(content, options)
-                    .then(function (files: JSZip) {
-                        cached.remove("__MACOSX");
-                        //fs.mkdirSync("./cachedDataset/" + id)
-                        cached.forEach(function (relativePath: any, file: any) {
-                            var subFile = file.async('string').then(function read(data: any) {
-                                try {
-                                    var parsed = JSON.parse(data);
-
-
-                                    if (Object.keys(parsed.result).length > 0) {
-                                        console.log("Hi");
-                                    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    //filter
-                                }
-                                catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
+                ids.push(id);
+                cached.loadAsync(content, options).then(function (files: JSZip) {
+                    cached.forEach(function (relativePath: any, file: any) {
+                        allFiles.push(file.async('string')
+                            .then(function read(data: any) {
+                                return data;
                             })
-                                .catch(function (err: any) {
-                                    reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                                });
-                            allFiles.push(subFile);
 
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                console.log(err);
+                            }))
+                    })
+                        .catch(function (err: any) {
+                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
 
                         })
-                        fs.writeFile(dataPath + id, JSON.stringify(allFiles));
-                        ids.push(id);
-                        fulfill({ code: 201, body: {} });
+                    Promise.all(allFiles)
+                        .then(function (alltheData: any) {
+                            fs.write(dataPath + id, JSON.stringify(alltheData));
+                            fulfill({ code: 201, body: {} });
+                        })
+                        .catch(function (err: any) {
+                            console.log(err);
+                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
 
-                    })
+                        })
+                })
 
-                    .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                    });
             }
 
 
