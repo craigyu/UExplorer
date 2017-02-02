@@ -7,9 +7,11 @@ import Log from "../Util";
 
 var JSZip = require("jszip");
 var ids = new Array();
-var zip = new JSZip();
-var cached = zip.folder("cachedDataset");
+//var zip = new JSZip();
 var fs = require("fs");
+var toCache = fs.mkdirSync('./cachedDatasets/');
+var dataPath = './cachedDatasets/';
+var allFiles = [];
 var whereFilters = new Array();
 var mToFilter = new Array();
 var sToFilter = new Array();
@@ -27,29 +29,32 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             var options = { base64: true };
             if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
-
+            //console.log("hiiiii");
             // id contains given id
+            var cached = new JSZip();
             if (ids.includes(id)) {
-                cached.remove(id);       //remove for overwrite 
+                delete this.cacheFolder[id];       //remove for overwrite 
 
-                cached.folder(id).loadAsync(content, options)
-                    .then(function (files: any) {
+                cached.loadAsync(content, options)
+                    .then(function (files: JSZip) {
+                        cached.forEach(function (relativePath: any, file: any) {
+                            var subFile = file.async('string').then(function read(data: any) {
+                                try {
+                                    JSON.parse(data);
+                                }
+                                catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
+                            });
 
-                        cached.folder(id).forEach(function (relativePath: any, file: any) {
-                            var encoded = fs.readFileSync(file, "base64");
-                            var decoded = encoded.toString();
-                            try {
+                            this.allFiles.push(subFile);
 
-                                JSON.parse(decoded);
-                            }
-                            catch (err) {
-                                cached.remove(id);
-                                reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
-                            }
-                        });
+                            fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
+                            fulfill({ code: 201, body: {} });
+                        })
 
 
-                        fulfill({ code: 201, body: {} });
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                            });
 
                     })
 
@@ -58,22 +63,27 @@ export default class InsightFacade implements IInsightFacade {
                     });
             }
             else {
-                cached.folder(id).loadAsync(content, options)
-                    .then(function (files: any) {
-                        cached.folder(id).forEach(function (relativePath: any, file: any) {
-                            var encoded = fs.readFileSync(file, "base64");
-                            var decoded = encoded.toString();
-                            try {
+                cached.loadAsync(content, options)
+                    .then(function (files: JSZip) {
+                        cached.forEach(function (relativePath: any, file: any) {
+                            var subFile = file.async('string').then(function read(data: any) {
+                                try {
+                                    JSON.parse(data);
+                                }
+                                catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
+                            });
 
-                                JSON.parse(decoded);
-                            }
-                            catch (err) {
-                                cached.remove(id);
-                                reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } });
-                            }
-                        });
-                        ids.push(id);
-                        fulfill({ code: 204, body: {} });
+                            this.allFiles.push(subFile);
+
+                            fs.writeFile(dataPath + id, JSON.stringify(this.allFiles));
+                            ids.push(id);
+                            fulfill({ code: 201, body: {} });
+                        })
+
+
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                            });
 
                     })
 
@@ -120,22 +130,13 @@ export default class InsightFacade implements IInsightFacade {
                 reject({ code: 424, body: { 'missing': ['courses'] } });
             }
 
-            //variable to be updated to perform on query
-            var isLogic = false;
-            var logic = null;
-            var isMcomp = false;
-            var mcomp = null;
-            var isScomp = false;
-            var scomp = null;
-            var isNeg = false;
-            var neg = null;
             try {
 
                 if (Object.keys(query.WHERE).length > 0) {
                     for (let filter of Object.keys(query.WHERE)) {
                         this.whereParser(query.WHERE, filter);
                     }
-                    
+
                 }
                 else (reject({ code: 424, body: { 'missing': ['courses'] } }));
             }
@@ -153,31 +154,31 @@ export default class InsightFacade implements IInsightFacade {
 
     // helper function to parse WHERE in query
     private whereParser(where: any, filter: string) {
-          if (filter == 'AND' || filter == 'OR') {
-              whereFilters.push(filter);
-              for(let subFilter of Object.keys(where)){
-                  this.whereParser(Object.keys(where), subFilter);
-              }
+        if (filter == 'AND' || filter == 'OR') {
+            whereFilters.push(filter);
+            for (let subFilter of where[filter]) {
+                this.whereParser(Object.keys(where), subFilter);
+            }
         }
-        else if (filter == 'LT' || filter == 'GT' || filter == 'EQ'){
+        else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
             whereFilters.push(filter);
             let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
             mToFilter.push(itemToFilter);
 
-        } 
-        else if(filter == 'IS'){
+        }
+        else if (filter == 'IS') {
             whereFilters.push(filter);
             let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
             sToFilter.push(itemToFilter);
         }
-        else if (filter == 'NOT'){
+        else if (filter == 'NOT') {
             whereFilters.push(filter);
             let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
             negToFilter.push(itemToFilter);
         }
 
 
-        
+
     }
 
 }
