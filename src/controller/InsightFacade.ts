@@ -16,7 +16,6 @@ if (!fs.existsSync("./cachedDatasets")) {
 }
 
 var dataPath = './cachedDatasets/';
-let allFiles: Promise<any>[] = [];
 var whereFilters = new Array();
 var mToFilter = new Array();
 var sToFilter = new Array();
@@ -38,42 +37,38 @@ export default class InsightFacade implements IInsightFacade {
             // id contains given id
             var cached = new JSZip();
             if (ids.includes(id)) {
+                let allFiles: Promise<any>[] = [];
+
                 fs.unlinkSync(dataPath + id);
                 cached.loadAsync(content, options).then(function (files: JSZip) {
+                    cached.remove("__MACOSX");
                     cached.forEach(function (relativePath: any, file: any) {
-                        allFiles.push(file.async('string')
-                            .then(function read(data: any) {
-                                return data;
-                            })
+                        allFiles.push(file.async('string'))
 
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                                console.log(err);
-                            }))
+                    Promise.all(allFiles)
+                        .then(function (alltheData: any) {
+                            fs.writeFileSync(dataPath + id, alltheData);
+                            fulfill({ code: 201, body: {} });
+                        })
+                        .catch(function(err:any) {
+                            
+                        })
                     })
+
                 })
             }
             else {
+                let allFiles: Promise<any>[] = [];
                 ids.push(id);
                 cached.loadAsync(content, options).then(function (files: JSZip) {
+                    cached.remove("__MACOSX");
                     cached.forEach(function (relativePath: any, file: any) {
-                        allFiles.push(file.async('string')
-                            .then(function read(data: any) {
-                                return data;
-                            })
-
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                                console.log(err);
-                            }))
+                        allFiles.push(file.async('string'))
                     })
-                        .catch(function (err: any) {
-                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
 
-                        })
                     Promise.all(allFiles)
                         .then(function (alltheData: any) {
-                            fs.write(dataPath + id, JSON.stringify(alltheData));
+                            fs.writeFileSync(dataPath + id, alltheData);
                             fulfill({ code: 201, body: {} });
                         })
                         .catch(function (err: any) {

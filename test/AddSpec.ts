@@ -26,7 +26,7 @@ describe("AddSpec", function () {
 
     it("Testing Load Zip base64 more than 1 file in zip", function () {
         let fs = require("fs");
-        fs.readFile("test3.zip", "base64", function (err: any, data: any) {
+        fs.readFile("test2.zip", "base64", function (err: any, data: any) {
             if (err) {
                 return err;
             } else {
