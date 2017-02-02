@@ -41,13 +41,15 @@ export default class InsightFacade implements IInsightFacade {
                             var subFile = file.async('string').then(function read(data: any) {
                                 try {
                                     JSON.parse(data);
-                                    this.allFiles.push(subFile);
+                                    
                                 }
                                 catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
                             })
-                                .catch(function (err: any) {
+                            .catch(function (err: any) {
                                     reject({ code: 400, body: { 'error': err.toString('utf8') } });
                                 });
+                            this.allFiles.push(subFile);
+                                
 
 
                         })
@@ -69,13 +71,13 @@ export default class InsightFacade implements IInsightFacade {
                             var subFile = file.async('string').then(function read(data: any) {
                                 try {
                                     JSON.parse(data);
-                                    this.allFiles.push(subFile);
                                 }
                                 catch (err) { reject({ code: 400, body: { 'error': 'Dataset contains an invalid JSON file' } }); }
                             })
                                 .catch(function (err: any) {
                                     reject({ code: 400, body: { 'error': err.toString('utf8') } });
                                 });
+                                this.allFiles.push(subFile);
 
 
                         })
