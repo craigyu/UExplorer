@@ -13,24 +13,30 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    it("Testing Load Zip base64 1 file in zip", function () {
+    it("Testing Load Zip base64 1 file in zip", function (done) {
         let fs = require("fs");
         fs.readFile("test.zip", "base64", function (err: any, data: any) {
             if (err) {
-                return err;
+                done(err);
             } else {
-                return insF.addDataset("courses", data);
+                insF.addDataset("courses", data).then(function (){
+                    done();
+                })
             }
         })
-    });
+    })
+        
 
-    it("Testing Load Zip base64 more than 1 file in zip", function () {
+
+    it("Testing Load Zip base64 more than 1 file in zip", function (done) {
         let fs = require("fs");
         fs.readFile("test2.zip", "base64", function (err: any, data: any) {
             if (err) {
-                return err;
+                done (err);
             } else {
-                return insF.addDataset("courses", data);
+                insF.addDataset("courses", data).then(function () {
+                    done();
+                })
             }
         })
     });

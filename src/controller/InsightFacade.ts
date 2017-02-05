@@ -23,6 +23,7 @@ var negToFilter = new Array();
 
 
 
+
 export default class InsightFacade implements IInsightFacade {
 
     constructor() {
@@ -36,68 +37,71 @@ export default class InsightFacade implements IInsightFacade {
             //console.log("hiiiii");
             // id contains given id
             var cached = new JSZip();
+
+
+
+
             if (ids.includes(id)) {
-                let allFiles: Promise<any>[] = [];
 
                 fs.unlinkSync(dataPath + id);
-                cached.loadAsync(content, options).then(function (files: JSZip) {
-                    cached.remove("__MACOSX");
-                    cached.forEach(function (relativePath: any, file: any) {
-                        var promise = file.async("string").then(function success(data: any) {
-                            return data;
+
+                cached.loadAsync(content, options)
+                    .then(function (files: any) {
+                        var processList: Promise<any>[] = [];
+
+                        files.remove("__MACOSX");
+                        files.forEach(function (relativePath: any, file: any) {
+                            console.log(processList.length)
+                            processList.push(file.async("string"));
                         })
-                        allFiles.push(promise);
-                    })
-                    Promise.all(allFiles)
-                        .then(function (alltheData: any) {
-                            fs.writeFileSync(dataPath + id, alltheData);
+                        Promise.all(processList).then(function (arrayOfStrings: any) {
+                            fs.writeFileSync(dataPath + id, arrayOfStrings);
                             fulfill({ code: 201, body: {} });
                         })
-                        .catch(function (err: any) {
-                            console.log(err);
-                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
-
-                        })
-
-                })
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                            })
+                    })
                     .catch(function (err: any) {
-                        console.log(err);
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
-
                     })
 
+
             }
+
+
             else {
-                let allFiles: Promise<any>[] = [];
                 ids.push(id);
-                cached.loadAsync(content, options).then(function (files: JSZip) {
-                    cached.remove("__MACOSX");
-                    cached.forEach(function (relativePath: any, file: any) {
-                        allFiles.push(file.async('string'))
-                    })
+                cached.loadAsync(content, options)
+                    .then(function (files: any) {
+                        var processList: Promise<any>[] = [];
 
-                    Promise.all(allFiles)
-                        .then(function (alltheData: any) {
-                            fs.writeFileSync(dataPath + id, alltheData);
+                        files.remove("__MACOSX");
+                        files.forEach(function (relativePath: any, file: any) {
+                            console.log(processList.length)
+                            processList.push(file.async("string"));
+                        })
+                        Promise.all(processList).then(function (arrayOfStrings: any) {
+                            fs.writeFileSync(dataPath + id, arrayOfStrings);
                             fulfill({ code: 201, body: {} });
                         })
-                        .catch(function (err: any) {
-                            console.log(err);
-                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
-
-                        })
-                })
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                            })
+                    })
                     .catch(function (err: any) {
-                        console.log(err);
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
-
                     })
 
+
+
+
+
             }
-
-
 
         });
+
+
 
     }
 
