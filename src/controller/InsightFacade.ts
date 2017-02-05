@@ -127,7 +127,20 @@ export default class InsightFacade implements IInsightFacade {
                             processList.push(promise);
                         })
                         Promise.all(processList).then(function (arrayOfStrings: any) {
-                            fs.writeFileSync(dataPath + id, JSON.stringify(arrayOfStrings));
+                            var counter = 0;
+                            for (let i of arrayOfStrings) {
+                                if (i == undefined) {
+                                    counter++
+                                }
+                            }
+                            if (counter == arrayOfStrings.length) {
+                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
+                            }
+                            for (let i of arrayOfStrings) {
+                                if (typeof (i) != "undefined") {
+                                    fs.writeFileSync(dataPath + id, JSON.stringify(i));
+                                }
+                            }
                             fulfill({ code: 201, body: {} });
                         })
                             .catch(function (err: any) {
@@ -217,7 +230,7 @@ export default class InsightFacade implements IInsightFacade {
                                 }
 
                                 catch (err) {
-                                    
+
                                     reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
                                     throw err;
 
@@ -231,20 +244,20 @@ export default class InsightFacade implements IInsightFacade {
                         })
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             var counter = 0;
-                           for (let i of arrayOfStrings){
-                               if(i == undefined ) {
-                                   counter ++
-                               }
-                           }
-                           if (counter == arrayOfStrings.length){
-                               reject({ code: 400, body: { 'error': 'No useful data provided' } });
-                           }
+                            for (let i of arrayOfStrings) {
+                                if (i == undefined) {
+                                    counter++
+                                }
+                            }
+                            if (counter == arrayOfStrings.length) {
+                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
+                            }
                             for (let i of arrayOfStrings) {
                                 if (typeof (i) != "undefined") {
                                     fs.writeFileSync(dataPath + id, JSON.stringify(i));
                                 }
                             }
-                            fulfill({ code:204, body:{}});
+                            fulfill({ code: 204, body: {} });
                         })
                             .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
@@ -267,9 +280,15 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             if (fs.existsSync(dataPath + id)) {
                 // remove dataset associated with the id
-                fs.unlinkSync(dataPath + id);
-
-                fulfill({ code: 204, body: {} });
+                fs.unlink(dataPath + id, function(err: any){
+                    if (err){
+                        reject({ code: 404, body: { 'error': err.toString() } });
+                    }
+                    else{
+                        fulfill({ code: 204, body: {} });
+                    }
+                })
+                
             }
             else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
         });
