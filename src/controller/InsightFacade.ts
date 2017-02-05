@@ -94,6 +94,18 @@ export default class InsightFacade implements IInsightFacade {
                             let promise = file.async("string").then(function (json: any) {
                                 try {
                                     var parsed = JSON.parse(json);
+                                    if (Object.keys(parsed.result).length != 0) {
+                                        let objValues:any[] = []
+                                        for (let obj of parsed.result) {
+                                            if(obj.hasOwnProperty("Subject")) {
+                                                let name = id + "_dept";
+                                                objValues.push({name: obj["Subject"]});
+                                            }
+                                            else {
+                                                console.log("Hello");
+                                            }
+                                        } 
+                                    }
                                 }
                                 catch (err) {
                                     reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
@@ -107,7 +119,7 @@ export default class InsightFacade implements IInsightFacade {
                             processList.push(promise);
                         })
                         Promise.all(processList).then(function (arrayOfStrings: any) {
-                            fs.writeFileSync(dataPath + id, JSON.stringify(arrayOfStrings));
+                            fs.writeFileSync(dataPath + id, arrayOfStrings);
                             fulfill({ code: 201, body: {} });
                         })
                             .catch(function (err: any) {

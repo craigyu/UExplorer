@@ -12,7 +12,7 @@ describe("AddSpec", function () {
     beforeEach(function () {
         insF = new InsightFacade();
     })
-
+/*
     it("Testing Load Zip base64 1 file in zip", function (done) {
         let fs = require("fs");
         fs.readFile("test.zip", "base64", function (err: any, data: any) {
@@ -41,7 +41,7 @@ describe("AddSpec", function () {
         })
     });
 
-    it("Testing Load Zip base64 more than 1 file in zip", function (done) {
+    it("Testing with invalid JSON files", function (done) {
         let fs = require("fs");
         fs.readFile("testJSON.zip", "base64", function (err: any, data: any) {
             if (err) {
@@ -52,7 +52,20 @@ describe("AddSpec", function () {
                 }).then(() => done(), done);
             }
         })
-    });
+    });*/
+
+        it("Testing Load Zip base64 1 file in zip", function (done) {
+        let fs = require("fs");
+        fs.readFile("testOBJ.zip", "base64", function (err: any, data: any) {
+            if (err) {
+                done(err);
+            } else {
+                insF.addDataset("obj", data).then(function () {
+
+                }).then(() => done(), done);
+            }
+        })
+    })
 
 
 
