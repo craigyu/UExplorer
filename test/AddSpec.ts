@@ -19,27 +19,41 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("courses", data).then(function (){
-                    done();
-                })
+                insF.addDataset("courses", data).then(function () {
+
+                }).then(() => done(), done);
             }
         })
     })
-        
+
 
 
     it("Testing Load Zip base64 more than 1 file in zip", function (done) {
         let fs = require("fs");
         fs.readFile("test2.zip", "base64", function (err: any, data: any) {
             if (err) {
-                done (err);
+                done(err);
             } else {
-                insF.addDataset("courses", data).then(function () {
-                    done();
-                })
+                insF.addDataset("cafe", data).then(function () {
+
+                }).then(() => done(), done);
             }
         })
     });
+
+    it("Testing Load Zip base64 more than 1 file in zip", function (done) {
+        let fs = require("fs");
+        fs.readFile("testJSON.zip", "base64", function (err: any, data: any) {
+            if (err) {
+                done(err);
+            } else {
+                insF.addDataset("invalidJSON", data).then(function () {
+
+                }).then(() => done(), done);
+            }
+        })
+    });
+
 
 
 
