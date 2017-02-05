@@ -38,9 +38,6 @@ export default class InsightFacade implements IInsightFacade {
             // id contains given id
             var cached = new JSZip();
 
-
-
-
             if (ids.includes(id)) {
 
                 fs.unlinkSync(dataPath + id);
@@ -51,17 +48,31 @@ export default class InsightFacade implements IInsightFacade {
 
                         files.remove("__MACOSX");
                         files.forEach(function (relativePath: any, file: any) {
-                            console.log(processList.length)
-                            processList.push(file.async("string"));
+                            console.log(processList.length);
+                            let promise = file.async("string").then(function (json: any) {
+                                try {
+                                    var parsed = JSON.parse(json);
+                                }
+                                catch (err) {
+                                    reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
+                                    throw err;
+
+                                }
+
+                                return parsed;
+                            });
+                            processList.push(promise);
                         })
+
                         Promise.all(processList).then(function (arrayOfStrings: any) {
-                            fs.writeFileSync(dataPath + id, arrayOfStrings);
+                            fs.writeFileSync(dataPath + id, JSON.stringify(arrayOfStrings));
                             fulfill({ code: 201, body: {} });
                         })
                             .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
                             })
                     })
+
                     .catch(function (err: any) {
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     })
@@ -78,11 +89,25 @@ export default class InsightFacade implements IInsightFacade {
 
                         files.remove("__MACOSX");
                         files.forEach(function (relativePath: any, file: any) {
-                            console.log(processList.length)
-                            processList.push(file.async("string"));
+                            console.log(processList.length);
+
+                            let promise = file.async("string").then(function (json: any) {
+                                try {
+                                    var parsed = JSON.parse(json);
+                                }
+                                catch (err) {
+                                    reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
+                                    throw err;
+
+                                }
+
+                                return parsed;
+                            });
+
+                            processList.push(promise);
                         })
                         Promise.all(processList).then(function (arrayOfStrings: any) {
-                            fs.writeFileSync(dataPath + id, arrayOfStrings);
+                            fs.writeFileSync(dataPath + id, JSON.stringify(arrayOfStrings));
                             fulfill({ code: 201, body: {} });
                         })
                             .catch(function (err: any) {
@@ -108,8 +133,8 @@ export default class InsightFacade implements IInsightFacade {
     removeDataset(id: string): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
             if (ids.includes(id)) {
-                //   cached.remove(id);  // remove dataset associated with the id
-
+                // remove dataset associated with the id
+                fs.unlinkSync(dataPath + id);
                 for (var i = ids.length - 1; i--;) {            // delete the id from ids
                     if (ids[i] === id) ids.splice(i, 1);
                 }
