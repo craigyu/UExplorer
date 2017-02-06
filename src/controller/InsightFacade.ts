@@ -21,10 +21,11 @@ var mcompFiltered = new Array();
 var scompFiltered = new Array();
 var negFiltered = new Array();
 var allTheData = new Array();
+var logicArr = new Array();
 var isValidKeys: boolean[] = [];
 var orderVal: string;
 var isAnd1: boolean = false;
-var logicCount = 0;
+var logicCount = -1;
 var isOr1: boolean = false;
 var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
 var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
@@ -392,15 +393,16 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             try {
-               
-                    isValidKeys = [];
-                    mcompFiltered = [];
-                    scompFiltered = [];
-                    negFiltered = [];
-                    allTheData = [];
-                    isAnd1 = false;
-                    isOr1 = false;
-                    logicCount = 0;
+
+                isValidKeys = [];
+                mcompFiltered = [];
+                scompFiltered = [];
+                negFiltered = [];
+                allTheData = [];
+                isAnd1 = false;
+                isOr1 = false;
+                logicCount = -1;
+                logicArr = []
 
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
@@ -446,22 +448,8 @@ export default class InsightFacade implements IInsightFacade {
         function whereParser(where: any, filter: string, currentData: any) {
 
 
-
-
-
             if (filter == 'AND' || filter == 'OR') {
-                if (filter == 'AND') {
-                    isAnd1 = true;
-                }
-                else if (filter == 'OR') {
-                    isOr1 = true;
-                }
-
-                if (logicCount > 0) {
-                    isAnd1 = false;
-                    isOr1 = false;
-
-                }
+                logicArr.push(filter);
                 logicCount++;
 
                 if (where[filter].length == 0) {
@@ -473,6 +461,38 @@ export default class InsightFacade implements IInsightFacade {
                     for (let subSubfilter of Object.keys(subFilter)) {
 
                         whereParser(subFilter, subSubfilter, currentData);
+                        while (logicCount > 0) {
+                            let thisLogic = logicArr[logicCount];
+                            if (thisLogic == 'OR') {
+                                for (let obj of mcompFiltered) {
+                                    if (!allTheData.includes(obj)) {
+                                        allTheData.push(obj);
+                                    }
+                                }
+                                for (let obj of scompFiltered) {
+                                    if (!allTheData.includes(obj)) {
+                                        allTheData.push(obj);
+                                    }
+                                }
+                                for (let obj of negFiltered) {
+                                    if (!allTheData.includes(obj)) {
+                                        allTheData.push(obj);
+                                    }
+                                }
+                            }
+                            else if (thisLogic == 'AND') {
+                                for (let obj of mcompFiltered) {
+                                    if (scompFiltered.includes(obj) && negFiltered.includes(obj)) {
+                                        allTheData.push(obj);
+                                    }
+                                }
+                            }
+                            logicCount--;
+                            mcompFiltered = [];
+                            scompFiltered = [];
+                            negFiltered = [];
+
+                        }
                     }
                 }
             }
@@ -569,16 +589,60 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
 
-
             else if (filter == 'NOT') {
-                whereFilters.push(filter);
-                let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-                negFiltered.push(itemToFilter);
+                let notKeys = Object.keys(where[filter]);
+                if(notKeys.length != 1){
+                    isValidKeys.push(false);
+                    return;
+                }
+                
+                for (let n of notKeys) {
+                    for (let subFilter of where[filter]) {
+                        whereParser(where[filter], n, currentData);
+                        
+                        for(let obj of currentData){
+                            let subnegFiltered = new Array();
+                            if(!mcompFiltered.includes(obj) && !scompFiltered.includes(obj)){
+                                subnegFiltered.push(obj);
+                            }
+                            negFiltered.concat(subnegFiltered);
+                        }
+                    }
+                }
             }
 
-            if(isOr1){
-                    allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
+            if (logicCount == 0) {
+                if (logicArr[logicCount] == 'OR') {
+                    for (let obj of mcompFiltered) {
+                        if (!allTheData.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                    for (let obj of scompFiltered) {
+                        if (!allTheData.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                    for (let obj of negFiltered) {
+                        if (!allTheData.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
                 }
+                else if (logicArr[logicCount] == 'AND') {
+                    for (let obj of mcompFiltered) {
+                        if (scompFiltered.includes(obj) && negFiltered.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                }
+            }
+
+            else if (logicCount == -1) {
+                allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
+            }
+
+
 
         }
 
