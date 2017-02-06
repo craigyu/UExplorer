@@ -448,9 +448,6 @@ export default class InsightFacade implements IInsightFacade {
         function whereParser(where: any, filter: string, currentData: any) {
 
 
-
-
-
             if (filter == 'AND' || filter == 'OR') {
                 logicArr.push(filter);
                 logicCount++;
@@ -592,11 +589,26 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
 
-
             else if (filter == 'NOT') {
-                whereFilters.push(filter);
-                let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-                negFiltered.push(itemToFilter);
+                let notKeys = Object.keys(where[filter]);
+                if(notKeys.length != 1){
+                    isValidKeys.push(false);
+                    return;
+                }
+                
+                for (let n of notKeys) {
+                    for (let subFilter of where[filter]) {
+                        whereParser(where[filter], n, currentData);
+                        
+                        for(let obj of currentData){
+                            let subnegFiltered = new Array();
+                            if(!mcompFiltered.includes(obj) && !scompFiltered.includes(obj)){
+                                subnegFiltered.push(obj);
+                            }
+                            negFiltered.concat(subnegFiltered);
+                        }
+                    }
+                }
             }
 
             if (logicCount == 0) {
@@ -626,7 +638,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
 
-            else if (logicCount == -1){
+            else if (logicCount == -1) {
                 allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
             }
 

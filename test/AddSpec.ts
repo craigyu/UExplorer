@@ -82,6 +82,28 @@ describe("AddSpec", function () {
             }
         })
     })
+        it("Testing Load Zip with More Files", function (done) {
+        let fs = require("fs");
+        fs.readFile("test3files.zip", "base64", function (err: any, data: any) {
+            if (err) {
+                done(err);
+            } else {
+                return insF.addDataset("courses_2", data)
+                    .then(function () {
+                        done();
+                    })
+                    .catch(function (err: any) {
+                        Log.test(err);
+                        console.log(err);
+                        expect.fail(err);
+                        done();
+                    })
+
+            }
+        })
+    })
+
+
 
 
 

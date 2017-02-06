@@ -13,6 +13,88 @@ describe("QuerySpec", function () {
         insF = new InsightFacade();
     })
 
+        it("Testing for NOT correct format", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "NOT": {
+                    "GT": {
+                    "courses_avg": 87
+                    }
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 86.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    })
+
+
+    it("Testing for NOT  correct format", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "GT": {
+                    "courses_avg": 86
+                },
+                "NOT": {
+                    "EQ": {
+                    "courses_avg": 86.83
+                    }
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 87.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+            expect.fail()
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+        })
+    })
+
     it("Testing for Basic Parsing to output (GT) correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
@@ -51,6 +133,49 @@ describe("QuerySpec", function () {
         })
     })
 
+
+    it("Testing for NOT  correct format", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "GT": {
+                    "courses_avg": 86
+                },
+                "NOT": {
+                    "EQ": {
+                    "courses_avg": 86.83
+                    }
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 87.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+            expect.fail()
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+        })
+    })
+
     it("Testing IS with invalid key value correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
@@ -61,7 +186,7 @@ describe("QuerySpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
-                    "courses_avg" 
+                    "courses_avg"
                 ],
                 "ORDER": "courses_avg",
                 "FORM": "TABLE"
@@ -87,7 +212,7 @@ describe("QuerySpec", function () {
         })
     })
 
-        it("Testing IS with correct format", () => {
+    it("Testing IS with correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "IS": {
@@ -97,7 +222,7 @@ describe("QuerySpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
-                    "courses_avg" 
+                    "courses_avg"
                 ],
                 "ORDER": "courses_avg",
                 "FORM": "TABLE"
@@ -112,10 +237,13 @@ describe("QuerySpec", function () {
                 { courses_dept: 'aanb', courses_avg: 87.83 }]
             }
         }
+        
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-            expect(value).to.deep.equal({queryROutput})
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
         }).catch(function (err: any) {
             console.log(err);
             Log.test(err);
@@ -127,14 +255,18 @@ describe("QuerySpec", function () {
         let queryR: QueryRequest = {
             "WHERE": {
                 "OR": [
-                    {"IS": {
-                        "courses_dept": "aanb"
-                    }},
-                    {"GT": {
-                        "courses_avg": 87
-                 }}]
+                    {
+                        "IS": {
+                            "courses_dept": "aanb"
+                        }
+                    },
+                    {
+                        "GT": {
+                            "courses_avg": 87
+                        }
+                    }]
 
-                
+
 
             },
             "OPTIONS": {
@@ -165,18 +297,22 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     })
-        it("Testing for LOGIC ORDER (AND)", () => {
+    it("Testing for LOGIC ORDER (AND)", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "OR": [
-                    {"IS": {
-                        "courses_dept": "aanb"
-                    }},
-                    {"GT": {
-                        "courses_avg": 87
-                 }}]
+                    {
+                        "IS": {
+                            "courses_dept": "aanb"
+                        }
+                    },
+                    {
+                        "GT": {
+                            "courses_avg": 87
+                        }
+                    }]
 
-                
+
 
             },
             "OPTIONS": {
@@ -195,6 +331,61 @@ describe("QuerySpec", function () {
                 result:
                 [{ courses_dept: 'aanb', courses_avg: 86.83 },
                 { courses_dept: 'aanb', courses_avg: 87.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect(value).to.deep.equal(queryROutput)
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    })
+
+
+    it("Testing for LOGIC ORDER (OR WITHIN OR)", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "OR": [
+                    {
+                        "AND": [
+                            {
+                                "GT": {
+                                    "courses_avg": 88
+                                }
+                            },
+                            {
+                                "IS": {
+                                    "courses_dept": "cell"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "EQ": {
+                            "courses_avg": 82.5
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'cell', courses_avg: 86.83 },
+                { courses_dept: 'cell', courses_avg: 87.83 }]
             }
         }
 
