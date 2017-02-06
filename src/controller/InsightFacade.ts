@@ -309,7 +309,7 @@ export default class InsightFacade implements IInsightFacade {
             catch (err) { reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } }); }
 
             // check if the dataset exists, !!!this is only of D1!!!
-            if (fs.existsSync(dataPath + 'courses') == false) {
+            if (!fs.existsSync(dataPath + 'courses')) {
                 reject({ code: 424, body: { 'missing': ['courses'] } });
             }
 
@@ -430,6 +430,17 @@ export default class InsightFacade implements IInsightFacade {
 
 
 
+    }
+
+    //helper function to check if file is there 
+    private exists(filename:any) {
+        try {
+            fs.accessSync(filename);
+            return true;
+        }
+        catch (ex) {
+            return false;
+        }
     }
 
 }
