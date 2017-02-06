@@ -20,7 +20,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("courses", data)
+                return insF.addDataset("courses", data)
                     .then(function () {
                         done();
                     })
@@ -42,7 +42,7 @@ describe("AddSpec", function () {
             if (err) {
                 console.log(err);
             } else {
-                insF.addDataset("cafe", data).then(function () {
+                return insF.addDataset("cafe", data).then(function () {
 
                 })
                     .catch(function (err: any) {
@@ -61,7 +61,7 @@ describe("AddSpec", function () {
             if (err) {
                 console.log(err);
             } else {
-                insF.addDataset("invalidJSON", data).then(function () {
+                return insF.addDataset("invalidJSON", data).then(function () {
                     expect.fail();
                 })
                     .catch(function (err: any) {
@@ -80,7 +80,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("notOBJ", data).then(function () {
+                return insF.addDataset("notOBJ", data).then(function () {
 
                 }).then(() => done(), done);
             }
@@ -95,7 +95,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("OneDataOneNoData", data).then(function () {
+                return insF.addDataset("OneDataOneNoData", data).then(function () {
 
                 }).then(() => done(), done);
             }
@@ -109,7 +109,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("2n2", data).then(function () {
+                return insF.addDataset("2n2", data).then(function () {
 
                 }).then(() => done(), done);
             }
