@@ -317,7 +317,7 @@ export default class InsightFacade implements IInsightFacade {
 
             // retrive cached data
             let id = 'courses';
-            var thisData = fs.readFile(dataPath + id, "string", function (err: any, data: any) {
+            var thisData = fs.readFileSync(dataPath + id, "utf8", function (err: any, data: any) {
                 if (err) {
                     reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
                     throw err
@@ -397,7 +397,7 @@ export default class InsightFacade implements IInsightFacade {
         if (filter == 'AND' || filter == 'OR') {
             for (let subFilter of where[filter]) {
                 for (let subSubfilter of where[filter][subFilter]) {
-                    this.whereParser(where[filter][subFilter], subSubfilter);
+                    whereParser(where[filter][subFilter], subSubfilter);
                 }
             }
         }
@@ -423,6 +423,16 @@ export default class InsightFacade implements IInsightFacade {
                                 if (val == key) {
                                     if (filter == 'LT'){
                                         if (currentData[obj][val] < where[filter][key]) {
+                                            mcompFiltered.push({[key]: currentData[obj][val]})
+                                        }
+                                    }
+                                    if (filter == 'GT'){
+                                        if (currentData[obj][val] > where[filter][key]) {
+                                            mcompFiltered.push({[key]: currentData[obj][val]})
+                                        }
+                                    }
+                                    if (filter == 'EQ'){
+                                        if (currentData[obj][val] == where[filter][key]) {
                                             mcompFiltered.push({[key]: currentData[obj][val]})
                                         }
                                     }
