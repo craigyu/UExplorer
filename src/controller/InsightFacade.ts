@@ -599,31 +599,35 @@ export default class InsightFacade implements IInsightFacade {
                 negFiltered.push(itemToFilter);
             }
 
-            if(logicCount == 0){
+            if (logicCount == 0) {
                 if (logicArr[logicCount] == 'OR') {
-                                for (let obj of mcompFiltered) {
-                                    if (!allTheData.includes(obj)) {
-                                        allTheData.push(obj);
-                                    }
-                                }
-                                for (let obj of scompFiltered) {
-                                    if (!allTheData.includes(obj)) {
-                                        allTheData.push(obj);
-                                    }
-                                }
-                                for (let obj of negFiltered) {
-                                    if (!allTheData.includes(obj)) {
-                                        allTheData.push(obj);
-                                    }
-                                }
-                            }
-                            else if (logicArr[logicCount] == 'AND') {
-                                for (let obj of mcompFiltered) {
-                                    if (scompFiltered.includes(obj) && negFiltered.includes(obj)) {
-                                        allTheData.push(obj);
-                                    }
-                                }
-                            }
+                    for (let obj of mcompFiltered) {
+                        if (!allTheData.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                    for (let obj of scompFiltered) {
+                        if (!allTheData.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                    for (let obj of negFiltered) {
+                        if (!allTheData.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                }
+                else if (logicArr[logicCount] == 'AND') {
+                    for (let obj of mcompFiltered) {
+                        if (scompFiltered.includes(obj) && negFiltered.includes(obj)) {
+                            allTheData.push(obj);
+                        }
+                    }
+                }
+            }
+
+            else if (logicCount == -1){
+                allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
             }
 
 
