@@ -18,7 +18,7 @@ if (!fs.existsSync("./cachedDatasets")) {
 var dataPath = './cachedDatasets/';
 var whereFilters = new Array();
 var mcompFiltered = new Array();
-var sToFilter = new Array();
+var scompFiltered = new Array();
 var negToFilter = new Array();
 var isValidKeys: boolean[] = [];
 var currentData: any;
@@ -376,8 +376,7 @@ export default class InsightFacade implements IInsightFacade {
         function whereParser(where: any, filter: string) {
 
             var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
-            var numberVal;
-
+            var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
 
             if (filter == 'AND' || filter == 'OR') {
                 for (let subFilter of where[filter]) {
@@ -439,10 +438,32 @@ export default class InsightFacade implements IInsightFacade {
 
 
             else if (filter == 'IS') {
-                whereFilters.push(filter);
-                let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-                sToFilter.push(itemToFilter);
+                let isKey = Object.keys(where[filter]);
+                if (Object.keys(where[filter]).length != 1) {
+                    isValidKeys.push(false);
+                    return;
+                }
+
+                for (let key in isKey) {
+                    if (stringLibrary.includes(key)) {
+                        if (typeof where[filter][key] != 'string') {
+                            isValidKeys.push(false);
+                            return;
+                        }
+                        else {
+                            for (let obj of Object.keys(currentData)) {
+                                for (let val of Object.keys(currentData[obj])) {
+                                    if (val == key) {
+                                        scompFiltered.push(currentData[obj]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
+
             else if (filter == 'NOT') {
                 whereFilters.push(filter);
                 let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
