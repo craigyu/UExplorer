@@ -19,9 +19,13 @@ var dataPath = './cachedDatasets/';
 var whereFilters = new Array();
 var mcompFiltered = new Array();
 var scompFiltered = new Array();
-var negToFilter = new Array();
+var negFiltered = new Array();
+var allTheData = new Array();
 var isValidKeys: boolean[] = [];
 var orderVal: string;
+var isAnd1: boolean = false;
+var logicCount = 0;
+var isOr1: boolean = false;
 var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
 var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
 var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_dept', 'courses_id',
@@ -148,7 +152,7 @@ export default class InsightFacade implements IInsightFacade {
                                 reject({ code: 400, body: { 'error': 'No useful data provided' } });
                             }
 
-                           var combine = new Array();
+                            var combine = new Array();
                             if (arrayOfStrings.length > 2) {
                                 for (let i of arrayOfStrings) {
                                     for (let j of i) {
@@ -160,9 +164,9 @@ export default class InsightFacade implements IInsightFacade {
                             } else {
                                 for (let i of arrayOfStrings) {
                                     if (typeof i != "undefined") {
-                                        for(let j of i) {
+                                        for (let j of i) {
                                             combine.push(j);
-                                        }                                        
+                                        }
                                     }
                                 }
                             }
@@ -299,9 +303,9 @@ export default class InsightFacade implements IInsightFacade {
                             } else {
                                 for (let i of arrayOfStrings) {
                                     if (typeof i != "undefined") {
-                                        for(let j of i) {
+                                        for (let j of i) {
                                             combine.push(j);
-                                        }                                        
+                                        }
                                     }
                                 }
                             }
@@ -388,6 +392,15 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             try {
+               
+                    isValidKeys = [];
+                    mcompFiltered = [];
+                    scompFiltered = [];
+                    negFiltered = [];
+                    allTheData = [];
+                    isAnd1 = false;
+                    isOr1 = false;
+                    logicCount = 0;
 
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
@@ -409,11 +422,11 @@ export default class InsightFacade implements IInsightFacade {
 
 
             if (Object.keys(query.OPTIONS).length == 3) {
-                finalProduct = optionParser(mcompFiltered, query.OPTIONS);
+                finalProduct = optionParser(allTheData, query.OPTIONS);
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
-                fulfill({ code: 200, body: finalProduct.valueOf()});
+                fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {
@@ -429,14 +442,37 @@ export default class InsightFacade implements IInsightFacade {
 
 
         });
+
         function whereParser(where: any, filter: string, currentData: any) {
 
 
 
+
+
             if (filter == 'AND' || filter == 'OR') {
+                if (filter == 'AND') {
+                    isAnd1 = true;
+                }
+                else if (filter == 'OR') {
+                    isOr1 = true;
+                }
+
+                if (logicCount > 0) {
+                    isAnd1 = false;
+                    isOr1 = false;
+
+                }
+                logicCount++;
+
+                if (where[filter].length == 0) {
+                    isValidKeys.push(false);
+                    return;
+                }
                 for (let subFilter of where[filter]) {
-                    for (let subSubfilter of where[filter][subFilter]) {
-                        whereParser(where[filter][subFilter], subSubfilter, currentData);
+
+                    for (let subSubfilter of Object.keys(subFilter)) {
+
+                        whereParser(subFilter, subSubfilter, currentData);
                     }
                 }
             }
@@ -512,16 +548,23 @@ export default class InsightFacade implements IInsightFacade {
                                 for (let subObj of obj)
                                     for (let val of Object.keys(subObj)) {
                                         if (val == key) {
-                                            if(currentData[obj] == where[filter]){
-                                            scompFiltered.push(currentData[obj]);
-                                        }
-                                        else{isValidKeys.push(false);}
+                                            var hello = subObj[val];
+                                            var hello2 = where[filter][key];
+                                            if (subObj[val] == where[filter][key]) {
+                                                scompFiltered.push(obj);
+                                            }
+                                            else {
+                                                isValidKeys.push(false);
+                                                return;
+                                            }
+
                                         }
                                     }
                             }
                         }
                     } else {
                         isValidKeys.push(false);
+                        return;
                     }
                 }
             }
@@ -530,8 +573,12 @@ export default class InsightFacade implements IInsightFacade {
             else if (filter == 'NOT') {
                 whereFilters.push(filter);
                 let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-                negToFilter.push(itemToFilter);
+                negFiltered.push(itemToFilter);
             }
+
+            if(isOr1){
+                    allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
+                }
 
         }
 
@@ -645,8 +692,8 @@ export default class InsightFacade implements IInsightFacade {
             else return null;
             // END OF ORDERING
 
-            var result = { 
-                render: optionBody["FORM"], 
+            var result = {
+                render: optionBody["FORM"],
                 result: processed
             };
             return result;

@@ -87,6 +87,49 @@ describe("QuerySpec", function () {
         })
     })
 
+    it("Testing for LOGIC ORDER (AND)", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "OR": [
+                    {"IS": {
+                        "courses_dept": "aanb"
+                    }},
+                    {"GT": {
+                        "courses_avg": 87
+                 }}]
+
+                
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 86.83 },
+                { courses_dept: 'aanb', courses_avg: 87.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect(value).to.deep.equal(queryROutput)
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    })
+
 
 
 
