@@ -20,6 +20,7 @@ var whereFilters = new Array();
 var mToFilter = new Array();
 var sToFilter = new Array();
 var negToFilter = new Array();
+var isValidKeys: boolean[] = [];
 
 
 
@@ -280,15 +281,15 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             if (fs.existsSync(dataPath + id)) {
                 // remove dataset associated with the id
-                fs.unlink(dataPath + id, function(err: any){
-                    if (err){
+                fs.unlink(dataPath + id, function (err: any) {
+                    if (err) {
                         reject({ code: 404, body: { 'error': err.toString() } });
                     }
-                    else{
+                    else {
                         fulfill({ code: 204, body: {} });
                     }
                 })
-                
+
             }
             else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
         });
@@ -298,17 +299,34 @@ export default class InsightFacade implements IInsightFacade {
 
     performQuery(query: QueryRequest): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
+
             //check if query is valid
-            if (query == null || !('WHERE' in query) || !('OPTIONS' in query)) {
+            if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
                 reject({ code: 400, body: { 'error': 'The query is invalid' } });
             }
 
-            try { JSON.parse(query.toString()) }
+            try { JSON.parse(JSON.stringify(query)) }
             catch (err) { reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } }); }
 
             // check if the dataset exists, !!!this is only of D1!!!
             if (fs.existsSync(dataPath + 'courses') == false) {
                 reject({ code: 424, body: { 'missing': ['courses'] } });
+            }
+
+
+            // retrive cached data
+            let id = 'courses';
+            var currentData = fs.readFile(dataPath + id, "string", function (err: any, data: any) {
+                if (err) {
+                    reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
+                    throw err
+                }
+                else return data;
+
+            });
+
+            function isValid(element: boolean, index: any, array: any) {
+                return element == true;
             }
 
             try {
@@ -318,10 +336,29 @@ export default class InsightFacade implements IInsightFacade {
                         this.whereParser(query.WHERE, filter);
                     }
 
+                    if (isValidKeys.every(isValid) == false){
+                        reject({ code: 400, body: { 'error': 'invalid keys' } }) 
+                    }
+
                 }
-                else (reject({ code: 424, body: { 'missing': ['courses'] } }));
+                else (reject({ code: 400, body: { 'error': 'Error in WHERE' } }));
             }
-            catch (err) { }
+            catch (err) {
+                reject({ code: 400, body: { 'error': err.toString() } });
+                throw err;
+            }
+
+
+            try {
+                if (Object.keys(query.OPTIONS).length > 0) {
+                    //parse Orders here
+                }
+            }
+            catch (err) {
+                reject({ code: 400, body: { 'error': err.toString() } });
+                throw err;
+            }
+
 
 
             //cached.file('courses'). ... ; get the data here somehow
@@ -333,18 +370,34 @@ export default class InsightFacade implements IInsightFacade {
     }
 
 
+
+
+
     // helper function to parse WHERE in query
     private whereParser(where: any, filter: string) {
+
+        var library = new Array('courses_dept', 'courses_id', 'courses_avg', 'courses_instructor', 'courses_title', 'courses_pass',
+            'courses_fail', 'courses_audit', 'courses_uuid');
+
         if (filter == 'AND' || filter == 'OR') {
-            whereFilters.push(filter);
             for (let subFilter of where[filter]) {
-                this.whereParser(Object.keys(where), subFilter);
+                for (let subSubfilter of where[filter][subFilter]) {
+                    this.whereParser(where[filter][subFilter], subSubfilter);
+                }
             }
         }
         else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
-            whereFilters.push(filter);
-            let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-            mToFilter.push(itemToFilter);
+            let mcompKeys = Object.keys(where[filter]);
+
+            for (let key in mcompKeys) {
+                if (library.includes(key)) {
+
+                }
+                else {
+                    isValidKeys.push(false);
+                }
+            }
+
 
         }
         else if (filter == 'IS') {
@@ -357,6 +410,7 @@ export default class InsightFacade implements IInsightFacade {
             let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
             negToFilter.push(itemToFilter);
         }
+
 
 
 
