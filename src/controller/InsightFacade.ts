@@ -18,7 +18,7 @@ if (!fs.existsSync("./cachedDatasets")) {
 var dataPath = './cachedDatasets/';
 var whereFilters = new Array();
 var mcompFiltered = new Array();
-var sToFilter = new Array();
+var scompFiltered = new Array();
 var negToFilter = new Array();
 var isValidKeys: boolean[] = [];
 var currentData: any;
@@ -339,7 +339,7 @@ export default class InsightFacade implements IInsightFacade {
 
                 if (Object.keys(query.WHERE).length > 0) {
                     for (let filter of Object.keys(query.WHERE)) {
-                        this.whereParser(query.WHERE, filter);
+                        whereParser(query.WHERE, filter);
                     }
 
                     if (isValidKeys.every(isValid) == false) {
@@ -373,6 +373,107 @@ export default class InsightFacade implements IInsightFacade {
 
 
         });
+        function whereParser(where: any, filter: string) {
+
+            var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
+            var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
+
+            if (filter == 'AND' || filter == 'OR') {
+                for (let subFilter of where[filter]) {
+                    for (let subSubfilter of where[filter][subFilter]) {
+                        whereParser(where[filter][subFilter], subSubfilter);
+                    }
+                }
+            }
+
+            else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
+                let mcompKeys = Object.keys(where[filter]);
+                if (Object.keys(where[filter]).length != 1) {
+                    isValidKeys.push(false);
+                    return;
+                }
+
+
+
+                for (let key in mcompKeys) {
+                    if (mcompLibrary.includes(key)) {
+                        if (typeof where[filter][key] != 'number') {
+                            isValidKeys.push(false);
+                            return;
+                        }
+                        else {
+                            for (let obj of Object.keys(currentData)) {
+                                for (let val of Object.keys(currentData[obj])) {
+                                    if (val == key) {
+                                        if (filter == 'LT') {
+                                            if (currentData[obj][val] < where[filter][key]) {
+                                                mcompFiltered.push(currentData[obj])
+                                            }
+                                        }
+                                        if (filter == 'GT') {
+                                            if (currentData[obj][val] > where[filter][key]) {
+                                                mcompFiltered.push(currentData[obj])
+                                            }
+                                        }
+                                        if (filter == 'EQ') {
+                                            if (currentData[obj][val] == where[filter][key]) {
+                                                mcompFiltered.push(currentData[obj])
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    else {
+                        isValidKeys.push(false);
+                        return;
+                    }
+                }
+
+
+            }
+
+
+            else if (filter == 'IS') {
+                let isKey = Object.keys(where[filter]);
+                if (Object.keys(where[filter]).length != 1) {
+                    isValidKeys.push(false);
+                    return;
+                }
+
+                for (let key in isKey) {
+                    if (stringLibrary.includes(key)) {
+                        if (typeof where[filter][key] != 'string') {
+                            isValidKeys.push(false);
+                            return;
+                        }
+                        else {
+                            for (let obj of Object.keys(currentData)) {
+                                for (let val of Object.keys(currentData[obj])) {
+                                    if (val == key) {
+                                        scompFiltered.push(currentData[obj]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            else if (filter == 'NOT') {
+                whereFilters.push(filter);
+                let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
+                negToFilter.push(itemToFilter);
+            }
+
+
+
+
+        }
     }
 
 
@@ -380,84 +481,5 @@ export default class InsightFacade implements IInsightFacade {
 
 
     // helper function to parse WHERE in query
-    private whereParser(where: any, filter: string) {
 
-        var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
-        var numberVal;
-
-
-        if (filter == 'AND' || filter == 'OR') {
-            for (let subFilter of where[filter]) {
-                for (let subSubfilter of where[filter][subFilter]) {
-                    whereParser(where[filter][subFilter], subSubfilter);
-                }
-            }
-        }
-
-        else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
-            let mcompKeys = Object.keys(where[filter]);
-            if (Object.keys(where[filter]).length != 1) {
-                isValidKeys.push(false);
-                return;
-            }
-
-
-
-            for (let key in mcompKeys) {
-                if (mcompLibrary.includes(key)) {
-                    if (typeof where[filter][key] != 'number') {
-                        isValidKeys.push(false);
-                        return;
-                    }
-                    else {
-                        for (let obj of Object.keys(currentData)) {
-                            for (let val of Object.keys(currentData[obj])) {
-                                if (val == key) {
-                                    if (filter == 'LT') {
-                                        if (currentData[obj][val] < where[filter][key]) {
-                                            mcompFiltered.push({ [key]: currentData[obj][val] })
-                                        }
-                                    }
-                                    if (filter == 'GT'){
-                                        if (currentData[obj][val] > where[filter][key]) {
-                                            mcompFiltered.push({[key]: currentData[obj][val]})
-                                        }
-                                    }
-                                    if (filter == 'EQ'){
-                                        if (currentData[obj][val] == where[filter][key]) {
-                                            mcompFiltered.push({[key]: currentData[obj][val]})
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
-                }
-                else {
-                    isValidKeys.push(false);
-                    return;
-                }
-            }
-
-
-        }
-
-
-        else if (filter == 'IS') {
-            whereFilters.push(filter);
-            let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-            sToFilter.push(itemToFilter);
-        }
-        else if (filter == 'NOT') {
-            whereFilters.push(filter);
-            let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-            negToFilter.push(itemToFilter);
-        }
-
-
-
-
-    }
 }
