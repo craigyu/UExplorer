@@ -39,7 +39,7 @@ describe("AddSpec", function () {
         if (fs.existsSync("./cachedDatasets/courses")) {
             fs.unlinkSync("./cachedDatasets/courses")
         }
-        fs.readFile("twocourses.zip", "base64", function (err: any, data: any) {
+        fs.readFile("courses.zip", "base64", function (err: any, data: any) {
             if (err) {
                 done(err);
             } else {
