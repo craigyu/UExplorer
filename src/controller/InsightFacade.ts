@@ -317,26 +317,16 @@ export default class InsightFacade implements IInsightFacade {
 
             // retrive cached data
             let id = 'courses';
-            var thisData = fs.readFile(dataPath + id, "string", function (err: any, data: any) {
-                if (err) {
-                    reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
-                    throw err
-                }
-                else {
-                    try {
-                        let parsedJ = JSON.parse(data);
-                        return parsedJ;
-                    }
-                    catch (err) {
-                        reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
-                        throw err;
-                    }
-                }
-
-            });
+            var thisData = fs.readFileSync(dataPath + id, "utf8");
+            var currentData;
+            try {
+                currentData = JSON.parse(thisData);
+            }
+            catch (err) {
+                reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
+                throw err;
+            }
             //currentData is a JSON
-            currentData = thisData;
-
 
 
             function isValid(element: boolean, index: any, array: any) {
@@ -421,9 +411,9 @@ export default class InsightFacade implements IInsightFacade {
                         for (let obj of Object.keys(currentData)) {
                             for (let val of Object.keys(currentData[obj])) {
                                 if (val == key) {
-                                    if (filter == 'LT'){
+                                    if (filter == 'LT') {
                                         if (currentData[obj][val] < where[filter][key]) {
-                                            mcompFiltered.push({[key]: currentData[obj][val]})
+                                            mcompFiltered.push({ [key]: currentData[obj][val] })
                                         }
                                     }
                                 }
@@ -458,16 +448,4 @@ export default class InsightFacade implements IInsightFacade {
 
 
     }
-
-    //helper function to check if file is there 
-    private exists(filename: any) {
-        try {
-            fs.accessSync(filename);
-            return true;
-        }
-        catch (ex) {
-            return false;
-        }
-    }
-
 }
