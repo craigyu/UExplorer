@@ -336,12 +336,12 @@ export default class InsightFacade implements IInsightFacade {
                         this.whereParser(query.WHERE, filter);
                     }
 
-                    if (isValidKeys.every(isValid) == false){
-                        reject({ code: 400, body: { 'error': 'invalid keys' } }) 
+                    if (isValidKeys.every(isValid) == false) {
+                        reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
 
                 }
-                else (reject({ code: 400, body: { 'error': 'Error in WHERE' } }));
+                else (reject({ code: 400, body: { 'error': 'Nothing in WHERE' } }));
             }
             catch (err) {
                 reject({ code: 400, body: { 'error': err.toString() } });
@@ -355,7 +355,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
             catch (err) {
-                reject({ code: 400, body: { 'error': err.toString() } });
+                reject({ code: 400, body: { 'error': 'Nothing in OPTIONS' } });
                 throw err;
             }
 
@@ -378,6 +378,8 @@ export default class InsightFacade implements IInsightFacade {
 
         var library = new Array('courses_dept', 'courses_id', 'courses_avg', 'courses_instructor', 'courses_title', 'courses_pass',
             'courses_fail', 'courses_audit', 'courses_uuid');
+        var numberVal;
+
 
         if (filter == 'AND' || filter == 'OR') {
             for (let subFilter of where[filter]) {
@@ -388,13 +390,27 @@ export default class InsightFacade implements IInsightFacade {
         }
         else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
             let mcompKeys = Object.keys(where[filter]);
+            if (Object.keys(where[filter]).length != 1) {
+                isValidKeys.push(false);
+                return;
+            }
+
+
 
             for (let key in mcompKeys) {
                 if (library.includes(key)) {
+                    if (typeof where[filter][key] != 'number') {
+                        isValidKeys.push(false);
+                        return;
+                    }
+                    else{
+
+                    }
 
                 }
                 else {
                     isValidKeys.push(false);
+                    return;
                 }
             }
 
