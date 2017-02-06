@@ -20,7 +20,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("courses", data)
+                return insF.addDataset("courses", data)
                     .then(function () {
                         done();
                     })
@@ -36,32 +36,39 @@ describe("AddSpec", function () {
 
 
 
-    it("Testing Load Zip base64 more than 1 file in zip", function (done) {
+    it("Testing Load Zip base64 more than 1 file in zip", function () {
         let fs = require("fs");
         fs.readFile("test2.zip", "base64", function (err: any, data: any) {
             if (err) {
-                done(err);
+                console.log(err);
             } else {
-                insF.addDataset("cafe", data).then(function () {
+                return insF.addDataset("cafe", data).then(function () {
 
-                }).then(() => done(), done);
-            }
-        })
-    });
-
-    it("Testing with invalid JSON files", function (done) {
-        let fs = require("fs");
-        fs.readFile("testJSON.zip", "base64", function (err: any, data: any) {
-            if (err) {
-                done(err);
-            } else {
-                insF.addDataset("invalidJSON", data).then(function () {
-                    done();
                 })
                     .catch(function (err: any) {
                         Log.test(err);
                         console.log(err);
-                        done();
+                        expect(err).to.equal({ "code": 400, "body": { "error": "No useful data provided" } }
+                        )
+                    })
+            }
+        })
+    });
+
+    it("Testing with invalid JSON files", function () {
+        let fs = require("fs");
+        fs.readFile("testJSON.zip", "base64", function (err: any, data: any) {
+            if (err) {
+                console.log(err);
+            } else {
+                return insF.addDataset("invalidJSON", data).then(function () {
+                    expect.fail();
+                })
+                    .catch(function (err: any) {
+                        Log.test(err);
+                        console.log(err);
+                        expect(err).to.equal({ "code": 400, "body": { "error": "No useful data provided" } }
+                        )
                     })
             }
         })
@@ -73,7 +80,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("notOBJ", data).then(function () {
+                return insF.addDataset("notOBJ", data).then(function () {
 
                 }).then(() => done(), done);
             }
@@ -88,7 +95,7 @@ describe("AddSpec", function () {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("OneDataOneNoData", data).then(function () {
+                return insF.addDataset("OneDataOneNoData", data).then(function () {
 
                 }).then(() => done(), done);
             }
@@ -96,13 +103,13 @@ describe("AddSpec", function () {
     })
 
 
-   it("Testing with 2 empty and 2 with data files", function (done) {
+    it("Testing with 2 empty and 2 with data files", function (done) {
         let fs = require("fs");
         fs.readFile("2n2.zip", "base64", function (err: any, data: any) {
             if (err) {
                 done(err);
             } else {
-                insF.addDataset("2n2", data).then(function () {
+                return insF.addDataset("2n2", data).then(function () {
 
                 }).then(() => done(), done);
             }
