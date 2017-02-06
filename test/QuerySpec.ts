@@ -13,7 +13,7 @@ describe("QuerySpec", function () {
         insF = new InsightFacade();
     })
 
-    it("Testing for Basic Parsing to output correct format", function (done) {
+    it("Testing for Basic Parsing to output correct format", function () {
         let queryR: QueryRequest = {
             "WHERE": {
                 "GT": {
@@ -86,12 +86,10 @@ describe("QuerySpec", function () {
         insF.performQuery(queryR).then(function (value:any) {
             Log.test("Value: "+ value);
             expect(value).to.equal(queryROutput);
-            done();
-
 
         }) .catch(function (err:any) {
             console.log(err);
-            done();
+            expect.fail();
         })
     })
 
