@@ -317,6 +317,7 @@ export default class InsightFacade implements IInsightFacade {
 
             // retrive cached data
             let id = 'courses';
+
             var thisData = fs.readFileSync(dataPath + id, "utf8");
             var currentData;
             try {
@@ -326,6 +327,7 @@ export default class InsightFacade implements IInsightFacade {
                 reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
                 throw err;
             }
+
             //currentData is a JSON
 
 
@@ -387,7 +389,7 @@ export default class InsightFacade implements IInsightFacade {
         if (filter == 'AND' || filter == 'OR') {
             for (let subFilter of where[filter]) {
                 for (let subSubfilter of where[filter][subFilter]) {
-                    this.whereParser(where[filter][subFilter], subSubfilter);
+                    whereParser(where[filter][subFilter], subSubfilter);
                 }
             }
         }
@@ -414,6 +416,16 @@ export default class InsightFacade implements IInsightFacade {
                                     if (filter == 'LT') {
                                         if (currentData[obj][val] < where[filter][key]) {
                                             mcompFiltered.push({ [key]: currentData[obj][val] })
+                                        }
+                                    }
+                                    if (filter == 'GT'){
+                                        if (currentData[obj][val] > where[filter][key]) {
+                                            mcompFiltered.push({[key]: currentData[obj][val]})
+                                        }
+                                    }
+                                    if (filter == 'EQ'){
+                                        if (currentData[obj][val] == where[filter][key]) {
+                                            mcompFiltered.push({[key]: currentData[obj][val]})
                                         }
                                     }
                                 }
