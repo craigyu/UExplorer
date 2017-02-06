@@ -17,10 +17,11 @@ if (!fs.existsSync("./cachedDatasets")) {
 
 var dataPath = './cachedDatasets/';
 var whereFilters = new Array();
-var mToFilter = new Array();
+var mcompFiltered = new Array();
 var sToFilter = new Array();
 var negToFilter = new Array();
 var isValidKeys: boolean[] = [];
+var currentData: any;
 
 
 
@@ -316,14 +317,27 @@ export default class InsightFacade implements IInsightFacade {
 
             // retrive cached data
             let id = 'courses';
-            var currentData = fs.readFile(dataPath + id, "string", function (err: any, data: any) {
+            var thisData = fs.readFile(dataPath + id, "string", function (err: any, data: any) {
                 if (err) {
                     reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
                     throw err
                 }
-                else return data;
+                else {
+                    try {
+                        let parsedJ = JSON.parse(data);
+                        return parsedJ;
+                    }
+                    catch (err) {
+                        reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
+                        throw err;
+                    }
+                }
 
             });
+            //currentData is a JSON
+            currentData = thisData;
+
+
 
             function isValid(element: boolean, index: any, array: any) {
                 return element == true;
@@ -376,8 +390,7 @@ export default class InsightFacade implements IInsightFacade {
     // helper function to parse WHERE in query
     private whereParser(where: any, filter: string) {
 
-        var library = new Array('courses_dept', 'courses_id', 'courses_avg', 'courses_instructor', 'courses_title', 'courses_pass',
-            'courses_fail', 'courses_audit', 'courses_uuid');
+        var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
         var numberVal;
 
 
@@ -388,6 +401,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
         }
+
         else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
             let mcompKeys = Object.keys(where[filter]);
             if (Object.keys(where[filter]).length != 1) {
@@ -398,12 +412,23 @@ export default class InsightFacade implements IInsightFacade {
 
 
             for (let key in mcompKeys) {
-                if (library.includes(key)) {
+                if (mcompLibrary.includes(key)) {
                     if (typeof where[filter][key] != 'number') {
                         isValidKeys.push(false);
                         return;
                     }
-                    else{
+                    else {
+                        for (let obj of Object.keys(currentData)) {
+                            for (let val of Object.keys(currentData[obj])) {
+                                if (val == key) {
+                                    if (filter == 'LT'){
+                                        if (currentData[obj][val] < where[filter][key]) {
+                                            mcompFiltered.push({[key]: currentData[obj][val]})
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                     }
 
@@ -416,6 +441,8 @@ export default class InsightFacade implements IInsightFacade {
 
 
         }
+
+
         else if (filter == 'IS') {
             whereFilters.push(filter);
             let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
@@ -433,7 +460,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     //helper function to check if file is there 
-    private exists(filename:any) {
+    private exists(filename: any) {
         try {
             fs.accessSync(filename);
             return true;
