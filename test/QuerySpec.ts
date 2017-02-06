@@ -52,6 +52,43 @@ describe("QuerySpec", function () {
         })
     })
 
+            it("Testing for EQ correct format", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "NOT": {
+                    "EQ": {
+                    "courses_avg": 87
+                    }
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 86.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect.fail();
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+        })
+    })
+
 
     it("Testing for NOT  correct format", () => {
         let queryR: QueryRequest = {
@@ -391,11 +428,10 @@ describe("QuerySpec", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-            expect(value).to.deep.equal(queryROutput)
+            expect.fail();
         }).catch(function (err: any) {
             console.log(err);
             Log.test(err);
-            expect.fail();
         })
     })
 
