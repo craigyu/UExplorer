@@ -19,9 +19,17 @@ var dataPath = './cachedDatasets/';
 var whereFilters = new Array();
 var mcompFiltered = new Array();
 var scompFiltered = new Array();
-var negToFilter = new Array();
+var negFiltered = new Array();
+var allTheData = new Array();
 var isValidKeys: boolean[] = [];
-var currentData: any;
+var orderVal: string;
+var isAnd1: boolean = false;
+var logicCount = 0;
+var isOr1: boolean = false;
+var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
+var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
+var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_dept', 'courses_id',
+    'courses_instructor', 'courses_title', 'courses_uuid');
 
 
 
@@ -48,6 +56,7 @@ export default class InsightFacade implements IInsightFacade {
                     .then(function (files: any) {
                         var processList: Promise<any>[] = [];
 
+
                         files.remove("__MACOSX");
                         files.forEach(function (relativePath: any, file: any) {
                             console.log(processList.length);
@@ -57,11 +66,10 @@ export default class InsightFacade implements IInsightFacade {
                                     var parsed = JSON.parse(json);
                                     if (Object.keys(parsed.result).length != 0) {
 
-                                        var objValues: any[] = []
+                                        var objValues: any[] = [];
                                         for (let obj of parsed.result) {
+                                            let subObjValues: any[] = [];
                                             if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-
-                                                let subObjValues: any[] = [];
                                                 if (obj.hasOwnProperty("Subject")) {
                                                     let dept = id + "_dept";
                                                     let deptVal = obj["Subject"];
@@ -108,9 +116,12 @@ export default class InsightFacade implements IInsightFacade {
                                                     subObjValues.push({ [uuid]: uuidVal });
                                                 }
 
-                                                objValues.push(subObjValues);
+
                                             }
+                                            objValues.push(subObjValues);
+
                                         }
+
 
                                     }
 
@@ -118,10 +129,12 @@ export default class InsightFacade implements IInsightFacade {
                                 }
 
                                 catch (err) {
+
                                     reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
                                     throw err;
 
                                 }
+
 
                                 return objValues;
                             });
@@ -138,12 +151,30 @@ export default class InsightFacade implements IInsightFacade {
                             if (counter == arrayOfStrings.length) {
                                 reject({ code: 400, body: { 'error': 'No useful data provided' } });
                             }
-                            for (let i of arrayOfStrings) {
-                                if (typeof (i) != "undefined") {
-                                    fs.writeFileSync(dataPath + id, JSON.stringify(i));
+
+                            var combine = new Array();
+                            if (arrayOfStrings.length > 2) {
+                                for (let i of arrayOfStrings) {
+                                    for (let j of i) {
+                                        if (typeof j != "undefined") {
+                                            combine.push(j);
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (let i of arrayOfStrings) {
+                                    if (typeof i != "undefined") {
+                                        for (let j of i) {
+                                            combine.push(j);
+                                        }
+                                    }
                                 }
                             }
-                            fulfill({ code: 201, body: {} });
+
+
+
+                            fs.writeFileSync(dataPath + id, JSON.stringify(combine));
+                            fulfill({ code: 204, body: {} });
                         })
                             .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
@@ -163,6 +194,7 @@ export default class InsightFacade implements IInsightFacade {
                     .then(function (files: any) {
                         var processList: Promise<any>[] = [];
 
+
                         files.remove("__MACOSX");
                         files.forEach(function (relativePath: any, file: any) {
                             console.log(processList.length);
@@ -171,10 +203,11 @@ export default class InsightFacade implements IInsightFacade {
                                 try {
                                     var parsed = JSON.parse(json);
                                     if (Object.keys(parsed.result).length != 0) {
-                                        var objValues: any[] = []
+
+                                        var objValues: any[] = [];
                                         for (let obj of parsed.result) {
+                                            let subObjValues: any[] = [];
                                             if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                let subObjValues: any[] = [];
                                                 if (obj.hasOwnProperty("Subject")) {
                                                     let dept = id + "_dept";
                                                     let deptVal = obj["Subject"];
@@ -222,9 +255,11 @@ export default class InsightFacade implements IInsightFacade {
                                                 }
 
 
-                                                objValues.push(subObjValues);
                                             }
+                                            objValues.push(subObjValues);
+
                                         }
+
 
                                     }
 
@@ -254,11 +289,30 @@ export default class InsightFacade implements IInsightFacade {
                             if (counter == arrayOfStrings.length) {
                                 reject({ code: 400, body: { 'error': 'No useful data provided' } });
                             }
-                            for (let i of arrayOfStrings) {
-                                if (typeof (i) != "undefined") {
-                                    fs.writeFileSync(dataPath + id, JSON.stringify(i));
+
+
+                            var combine = new Array();
+                            if (arrayOfStrings.length > 2) {
+                                for (let i of arrayOfStrings) {
+                                    for (let j of i) {
+                                        if (typeof j != "undefined") {
+                                            combine.push(j);
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (let i of arrayOfStrings) {
+                                    if (typeof i != "undefined") {
+                                        for (let j of i) {
+                                            combine.push(j);
+                                        }
+                                    }
                                 }
                             }
+
+
+
+                            fs.writeFileSync(dataPath + id, JSON.stringify(combine));
                             fulfill({ code: 204, body: {} });
                         })
                             .catch(function (err: any) {
@@ -301,6 +355,8 @@ export default class InsightFacade implements IInsightFacade {
     performQuery(query: QueryRequest): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
 
+            let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
+
             //check if query is valid
             if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
                 reject({ code: 400, body: { 'error': 'The query is invalid' } });
@@ -317,9 +373,9 @@ export default class InsightFacade implements IInsightFacade {
 
             // retrive cached data
             let id = 'courses';
+            var currentData;
 
             var thisData = fs.readFileSync(dataPath + id, "utf8");
-            var currentData;
             try {
                 currentData = JSON.parse(thisData);
             }
@@ -328,7 +384,7 @@ export default class InsightFacade implements IInsightFacade {
                 throw err;
             }
 
-            //currentData is a JSON
+            //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
 
             function isValid(element: boolean, index: any, array: any) {
@@ -336,10 +392,19 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             try {
+               
+                    isValidKeys = [];
+                    mcompFiltered = [];
+                    scompFiltered = [];
+                    negFiltered = [];
+                    allTheData = [];
+                    isAnd1 = false;
+                    isOr1 = false;
+                    logicCount = 0;
 
-                if (Object.keys(query.WHERE).length > 0) {
+                if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
-                        whereParser(query.WHERE, filter);
+                        whereParser(query.WHERE, filter, currentData);
                     }
 
                     if (isValidKeys.every(isValid) == false) {
@@ -347,7 +412,7 @@ export default class InsightFacade implements IInsightFacade {
                     }
 
                 }
-                else (reject({ code: 400, body: { 'error': 'Nothing in WHERE' } }));
+                else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
             }
             catch (err) {
                 reject({ code: 400, body: { 'error': err.toString() } });
@@ -355,15 +420,19 @@ export default class InsightFacade implements IInsightFacade {
             }
 
 
-            try {
-                if (Object.keys(query.OPTIONS).length > 0) {
-                    //parse Orders here
+
+            if (Object.keys(query.OPTIONS).length == 3) {
+                finalProduct = optionParser(allTheData, query.OPTIONS);
+                if (finalProduct == null) {
+                    reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
+                fulfill({ code: 200, body: finalProduct.valueOf() });
+
+                // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
+            } else {
+                reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
             }
-            catch (err) {
-                reject({ code: 400, body: { 'error': 'Nothing in OPTIONS' } });
-                throw err;
-            }
+
 
 
 
@@ -373,15 +442,37 @@ export default class InsightFacade implements IInsightFacade {
 
 
         });
-        function whereParser(where: any, filter: string) {
 
-            var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
-            var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
+        function whereParser(where: any, filter: string, currentData: any) {
+
+
+
+
 
             if (filter == 'AND' || filter == 'OR') {
+                if (filter == 'AND') {
+                    isAnd1 = true;
+                }
+                else if (filter == 'OR') {
+                    isOr1 = true;
+                }
+
+                if (logicCount > 0) {
+                    isAnd1 = false;
+                    isOr1 = false;
+
+                }
+                logicCount++;
+
+                if (where[filter].length == 0) {
+                    isValidKeys.push(false);
+                    return;
+                }
                 for (let subFilter of where[filter]) {
-                    for (let subSubfilter of where[filter][subFilter]) {
-                        whereParser(where[filter][subFilter], subSubfilter);
+
+                    for (let subSubfilter of Object.keys(subFilter)) {
+
+                        whereParser(subFilter, subSubfilter, currentData);
                     }
                 }
             }
@@ -395,35 +486,37 @@ export default class InsightFacade implements IInsightFacade {
 
 
 
-                for (let key in mcompKeys) {
+                for (let key of mcompKeys) {
                     if (mcompLibrary.includes(key)) {
                         if (typeof where[filter][key] != 'number') {
                             isValidKeys.push(false);
                             return;
                         }
                         else {
-                            for (let obj of Object.keys(currentData)) {
-                                for (let val of Object.keys(currentData[obj])) {
-                                    if (val == key) {
-                                        if (filter == 'LT') {
-                                            if (currentData[obj][val] < where[filter][key]) {
-                                                mcompFiltered.push(currentData[obj])
+                            for (let obj of currentData) {
+                                for (let subObj of obj) {
+                                    for (let val of Object.keys(subObj)) {
+                                        if (val == key) {
+                                            if (filter == 'LT') {
+                                                if (subObj[val] < where[filter][key]) {
+                                                    mcompFiltered.push(obj)
+                                                }
                                             }
-                                        }
-                                        if (filter == 'GT') {
-                                            if (currentData[obj][val] > where[filter][key]) {
-                                                mcompFiltered.push(currentData[obj])
+                                            if (filter == 'GT') {
+                                                if (subObj[val] > where[filter][key]) {
+                                                    mcompFiltered.push(obj)
+                                                }
                                             }
-                                        }
-                                        if (filter == 'EQ') {
-                                            if (currentData[obj][val] == where[filter][key]) {
-                                                mcompFiltered.push(currentData[obj])
+                                            if (filter == 'EQ') {
+                                                if (subObj[val] == where[filter][key]) {
+                                                    mcompFiltered.push(obj)
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
 
                     }
@@ -444,21 +537,34 @@ export default class InsightFacade implements IInsightFacade {
                     return;
                 }
 
-                for (let key in isKey) {
+                for (let key of isKey) {
                     if (stringLibrary.includes(key)) {
                         if (typeof where[filter][key] != 'string') {
                             isValidKeys.push(false);
                             return;
                         }
                         else {
-                            for (let obj of Object.keys(currentData)) {
-                                for (let val of Object.keys(currentData[obj])) {
-                                    if (val == key) {
-                                        scompFiltered.push(currentData[obj]);
+                            for (let obj of currentData) {
+                                for (let subObj of obj)
+                                    for (let val of Object.keys(subObj)) {
+                                        if (val == key) {
+                                            var hello = subObj[val];
+                                            var hello2 = where[filter][key];
+                                            if (subObj[val] == where[filter][key]) {
+                                                scompFiltered.push(obj);
+                                            }
+                                            else {
+                                                isValidKeys.push(false);
+                                                return;
+                                            }
+
+                                        }
                                     }
-                                }
                             }
                         }
+                    } else {
+                        isValidKeys.push(false);
+                        return;
                     }
                 }
             }
@@ -467,17 +573,138 @@ export default class InsightFacade implements IInsightFacade {
             else if (filter == 'NOT') {
                 whereFilters.push(filter);
                 let itemToFilter = JSON.parse(JSON.stringify(where[filter]));
-                negToFilter.push(itemToFilter);
+                negFiltered.push(itemToFilter);
+            }
+
+            if(isOr1){
+                    allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
+                }
+
+        }
+
+
+        // MCOMPFILTERED FOR NOW BECAUSE WE WANT TO MAKE SURE THE FUNCTIONALITY WORKS.
+        // MCOMPFILTER = TOTALFILTERED AFTER
+
+        function optionParser(mcompFiltered: any[], optionBody: any): any {
+            if (!("COLUMNS" in optionBody) || !("ORDER" in optionBody) || !("FORM" in optionBody)) {
+                return null;
+            }
+
+
+            // dealing with columns
+            let colVal: any = [];
+            for (let val of optionBody["COLUMNS"]) {
+                colVal.push(val);
             }
 
 
 
 
+            //check if order is valid 
+            if (typeof optionBody["ORDER"] != 'string' && !allLibrary.includes(optionBody["ORDER"])) {
+
+                return null;
+            }
+            else {
+                var s = optionBody["ORDER"];
+                if (!colVal.includes(optionBody["ORDER"])) {
+                    return null;
+                }
+                else {
+                    orderVal = optionBody["ORDER"];
+                }
+            }
+
+
+            var colData = new Array();
+
+            for (let key of mcompFiltered) {
+                var eachData = new Array();
+                for (let subKey of key) {
+
+                    for (let subSubkey of Object.keys(subKey)) {
+
+                        for (let val of colVal) {
+                            if (val == subSubkey) {
+                                eachData.push({ [val]: subKey[subSubkey] })
+                            }
+                        }
+
+                    }
+
+                }
+                if (eachData.length > 0) {
+                    let parsed = JSON.parse(JSON.stringify(eachData));
+                    colData.push(parsed);
+                }
+            }
+
+            var c = colData;
+            var processed = new Array();
+
+
+            // PROCESSED THE RESULT TABLE:
+            for (let outerArray of colData) {
+                var buffer = {};
+                for (let i = 0; i < outerArray.length; i++) {
+                    buffer = joinJSON(buffer, outerArray[i]);
+                }
+                processed.push(buffer);
+
+            }
+            console.log(processed);
+
+            function joinJSON(o: any, ob: any): any {
+                for (var z in ob) {
+                    o[z] = ob[z];
+                }
+                return o;
+            }
+            // END OF PROCESS TABLE
+
+
+            // START OF ORDERING //
+            //sort with number
+            if (mcompLibrary.includes(orderVal)) {
+                processed.sort(function (a: any, b: any) {
+
+                    return a[orderVal] - b[orderVal];
+                })
+                // console.log(processed);
+            }
+            //sort alphabetically
+            else if (stringLibrary.includes(orderVal)) {
+                processed.sort(function (a: any, b: any) {
+                    var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
+                    var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+
+                    return 0;
+                })
+                // console.log(processed);
+            }
+            else return null;
+            // END OF ORDERING
+
+            var result = {
+                render: optionBody["FORM"],
+                result: processed
+            };
+            return result;
         }
+
+
+
+
+
+
     }
-
-
-
 
 
     // helper function to parse WHERE in query

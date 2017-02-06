@@ -13,11 +13,11 @@ describe("QuerySpec", function () {
         insF = new InsightFacade();
     })
 
-    it("Testing for Basic Parsing to output correct format", () => {
+    it("Testing for Basic Parsing to output (GT) correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "GT": {
-                    "courses_avg": 86
+                    "courses_avg": 1
                 }
             },
             "OPTIONS": {
@@ -34,7 +34,7 @@ describe("QuerySpec", function () {
             body: {
                 render: 'TABLE',
                 result:
-                [{ courses_dept: 'aanb', courses_avg: 87.83 },
+                [{ courses_dept: 'aanb', courses_avg: 86.83 },
                 { courses_dept: 'aanb', courses_avg: 87.83 }]
             }
         }
@@ -42,8 +42,87 @@ describe("QuerySpec", function () {
 
         return insF.performQuery(queryR).then(function (value: any) {
             Log.test("Value: " + value);
-            expect(value).to.equal(queryROutput);
+            expect(value).to.deep.equal(queryROutput);
 
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    })
+
+    it("Testing IS with invalid key value correct format", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "IS": {
+                    "courses_dept": "hi"
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 86.83 },
+                { courses_dept: 'aanb', courses_avg: 87.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { error: 'invalid keys for logic comparactor' } })
+        })
+    })
+
+    it("Testing for LOGIC ORDER (AND)", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "OR": [
+                    {"IS": {
+                        "courses_dept": "aanb"
+                    }},
+                    {"GT": {
+                        "courses_avg": 87
+                 }}]
+
+                
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                [{ courses_dept: 'aanb', courses_avg: 86.83 },
+                { courses_dept: 'aanb', courses_avg: 87.83 }]
+            }
+        }
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect(value).to.deep.equal(queryROutput)
         }).catch(function (err: any) {
             console.log(err);
             Log.test(err);
