@@ -11,8 +11,8 @@ var JSZip = require("jszip");
 var fs = require("fs");
 
 
-if (!fs.existsSync("./cachedDatasets")) {
-    fs.mkdirSync('./cachedDatasets/');
+if (!fs.existsSync("./src/cachedDatasets/")) {
+    fs.mkdirSync('./src/cachedDatasets/');
 }
 
 var dataPath = './cachedDatasets/';
