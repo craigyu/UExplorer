@@ -62,6 +62,7 @@ export default class InsightFacade implements IInsightFacade {
                                     try {
                                         var parsed = JSON.parse(json);
                                         if (parsed.hasOwnProperty('result')) {
+                                            let objValues:any[] = [];
                                             for (let obj of parsed.result) {
                                                 let subObjValues: any[] = [];
                                                 if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
@@ -113,11 +114,10 @@ export default class InsightFacade implements IInsightFacade {
 
 
                                                 }
-                                                return subObjValues;
+                                                objValues.push(subObjValues);
                                             }
-
+                                            return objValues
                                         }
-
                                     }
                                     catch (err) {
                                         //console.log(err);
@@ -127,25 +127,16 @@ export default class InsightFacade implements IInsightFacade {
 
                                     }
 
-                                })
+                                });
                             processList.push(promise)
                         });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
-                            var counter = 0;
                             var combine = [];
                             for (let i of arrayOfStrings) {
-                                if (i == undefined) {
-                                    counter++
-                                } else {
+                                if(typeof i != "undefined") {
                                     combine.push(i);
                                 }
                             }
-                            if (counter == arrayOfStrings.length) {
-                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
-                            }
-
-
-
 
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
                             fulfill({ code: codeID, body: {} });
