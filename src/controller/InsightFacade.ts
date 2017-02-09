@@ -318,7 +318,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
 
 
-
+                            console.log(combine.length);
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
                             fulfill({ code: 204, body: {} });
                         })
