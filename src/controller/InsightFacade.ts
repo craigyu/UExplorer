@@ -16,7 +16,7 @@ if (!fs.existsSync("./cachedDatasets/")) {
 }
 
 var dataPath = './cachedDatasets/';
-var whereFilters = new Array();
+
 var mcompFiltered = new Array();
 var scompFiltered = new Array();
 var negFiltered = new Array();
@@ -24,9 +24,7 @@ var allTheData = new Array();
 var logicArr = new Array();
 var isValidKeys: boolean[] = [];
 var orderVal: string;
-var isAnd1: boolean = false;
 var logicCount = -1;
-var isOr1: boolean = false;
 var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
 var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
 var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_dept', 'courses_id',
@@ -400,8 +398,6 @@ export default class InsightFacade implements IInsightFacade {
                 scompFiltered = [];
                 negFiltered = [];
                 allTheData = [];
-                isAnd1 = false;
-                isOr1 = false;
                 logicCount = -1;
                 logicArr = []
 
@@ -568,16 +564,15 @@ export default class InsightFacade implements IInsightFacade {
                             for (let obj of currentData) {
                                 for (let subObj of obj)
                                     for (let val of Object.keys(subObj)) {
-                                        if (val == key) {
-                                            var hello = subObj[val];
-                                            var hello2 = where[filter][key];
-                                            if (subObj[val] == where[filter][key]) {
+                                        if (key == val) {
+                                            
+                                            if (subObj[val].includes(where[filter][key])) {
                                                 scompFiltered.push(obj);
                                             }
-                                            else {
-                                                isValidKeys.push(false);
-                                                return;
-                                            }
+                                            // else {
+                                            //     isValidKeys.push(false);
+                                            //     return;
+                                            // }
 
                                         }
                                     }
