@@ -673,7 +673,7 @@ export default class InsightFacade implements IInsightFacade {
         // MCOMPFILTERED FOR NOW BECAUSE WE WANT TO MAKE SURE THE FUNCTIONALITY WORKS.
         // MCOMPFILTER = TOTALFILTERED AFTER
 
-        function optionParser(mcompFiltered: any[], optionBody: any): any {
+        function optionParser(allTheData: any[], optionBody: any): any {
             if (!("COLUMNS" in optionBody) || !("ORDER" in optionBody) || !("FORM" in optionBody)) {
                 return null;
             }
