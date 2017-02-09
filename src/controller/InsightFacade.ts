@@ -179,7 +179,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                            fulfill({ code: 204, body: {} });
+                            fulfill({ code: 201, body: {} });
                         })
                             .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
