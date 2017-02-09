@@ -35,12 +35,10 @@ describe("AddSpec", function () {
         let data = fs.readFileSync("courses.zip", "base64");
 
         insF.addDataset("courses", data).then(function () {
-
-        }).then(() => done(), done);
-
+            done();
+        })
     });
 
-    it("Test Print", function () {
-        console.log("Hello");
-    })
-})
+
+
+});
