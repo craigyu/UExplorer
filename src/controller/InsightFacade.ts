@@ -203,7 +203,7 @@ export default class InsightFacade implements IInsightFacade {
                             let promise = file.async("string").then(function (json: any) {
                                 try {
                                     var parsed = JSON.parse(json);
-                                    if (Object.keys(parsed.result).length != 0) {
+                                    if (Object.keys(parsed.result).length != -1) {
 
                                         var objValues: any[] = [];
                                         for (let obj of parsed.result) {

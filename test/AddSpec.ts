@@ -7,28 +7,16 @@ import InsightFacade from "../src/controller/InsightFacade";
 
 describe("AddSpec", function () {
     let fs = require("fs");
-    let twocourses: any;
-    let test3files: any;
 
     let insF: InsightFacade = null;
 
 
-    // files needed encoded in base 64
-    fs.readFile("twocourses.zip", "base64", (err:any ,data:any) => {
-        if (err) {
-            console.log(err);
-        } else {
-            twocourses = data;
-        }
-    })
 
-    fs.readFile("test3files.zip", "base64",  (err: any, data: any) => {
-        if (err) {
-            console.log(err);
-        } else {
-            test3files = data;
-        }
-    })
+
+    // files needed encoded in base 64
+
+
+
 
     // files encoding ends here
 
@@ -37,48 +25,15 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-
-    it("Testing Load Zip base64 2 file in zip", function () {
-        return insF.addDataset("courses", twocourses)
-            .then(function (value: any) {
-                expect(value).to.deep.equal({ code: 204, body: {} });
-            })
-            .catch(function (err: any) {
-                Log.test(err);
-                console.log(err);
-                expect.fail();
-            })
-
-    })
-
-    it("Testing Load Zip with course deletion", function () {
-        if (fs.existsSync("./cachedDatasets/courses")) {
-            fs.unlinkSync("./cachedDatasets/courses")
-        }
-        return insF.addDataset("courses", twocourses)
-            .then(function (value: any) {
-                expect(value).to.deep.equal({ code: 204, body: {} });
-            })
-            .catch(function (err: any) {
-                Log.test(err);
-                console.log(err);
-                expect.fail();
-            })
-
-    })
-
-    it("Testing Load Zip with More Files", function () {
-        return insF.addDataset("courses_2", test3files)
-            .then(function (value: any) {
-                expect(value).to.deep.equal({ code: 204, body: {} });
-            })
-            .catch(function (err: any) {
-                Log.test(err);
-                console.log(err);
-                expect.fail();
-            })
-
+    it.only("Test", function (done) {
+        var hello = fs.readFileSync("courses.zip", "base64");
+        insF.addDataset("courses",hello)
+        done();
     })
 
 
+
+    it("Test Print", function () {
+        console.log("Hello");
+    })
 })
