@@ -36,8 +36,6 @@ var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'cours
 
 
 
-
-
 export default class InsightFacade implements IInsightFacade {
 
     constructor() {
