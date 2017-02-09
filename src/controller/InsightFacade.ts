@@ -60,87 +60,91 @@ export default class InsightFacade implements IInsightFacade {
 
                         files.remove("__MACOSX");
                         files.forEach(function (relativePath: any, file: any) {
-                            console.log(processList.length);
+                            //console.log(processList.length);
+                            //console.log(relativePath);
+                            if (relativePath != "courses/") {
+                                var promise = file.async("string").then(function (json: any) {
+                                    try {
 
-                            let promise = file.async("string").then(function (json: any) {
-                                try {
-                                    var parsed = JSON.parse(json);
-                                    if (Object.keys(parsed.result).length != 0) {
+                                        var parsed = JSON.parse(json);
+                                        if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
 
-                                        var objValues: any[] = [];
-                                        for (let obj of parsed.result) {
-                                            let subObjValues: any[] = [];
-                                            if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                if (obj.hasOwnProperty("Subject")) {
-                                                    let dept = id + "_dept";
-                                                    let deptVal = obj["Subject"];
-                                                    subObjValues.push({ [dept]: deptVal })
-                                                }
-                                                if (obj.hasOwnProperty("Course")) {
-                                                    let nameId = id + "_id";
-                                                    let nameIdVal = obj["Course"];
-                                                    subObjValues.push({ [nameId]: nameIdVal });
-                                                }
-                                                if (obj.hasOwnProperty("Avg")) {
-                                                    let avg = id + "_avg";
-                                                    let avgVal = obj["Avg"];
-                                                    subObjValues.push({ [avg]: avgVal });
-                                                }
-                                                if (obj.hasOwnProperty("Professor")) {
-                                                    let instr = id + "_instructor";
-                                                    let instrVal = obj["Professor"];
-                                                    subObjValues.push({ [instr]: instrVal });
-                                                }
-                                                if (obj.hasOwnProperty("Title")) {
-                                                    let title = id + "_title";
-                                                    let titleVal = obj["Title"];
-                                                    subObjValues.push({ [title]: titleVal });
-                                                }
-                                                if (obj.hasOwnProperty("Pass")) {
-                                                    let pass = id + "_pass";
-                                                    let passVal = obj["Pass"];
-                                                    subObjValues.push({ [pass]: passVal });
-                                                }
-                                                if (obj.hasOwnProperty("Fail")) {
-                                                    let fail = id + "_fail";
-                                                    let failVal = obj["Fail"];
-                                                    subObjValues.push({ [fail]: failVal });
-                                                }
-                                                if (obj.hasOwnProperty("Audit")) {
-                                                    let audit = id + "_audit";
-                                                    let auditVal = obj["Audit"];
-                                                    subObjValues.push({ [audit]: auditVal });
-                                                }
-                                                if (obj.hasOwnProperty("id")) {
-                                                    let uuid = id + "_uuid";
-                                                    let uuidVal = obj["id"];
-                                                    subObjValues.push({ [uuid]: uuidVal });
-                                                }
+                                            var objValues: any[] = [];
+                                            for (let obj of parsed.result) {
+                                                let subObjValues: any[] = [];
+                                                if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
+                                                    if (obj.hasOwnProperty("Subject")) {
+                                                        let dept = id + "_dept";
+                                                        let deptVal = obj["Subject"];
+                                                        subObjValues.push({ [dept]: deptVal })
+                                                    }
+                                                    if (obj.hasOwnProperty("Course")) {
+                                                        let nameId = id + "_id";
+                                                        let nameIdVal = obj["Course"];
+                                                        subObjValues.push({ [nameId]: nameIdVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Avg")) {
+                                                        let avg = id + "_avg";
+                                                        let avgVal = obj["Avg"];
+                                                        subObjValues.push({ [avg]: avgVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Professor")) {
+                                                        let instr = id + "_instructor";
+                                                        let instrVal = obj["Professor"];
+                                                        subObjValues.push({ [instr]: instrVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Title")) {
+                                                        let title = id + "_title";
+                                                        let titleVal = obj["Title"];
+                                                        subObjValues.push({ [title]: titleVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Pass")) {
+                                                        let pass = id + "_pass";
+                                                        let passVal = obj["Pass"];
+                                                        subObjValues.push({ [pass]: passVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Fail")) {
+                                                        let fail = id + "_fail";
+                                                        let failVal = obj["Fail"];
+                                                        subObjValues.push({ [fail]: failVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Audit")) {
+                                                        let audit = id + "_audit";
+                                                        let auditVal = obj["Audit"];
+                                                        subObjValues.push({ [audit]: auditVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("id")) {
+                                                        let uuid = id + "_uuid";
+                                                        let uuidVal = obj["id"];
+                                                        subObjValues.push({ [uuid]: uuidVal });
+                                                    }
 
+
+                                                }
+                                                objValues.push(subObjValues);
 
                                             }
-                                            objValues.push(subObjValues);
+
 
                                         }
 
+                                    }
+                                    catch (err) {
+                                        //console.log(err);
+
+                                        return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
+                                        //throw err;
 
                                     }
 
 
-                                }
 
-                                catch (err) {
-
-                                    reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
-                                    throw err;
-
-                                }
-
-
-                                return objValues;
-                            });
-
-                            processList.push(promise);
+                                    return objValues;
+                                });
+                            }
+                            if (typeof promise != 'undefined') {
+                                processList.push(promise);
+                            }
                         })
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             var counter = 0;
@@ -195,90 +199,94 @@ export default class InsightFacade implements IInsightFacade {
                     .then(function (files: any) {
                         var processList: Promise<any>[] = [];
 
-
+                        
                         files.remove("__MACOSX");
                         files.forEach(function (relativePath: any, file: any) {
-                            console.log(processList.length);
+                            //console.log(processList.length);
+                            //console.log(relativePath);
+                            if (relativePath != "courses/") {
+                                var promise = file.async("string").then(function (json: any) {
+                                    try {
 
-                            let promise = file.async("string").then(function (json: any) {
-                                try {
-                                    var parsed = JSON.parse(json);
-                                    if (Object.keys(parsed.result).length != -1) {
+                                        var parsed = JSON.parse(json);
+                                        if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
 
-                                        var objValues: any[] = [];
-                                        for (let obj of parsed.result) {
-                                            let subObjValues: any[] = [];
-                                            if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                if (obj.hasOwnProperty("Subject")) {
-                                                    let dept = id + "_dept";
-                                                    let deptVal = obj["Subject"];
-                                                    subObjValues.push({ [dept]: deptVal })
-                                                }
-                                                if (obj.hasOwnProperty("Course")) {
-                                                    let nameId = id + "_id";
-                                                    let nameIdVal = obj["Course"];
-                                                    subObjValues.push({ [nameId]: nameIdVal });
-                                                }
-                                                if (obj.hasOwnProperty("Avg")) {
-                                                    let avg = id + "_avg";
-                                                    let avgVal = obj["Avg"];
-                                                    subObjValues.push({ [avg]: avgVal });
-                                                }
-                                                if (obj.hasOwnProperty("Professor")) {
-                                                    let instr = id + "_instructor";
-                                                    let instrVal = obj["Professor"];
-                                                    subObjValues.push({ [instr]: instrVal });
-                                                }
-                                                if (obj.hasOwnProperty("Title")) {
-                                                    let title = id + "_title";
-                                                    let titleVal = obj["Title"];
-                                                    subObjValues.push({ [title]: titleVal });
-                                                }
-                                                if (obj.hasOwnProperty("Pass")) {
-                                                    let pass = id + "_pass";
-                                                    let passVal = obj["Pass"];
-                                                    subObjValues.push({ [pass]: passVal });
-                                                }
-                                                if (obj.hasOwnProperty("Fail")) {
-                                                    let fail = id + "_fail";
-                                                    let failVal = obj["Fail"];
-                                                    subObjValues.push({ [fail]: failVal });
-                                                }
-                                                if (obj.hasOwnProperty("Audit")) {
-                                                    let audit = id + "_audit";
-                                                    let auditVal = obj["Audit"];
-                                                    subObjValues.push({ [audit]: auditVal });
-                                                }
-                                                if (obj.hasOwnProperty("id")) {
-                                                    let uuid = id + "_uuid";
-                                                    let uuidVal = obj["id"];
-                                                    subObjValues.push({ [uuid]: uuidVal });
-                                                }
+                                            var objValues: any[] = [];
+                                            for (let obj of parsed.result) {
+                                                let subObjValues: any[] = [];
+                                                if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
+                                                    if (obj.hasOwnProperty("Subject")) {
+                                                        let dept = id + "_dept";
+                                                        let deptVal = obj["Subject"];
+                                                        subObjValues.push({ [dept]: deptVal })
+                                                    }
+                                                    if (obj.hasOwnProperty("Course")) {
+                                                        let nameId = id + "_id";
+                                                        let nameIdVal = obj["Course"];
+                                                        subObjValues.push({ [nameId]: nameIdVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Avg")) {
+                                                        let avg = id + "_avg";
+                                                        let avgVal = obj["Avg"];
+                                                        subObjValues.push({ [avg]: avgVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Professor")) {
+                                                        let instr = id + "_instructor";
+                                                        let instrVal = obj["Professor"];
+                                                        subObjValues.push({ [instr]: instrVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Title")) {
+                                                        let title = id + "_title";
+                                                        let titleVal = obj["Title"];
+                                                        subObjValues.push({ [title]: titleVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Pass")) {
+                                                        let pass = id + "_pass";
+                                                        let passVal = obj["Pass"];
+                                                        subObjValues.push({ [pass]: passVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Fail")) {
+                                                        let fail = id + "_fail";
+                                                        let failVal = obj["Fail"];
+                                                        subObjValues.push({ [fail]: failVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("Audit")) {
+                                                        let audit = id + "_audit";
+                                                        let auditVal = obj["Audit"];
+                                                        subObjValues.push({ [audit]: auditVal });
+                                                    }
+                                                    if (obj.hasOwnProperty("id")) {
+                                                        let uuid = id + "_uuid";
+                                                        let uuidVal = obj["id"];
+                                                        subObjValues.push({ [uuid]: uuidVal });
+                                                    }
 
+
+                                                }
+                                                objValues.push(subObjValues);
 
                                             }
-                                            objValues.push(subObjValues);
+
 
                                         }
 
+                                    }
+                                    catch (err) {
+                                        //console.log(err);
+
+                                        return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
+                                        //throw err;
 
                                     }
 
 
-                                }
 
-                                catch (err) {
-
-                                    reject({ code: 400, body: { 'error': 'files include invalid JSON(s)' } });
-                                    throw err;
-
-                                }
-
-
-                                return objValues;
-                            });
-
-                            processList.push(promise);
+                                    return objValues;
+                                });
+                            }
+                            if (typeof promise != 'undefined') {
+                                processList.push(promise);
+                            }
                         })
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             var counter = 0;
@@ -591,18 +599,18 @@ export default class InsightFacade implements IInsightFacade {
 
             else if (filter == 'NOT') {
                 let notKeys = Object.keys(where[filter]);
-                if(notKeys.length != 1){
+                if (notKeys.length != 1) {
                     isValidKeys.push(false);
                     return;
                 }
-                
+
                 for (let n of notKeys) {
                     for (let subFilter of where[filter]) {
                         whereParser(where[filter], n, currentData);
-                        
-                        for(let obj of currentData){
+
+                        for (let obj of currentData) {
                             let subnegFiltered = new Array();
-                            if(!mcompFiltered.includes(obj) && !scompFiltered.includes(obj)){
+                            if (!mcompFiltered.includes(obj) && !scompFiltered.includes(obj)) {
                                 subnegFiltered.push(obj);
                             }
                             negFiltered.concat(subnegFiltered);
