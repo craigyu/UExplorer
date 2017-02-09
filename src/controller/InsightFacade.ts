@@ -24,6 +24,7 @@ var scompFiltered = new Array();
 var negFiltered = new Array();
 var allTheData = new Array();
 var logicArr = new Array();
+var missingIDs = new Array();
 var isValidKeys: boolean[] = [];
 var orderVal: string;
 var logicCount = -1;
@@ -57,7 +58,7 @@ export default class InsightFacade implements IInsightFacade {
                     .then(function (files: any) {
                         var processList: Promise<any>[] = [];
 
-                        
+
                         files.remove("__MACOSX");
                         files.folder(id).forEach(function (relativePath: any, file: any) {
                                 var promise = file.async("string").then(function (json: any) {
@@ -181,24 +182,6 @@ export default class InsightFacade implements IInsightFacade {
             try { JSON.parse(JSON.stringify(query)) }
             catch (err) { reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } }); }
 
-            // check if the dataset exists, !!!this is only of D1!!!
-            if (!fs.existsSync(dataPath + 'courses')) {
-                reject({ code: 424, body: { 'missing': ['courses'] } });
-            }
-
-
-            // retrive cached data
-            let id = 'courses';
-            var currentData;
-
-            var thisData = fs.readFileSync(dataPath + id, "utf8");
-            try {
-                currentData = JSON.parse(thisData);
-            }
-            catch (err) {
-                reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
-                throw err;
-            }
 
             //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
@@ -221,7 +204,10 @@ export default class InsightFacade implements IInsightFacade {
 
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
-                        whereParser(query.WHERE, filter, currentData);
+                        whereParser(query.WHERE, filter);
+                        if (missingIDs.length > 0) {
+                            reject({ code: 424, body: { 'missing': missingIDs } });
+                        }
                     }
 
                     if (isValidKeys.every(isValid) == false) {
@@ -260,7 +246,7 @@ export default class InsightFacade implements IInsightFacade {
 
         });
 
-        function whereParser(where: any, filter: string, currentData: any) {
+        function whereParser(where: any, filter: string) {
 
 
             if (filter == 'AND' || filter == 'OR') {
@@ -271,11 +257,12 @@ export default class InsightFacade implements IInsightFacade {
                     isValidKeys.push(false);
                     return;
                 }
+
                 for (let subFilter of where[filter]) {
 
                     for (let subSubfilter of Object.keys(subFilter)) {
 
-                        whereParser(subFilter, subSubfilter, currentData);
+                        whereParser(subFilter, subSubfilter);
                         while (logicCount > 0) {
                             let thisLogic = logicArr[logicCount];
                             if (thisLogic == 'OR') {
@@ -331,10 +318,27 @@ export default class InsightFacade implements IInsightFacade {
                     isValidKeys.push(false);
                     return;
                 }
-
-
-
+                let currentData;
                 for (let key of mcompKeys) {
+
+                    //check to see if missing data
+                    let indexNum = key.indexOf('_');
+                    let theId = key.substring(0, indexNum)
+                    if (!fs.existsSync(dataPath + theId)) {
+                        missingIDs.push(theId);
+                        return;
+                    }
+                    else {
+                        let thisData = fs.readFileSync(dataPath + theId, "utf8");
+                        try {
+                            currentData = JSON.parse(thisData);
+                        }
+                        catch (err) {
+                            throw err;
+                        }
+
+                    }
+
                     if (mcompLibrary.includes(key)) {
                         if (typeof where[filter][key] != 'number') {
                             isValidKeys.push(false);
@@ -380,13 +384,13 @@ export default class InsightFacade implements IInsightFacade {
 
             else if (filter == 'IS') {
                 let isKey = Object.keys(where[filter]);
+                let currentData;
                 if (Object.keys(where[filter]).length != 1) {
                     isValidKeys.push(false);
                     return;
                 }
 
                 for (let key of isKey) {
-
                     //check to see if missing data
                     let indexNum = key.indexOf('_');
                     let theId = key.substring(0, indexNum)
@@ -405,7 +409,6 @@ export default class InsightFacade implements IInsightFacade {
                         }
 
                     }
-
 
                     if (stringLibrary.includes(key)) {
                         if (typeof where[filter][key] != 'string') {
@@ -437,7 +440,6 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
 
-
             //     else if (filter == 'NOT') {
             //         let notKeys = Object.keys(where[filter]);
             //         if (notKeys.length != 1) {
@@ -459,7 +461,6 @@ export default class InsightFacade implements IInsightFacade {
             //             }
             //         }
             //     }
-
 
             if (logicCount == 0) {
                 if (logicArr[logicCount] == 'OR') {
@@ -543,7 +544,7 @@ export default class InsightFacade implements IInsightFacade {
 
             var colData = new Array();
 
-            for (let key of mcompFiltered) {
+            for (let key of allTheData) {
                 var eachData = new Array();
                 for (let subKey of key) {
 
