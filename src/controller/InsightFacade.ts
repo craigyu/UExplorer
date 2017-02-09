@@ -43,155 +43,13 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             var options = { base64: true };
             if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
-            //console.log("hiiiii");
-            // id contains given id
             var cached = new JSZip();
+            var codeID = 204;
 
             if (fs.existsSync(dataPath + id)) {
-
                 fs.unlinkSync(dataPath + id);
-
-                cached.loadAsync(content, options)
-                    .then(function (files: any) {
-                        var processList: Promise<any>[] = [];
-
-
-                        files.remove("__MACOSX");
-                        files.forEach(function (relativePath: any, file: any) {
-                            //console.log(processList.length);
-                            //console.log(relativePath);
-                            if (relativePath != "courses/") {
-                                var promise = file.async("string").then(function (json: any) {
-                                    try {
-
-                                        var parsed = JSON.parse(json);
-                                        if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
-
-                                            var objValues: any[] = [];
-                                            for (let obj of parsed.result) {
-                                                let subObjValues: any[] = [];
-                                                if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                    if (obj.hasOwnProperty("Subject")) {
-                                                        let dept = id + "_dept";
-                                                        let deptVal = obj["Subject"];
-                                                        subObjValues.push({ [dept]: deptVal })
-                                                    }
-                                                    if (obj.hasOwnProperty("Course")) {
-                                                        let nameId = id + "_id";
-                                                        let nameIdVal = obj["Course"];
-                                                        subObjValues.push({ [nameId]: nameIdVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Avg")) {
-                                                        let avg = id + "_avg";
-                                                        let avgVal = obj["Avg"];
-                                                        subObjValues.push({ [avg]: avgVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Professor")) {
-                                                        let instr = id + "_instructor";
-                                                        let instrVal = obj["Professor"];
-                                                        subObjValues.push({ [instr]: instrVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Title")) {
-                                                        let title = id + "_title";
-                                                        let titleVal = obj["Title"];
-                                                        subObjValues.push({ [title]: titleVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Pass")) {
-                                                        let pass = id + "_pass";
-                                                        let passVal = obj["Pass"];
-                                                        subObjValues.push({ [pass]: passVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Fail")) {
-                                                        let fail = id + "_fail";
-                                                        let failVal = obj["Fail"];
-                                                        subObjValues.push({ [fail]: failVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Audit")) {
-                                                        let audit = id + "_audit";
-                                                        let auditVal = obj["Audit"];
-                                                        subObjValues.push({ [audit]: auditVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("id")) {
-                                                        let uuid = id + "_uuid";
-                                                        let uuidVal = obj["id"];
-                                                        subObjValues.push({ [uuid]: uuidVal });
-                                                    }
-
-
-                                                }
-                                                objValues.push(subObjValues);
-
-                                            }
-
-
-                                        }
-
-                                    }
-                                    catch (err) {
-                                        //console.log(err);
-
-                                        return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
-                                        //throw err;
-
-                                    }
-
-
-
-                                    return objValues;
-                                });
-                            }
-                            if (typeof promise != 'undefined') {
-                                processList.push(promise);
-                            }
-                        })
-                        Promise.all(processList).then(function (arrayOfStrings: any) {
-                            var counter = 0;
-                            for (let i of arrayOfStrings) {
-                                if (i == undefined) {
-                                    counter++
-                                }
-                            }
-                            if (counter == arrayOfStrings.length) {
-                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
-                            }
-
-                            var combine = new Array();
-                            if (arrayOfStrings.length > 2) {
-                                for (let i of arrayOfStrings) {
-                                    for (let j of i) {
-                                        if (typeof j != "undefined") {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (let i of arrayOfStrings) {
-                                    if (typeof i != "undefined") {
-                                        for (let j of i) {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
-                            }
-
-
-
-                            fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                            fulfill({ code: 201, body: {} });
-                        })
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                            })
-                    })
-                    .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                    })
-
-
+                codeID = 201;
             }
-
-
-            else {
 
                 cached.loadAsync(content, options)
                     .then(function (files: any) {
@@ -199,16 +57,11 @@ export default class InsightFacade implements IInsightFacade {
 
                         
                         files.remove("__MACOSX");
-                        files.forEach(function (relativePath: any, file: any) {
-                            //console.log(processList.length);
-                            //console.log(relativePath);
-                            if (relativePath != "courses/") {
+                        files.folder(id).forEach(function (relativePath: any, file: any) {
                                 var promise = file.async("string").then(function (json: any) {
                                     try {
-
                                         var parsed = JSON.parse(json);
-                                        if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
-                                            var objValues: any[] = [];
+                                        if (parsed.hasOwnProperty('result')) {
                                             for (let obj of parsed.result) {
                                                 let subObjValues: any[] = [];
                                                 if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
@@ -260,10 +113,8 @@ export default class InsightFacade implements IInsightFacade {
 
 
                                                 }
-                                                objValues.push(subObjValues);
-
+                                                return subObjValues;
                                             }
-
 
                                         }
 
@@ -271,25 +122,22 @@ export default class InsightFacade implements IInsightFacade {
                                     catch (err) {
                                         //console.log(err);
 
-                                        return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
+                                        return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
                                         //throw err;
 
                                     }
 
-
-
-                                    return objValues;
-                                });
-                            }
-                            if (typeof promise != 'undefined') {
-                                processList.push(promise);
-                            }
-                        })
+                                })
+                            processList.push(promise)
+                        });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             var counter = 0;
+                            var combine = [];
                             for (let i of arrayOfStrings) {
                                 if (i == undefined) {
                                     counter++
+                                } else {
+                                    combine.push(i);
                                 }
                             }
                             if (counter == arrayOfStrings.length) {
@@ -297,29 +145,10 @@ export default class InsightFacade implements IInsightFacade {
                             }
 
 
-                            var combine = new Array();
-                            if (arrayOfStrings.length > 2) {
-                                for (let i of arrayOfStrings) {
-                                    for (let j of i) {
-                                        if (typeof j != "undefined") {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (let i of arrayOfStrings) {
-                                    if (typeof i != "undefined") {
-                                        for (let j of i) {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
-                            }
-
 
 
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                            fulfill({ code: 204, body: {} });
+                            fulfill({ code: codeID, body: {} });
                         })
                             .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
@@ -329,11 +158,6 @@ export default class InsightFacade implements IInsightFacade {
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     })
 
-
-
-
-
-            }
 
         });
     }
