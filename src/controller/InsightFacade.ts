@@ -210,7 +210,6 @@ export default class InsightFacade implements IInsightFacade {
 
                                         var parsed = JSON.parse(json);
                                         if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
-
                                             var objValues: any[] = [];
                                             for (let obj of parsed.result) {
                                                 let subObjValues: any[] = [];
@@ -345,15 +344,9 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             if (fs.existsSync(dataPath + id)) {
                 // remove dataset associated with the id
-                fs.unlink(dataPath + id, function (err: any) {
-                    if (err) {
-                        reject({ code: 404, body: { 'error': err.toString() } });
-                    }
-                    else {
-                        fulfill({ code: 204, body: {} });
-                    }
-                })
-
+                fs.unlinkSync(dataPath + id) 
+                    
+                fulfill({ code: 204, body: {} });
             }
             else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
         });
