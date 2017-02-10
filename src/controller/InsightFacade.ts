@@ -136,8 +136,10 @@ export default class InsightFacade implements IInsightFacade {
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             var combine = [];
                             for (let i of arrayOfStrings) {
-                                if(typeof i != "undefined")
-                                    combine.push(i);
+                                if(i.length != 0) {
+                                    for (let j of i)
+                                    combine.push(j);
+                                }
                             }
 
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
