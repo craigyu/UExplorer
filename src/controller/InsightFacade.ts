@@ -62,10 +62,10 @@ export default class InsightFacade implements IInsightFacade {
                         files.remove("__MACOSX");
                         files.folder(id).forEach(function (relativePath: any, file: any) {
                                 var promise = file.async("string").then(function (json: any) {
+                                    let objValues: any[] = [];
                                     try {
                                         var parsed = JSON.parse(json);
                                         if (parsed.hasOwnProperty('result')) {
-                                            let objValues: any[] = [];
                                             for (let obj of parsed.result) {
                                                 let subObjValues: any[] = [];
                                                 if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
@@ -119,7 +119,6 @@ export default class InsightFacade implements IInsightFacade {
                                                 }
                                                 objValues.push(subObjValues);
                                             }
-                                            return objValues
                                         }
                                     }
                                     catch (err) {
@@ -129,8 +128,8 @@ export default class InsightFacade implements IInsightFacade {
                                         //throw err;
 
                                     }
-
-                                })
+                                    return objValues
+                                });
                             processList.push(promise)
                         });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
