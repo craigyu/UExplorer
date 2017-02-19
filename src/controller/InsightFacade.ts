@@ -68,7 +68,7 @@ export default class InsightFacade implements IInsightFacade {
                                         if (parsed.hasOwnProperty('result')) {
                                             for (let obj of parsed.result) {
                                                 let subObjValues: any[] = [];
-                                                if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
+                                                if   (Object.keys(obj) != null && Object.keys(obj) != undefined) {
                                                     if (obj.hasOwnProperty("Subject")) {
                                                         let dept = id + "_dept";
                                                         let deptVal = obj["Subject"];
@@ -124,22 +124,28 @@ export default class InsightFacade implements IInsightFacade {
                                     catch (err) {
                                         //console.log(err);
 
-                                        return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
+                                       return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
                                         //throw err;
 
                                     }
                                     return objValues
                                 });
-                            processList.push(promise)
+                            processList.push(promise);
                         });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             var combine = [];
+                            let counter = 0;
                             for (let i of arrayOfStrings) {
                                 if(i.length != 0) {
                                     for (let j of i)
                                     combine.push(j);
+                                } else {
+                                    counter++;
                                 }
                             }
+
+                            if(counter == arrayOfStrings.length)
+                                reject({ code: 400, body: { 'error': "No useful data" } });
 
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
                             fulfill({ code: codeID, body: {} });

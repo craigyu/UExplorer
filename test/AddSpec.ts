@@ -25,17 +25,26 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    // it.only("Test", function (done) {
-    //     var hello = fs.readFileSync("courses.zip", "base64");
-    //     insF.addDataset("courses", hello);
-    // })
-
-    it.only("Testing Load Zip base64 more than 1 file in zip", function (done) {
+    it.only("Testing Load Zip base64 more than 1 file in zip", function () {
         let fs = require("fs");
         let data = fs.readFileSync("courses.zip", "base64");
 
-        insF.addDataset("courses", data).then(function () {
-            done();
+        return insF.addDataset("courses", data).then(function (value:any) {
+            expect(value).to.deep.equal({ code: 201, body: {} })
+        }).catch(function (err) {
+            Log.test(err);
+        })
+    });
+
+    it.only("Testing Invalid Zip base64 to fail", function () {
+        let fs = require("fs");
+        let data = fs.readFileSync("invalidJSON.zip", "base64");
+
+        return insF.addDataset("invalidJSON", data).then(function () {
+            expect.fail();
+        }).catch(function (err) {
+            Log.test(err);
+            expect(err).to.deep.equal({code: 400, body: {'error': 'file include invalid JSON(s)'}});
         })
     });
 
