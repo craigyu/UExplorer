@@ -197,7 +197,7 @@ export default class InsightFacade implements IInsightFacade {
                 cached.loadAsync(content, options)
                     .then(function(files: any) {
                         var processList: Promise<any>[] = [];
-
+                        let counter = 0;
 
                         files.remove("__MACOSX");
                         files.forEach(function(relativePath: any, file: any) {
@@ -285,14 +285,18 @@ export default class InsightFacade implements IInsightFacade {
                             if (typeof promise != 'undefined') {
                                 processList.push(promise);
                             }
+                            else{counter++;
+                                console.log(counter);
+                            }
                         })
                         Promise.all(processList).then(function(arrayOfStrings: any) {
-                            var counter = 0;
+                            let counter = 0;
                             for (let i of arrayOfStrings) {
                                 if (i == undefined) {
                                     counter++
                                 }
                             }
+
                             if (counter == arrayOfStrings.length) {
                                 reject({ code: 400, body: { 'error': 'No useful data provided' } });
                             }
