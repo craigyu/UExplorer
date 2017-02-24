@@ -16,18 +16,17 @@ if (!fs.existsSync("./cachedDatasets/")) {
 }
 
 var dataPath = './cachedDatasets/';
-
-var gtFiltered = new Array();
-var ltFiltered = new Array();
-var eqFiltered = new Array();
+var whereFilters = new Array();
+var mcompFiltered = new Array();
 var scompFiltered = new Array();
 var negFiltered = new Array();
 var allTheData = new Array();
 var logicArr = new Array();
-var missingIDs = new Array();
 var isValidKeys: boolean[] = [];
 var orderVal: string;
+var isAnd1: boolean = false;
 var logicCount = -1;
+var isOr1: boolean = false;
 var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
 var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
 var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_dept', 'courses_id',
@@ -43,7 +42,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     addDataset(id: string, content: string): Promise<InsightResponse> {
-        return new Promise(function(fulfill, reject) {
+        return new Promise(function (fulfill, reject) {
             var options = { base64: true };
             if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
             //console.log("hiiiii");
@@ -51,19 +50,20 @@ export default class InsightFacade implements IInsightFacade {
             var cached = new JSZip();
 
             if (fs.existsSync(dataPath + id)) {
+
                 fs.unlinkSync(dataPath + id);
 
                 cached.loadAsync(content, options)
-                    .then(function(files: any) {
+                    .then(function (files: any) {
                         var processList: Promise<any>[] = [];
 
 
                         files.remove("__MACOSX");
-                        files.forEach(function(relativePath: any, file: any) {
+                        files.forEach(function (relativePath: any, file: any) {
                             //console.log(processList.length);
                             //console.log(relativePath);
                             if (relativePath != "courses/") {
-                                var promise = file.async("string").then(function(json: any) {
+                                var promise = file.async("string").then(function (json: any) {
                                     try {
 
                                         var parsed = JSON.parse(json);
@@ -146,7 +146,7 @@ export default class InsightFacade implements IInsightFacade {
                                 processList.push(promise);
                             }
                         })
-                        Promise.all(processList).then(function(arrayOfStrings: any) {
+                        Promise.all(processList).then(function (arrayOfStrings: any) {
                             var counter = 0;
                             for (let i of arrayOfStrings) {
                                 if (i == undefined) {
@@ -181,11 +181,11 @@ export default class InsightFacade implements IInsightFacade {
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
                             fulfill({ code: 201, body: {} });
                         })
-                            .catch(function(err: any) {
+                            .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
                             })
                     })
-                    .catch(function(err: any) {
+                    .catch(function (err: any) {
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     })
 
@@ -194,17 +194,18 @@ export default class InsightFacade implements IInsightFacade {
 
 
             else {
-                cached.loadAsync(content, options)
-                    .then(function(files: any) {
-                        var processList: Promise<any>[] = [];
-                        let counter = 0;
 
+                cached.loadAsync(content, options)
+                    .then(function (files: any) {
+                        var processList: Promise<any>[] = [];
+
+                        
                         files.remove("__MACOSX");
-                        files.forEach(function(relativePath: any, file: any) {
+                        files.forEach(function (relativePath: any, file: any) {
                             //console.log(processList.length);
                             //console.log(relativePath);
                             if (relativePath != "courses/") {
-                                var promise = file.async("string").then(function(json: any) {
+                                var promise = file.async("string").then(function (json: any) {
                                     try {
 
                                         var parsed = JSON.parse(json);
@@ -285,18 +286,14 @@ export default class InsightFacade implements IInsightFacade {
                             if (typeof promise != 'undefined') {
                                 processList.push(promise);
                             }
-                            else{counter++;
-                                console.log(counter);
-                            }
                         })
-                        Promise.all(processList).then(function(arrayOfStrings: any) {
-                            let counter = 0;
+                        Promise.all(processList).then(function (arrayOfStrings: any) {
+                            var counter = 0;
                             for (let i of arrayOfStrings) {
                                 if (i == undefined) {
                                     counter++
                                 }
                             }
-
                             if (counter == arrayOfStrings.length) {
                                 reject({ code: 400, body: { 'error': 'No useful data provided' } });
                             }
@@ -322,15 +319,15 @@ export default class InsightFacade implements IInsightFacade {
                             }
 
 
-                            console.log(combine.length);
+
                             fs.writeFileSync(dataPath + id, JSON.stringify(combine));
                             fulfill({ code: 204, body: {} });
                         })
-                            .catch(function(err: any) {
+                            .catch(function (err: any) {
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
                             })
                     })
-                    .catch(function(err: any) {
+                    .catch(function (err: any) {
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     })
 
@@ -344,11 +341,11 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-        return new Promise(function(fulfill, reject) {
+        return new Promise(function (fulfill, reject) {
             if (fs.existsSync(dataPath + id)) {
                 // remove dataset associated with the id
-                fs.unlinkSync(dataPath + id)
-
+                fs.unlinkSync(dataPath + id) 
+                    
                 fulfill({ code: 204, body: {} });
             }
             else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
@@ -358,7 +355,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
     performQuery(query: QueryRequest): Promise<InsightResponse> {
-        return new Promise(function(fulfill, reject) {
+        return new Promise(function (fulfill, reject) {
 
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
 
@@ -370,6 +367,24 @@ export default class InsightFacade implements IInsightFacade {
             try { JSON.parse(JSON.stringify(query)) }
             catch (err) { reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } }); }
 
+            // check if the dataset exists, !!!this is only of D1!!!
+            if (!fs.existsSync(dataPath + 'courses')) {
+                reject({ code: 424, body: { 'missing': ['courses'] } });
+            }
+
+
+            // retrive cached data
+            let id = 'courses';
+            var currentData;
+
+            var thisData = fs.readFileSync(dataPath + id, "utf8");
+            try {
+                currentData = JSON.parse(thisData);
+            }
+            catch (err) {
+                reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
+                throw err;
+            }
 
             //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
@@ -381,21 +396,18 @@ export default class InsightFacade implements IInsightFacade {
             try {
 
                 isValidKeys = [];
-                gtFiltered = [];
-                ltFiltered = [];
-                eqFiltered = [];
+                mcompFiltered = [];
                 scompFiltered = [];
                 negFiltered = [];
                 allTheData = [];
+                isAnd1 = false;
+                isOr1 = false;
                 logicCount = -1;
                 logicArr = []
 
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
-                        whereParser(query.WHERE, filter);
-                        if (missingIDs.length > 0) {
-                            reject({ code: 424, body: { 'missing': missingIDs } });
-                        }
+                        whereParser(query.WHERE, filter, currentData);
                     }
 
                     if (isValidKeys.every(isValid) == false) {
@@ -434,7 +446,7 @@ export default class InsightFacade implements IInsightFacade {
 
         });
 
-        function whereParser(where: any, filter: string) {
+        function whereParser(where: any, filter: string, currentData: any) {
 
 
             if (filter == 'AND' || filter == 'OR') {
@@ -445,26 +457,15 @@ export default class InsightFacade implements IInsightFacade {
                     isValidKeys.push(false);
                     return;
                 }
-
                 for (let subFilter of where[filter]) {
 
                     for (let subSubfilter of Object.keys(subFilter)) {
 
-                        whereParser(subFilter, subSubfilter);
+                        whereParser(subFilter, subSubfilter, currentData);
                         while (logicCount > 0) {
                             let thisLogic = logicArr[logicCount];
                             if (thisLogic == 'OR') {
-                                for (let obj of gtFiltered) {
-                                    if (!allTheData.includes(obj)) {
-                                        allTheData.push(obj);
-                                    }
-                                }
-                                for (let obj of eqFiltered) {
-                                    if (!allTheData.includes(obj)) {
-                                        allTheData.push(obj);
-                                    }
-                                }
-                                for (let obj of ltFiltered) {
+                                for (let obj of mcompFiltered) {
                                     if (!allTheData.includes(obj)) {
                                         allTheData.push(obj);
                                     }
@@ -481,17 +482,14 @@ export default class InsightFacade implements IInsightFacade {
                                 }
                             }
                             else if (thisLogic == 'AND') {
-                                for (let obj of gtFiltered) {
-                                    if (scompFiltered.includes(obj) && negFiltered.includes(obj) && ltFiltered.includes(obj) && eqFiltered.includes(obj)) {
+                                for (let obj of mcompFiltered) {
+                                    if (scompFiltered.includes(obj) && negFiltered.includes(obj)) {
                                         allTheData.push(obj);
                                     }
                                 }
-
                             }
                             logicCount--;
-                            gtFiltered = [];
-                            ltFiltered = [];
-                            eqFiltered = [];
+                            mcompFiltered = [];
                             scompFiltered = [];
                             negFiltered = [];
 
@@ -506,27 +504,10 @@ export default class InsightFacade implements IInsightFacade {
                     isValidKeys.push(false);
                     return;
                 }
-                let currentData;
+
+
+
                 for (let key of mcompKeys) {
-
-                    //check to see if missing data
-                    let indexNum = key.indexOf('_');
-                    let theId = key.substring(0, indexNum)
-                    if (!fs.existsSync(dataPath + theId)) {
-                        missingIDs.push(theId);
-                        return;
-                    }
-                    else {
-                        let thisData = fs.readFileSync(dataPath + theId, "utf8");
-                        try {
-                            currentData = JSON.parse(thisData);
-                        }
-                        catch (err) {
-                            throw err;
-                        }
-
-                    }
-
                     if (mcompLibrary.includes(key)) {
                         if (typeof where[filter][key] != 'number') {
                             isValidKeys.push(false);
@@ -539,17 +520,17 @@ export default class InsightFacade implements IInsightFacade {
                                         if (val == key) {
                                             if (filter == 'LT') {
                                                 if (subObj[val] < where[filter][key]) {
-                                                    ltFiltered.push(obj)
+                                                    mcompFiltered.push(obj)
                                                 }
                                             }
                                             if (filter == 'GT') {
                                                 if (subObj[val] > where[filter][key]) {
-                                                    gtFiltered.push(obj)
+                                                    mcompFiltered.push(obj)
                                                 }
                                             }
                                             if (filter == 'EQ') {
                                                 if (subObj[val] == where[filter][key]) {
-                                                    eqFiltered.push(obj)
+                                                    mcompFiltered.push(obj)
                                                 }
                                             }
                                         }
@@ -572,32 +553,12 @@ export default class InsightFacade implements IInsightFacade {
 
             else if (filter == 'IS') {
                 let isKey = Object.keys(where[filter]);
-                let currentData;
                 if (Object.keys(where[filter]).length != 1) {
                     isValidKeys.push(false);
                     return;
                 }
 
                 for (let key of isKey) {
-                    //check to see if missing data
-                    let indexNum = key.indexOf('_');
-                    let theId = key.substring(0, indexNum)
-                    if (!fs.existsSync(dataPath + theId)) {
-                        missingIDs.push(theId);
-                        return;
-                    }
-                    else {
-                        
-                        let thisData = fs.readFileSync(dataPath + theId, "utf8");
-                        try {
-                            currentData = JSON.parse(thisData);
-                        }
-                        catch (err) {
-                            throw err;
-                        }
-
-                    }
-
                     if (stringLibrary.includes(key)) {
                         if (typeof where[filter][key] != 'string') {
                             isValidKeys.push(false);
@@ -607,15 +568,16 @@ export default class InsightFacade implements IInsightFacade {
                             for (let obj of currentData) {
                                 for (let subObj of obj)
                                     for (let val of Object.keys(subObj)) {
-                                        if (key == val) {
-
-                                            if (subObj[val].includes(where[filter][key])) {
+                                        if (val == key) {
+                                            var hello = subObj[val];
+                                            var hello2 = where[filter][key];
+                                            if (subObj[val] == where[filter][key]) {
                                                 scompFiltered.push(obj);
                                             }
-                                            // else {
-                                            //     isValidKeys.push(false);
-                                            //     return;
-                                            // }
+                                            else {
+                                                isValidKeys.push(false);
+                                                return;
+                                            }
 
                                         }
                                     }
@@ -628,41 +590,31 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
 
-        //     else if (filter == 'NOT') {
-        //         let notKeys = Object.keys(where[filter]);
-        //         if (notKeys.length != 1) {
-        //             isValidKeys.push(false);
-        //             return;
-        //         }
+            else if (filter == 'NOT') {
+                let notKeys = Object.keys(where[filter]);
+                if (notKeys.length != 1) {
+                    isValidKeys.push(false);
+                    return;
+                }
 
-        //         for (let n of notKeys) {
-        //             for (let subFilter of where[filter]) {
-        //                 whereParser(where[filter], n);
+                for (let n of notKeys) {
+                    for (let subFilter of where[filter]) {
+                        whereParser(where[filter], n, currentData);
 
-        //                 for (let obj of currentData) {
-        //                     let subnegFiltered = new Array();
-        // /* THIS IS WRONG*/                    if (!gtFiltered.includes(obj) && !scompFiltered.includes(obj)) {
-        //                         subnegFiltered.push(obj);
-        //                     }
-        //                     negFiltered.concat(subnegFiltered);
-        //                 }
-        //             }
-        //         }
-        //     }
+                        for (let obj of currentData) {
+                            let subnegFiltered = new Array();
+                            if (!mcompFiltered.includes(obj) && !scompFiltered.includes(obj)) {
+                                subnegFiltered.push(obj);
+                            }
+                            negFiltered.concat(subnegFiltered);
+                        }
+                    }
+                }
+            }
 
             if (logicCount == 0) {
                 if (logicArr[logicCount] == 'OR') {
-                    for (let obj of gtFiltered) {
-                        if (!allTheData.includes(obj)) {
-                            allTheData.push(obj);
-                        }
-                    }
-                    for (let obj of eqFiltered) {
-                        if (!allTheData.includes(obj)) {
-                            allTheData.push(obj);
-                        }
-                    }
-                    for (let obj of ltFiltered) {
+                    for (let obj of mcompFiltered) {
                         if (!allTheData.includes(obj)) {
                             allTheData.push(obj);
                         }
@@ -679,8 +631,8 @@ export default class InsightFacade implements IInsightFacade {
                     }
                 }
                 else if (logicArr[logicCount] == 'AND') {
-                    for (let obj of gtFiltered) {
-                        if (scompFiltered.includes(obj) && negFiltered.includes(obj) && ltFiltered.includes(obj) && eqFiltered.includes(obj)) {
+                    for (let obj of mcompFiltered) {
+                        if (scompFiltered.includes(obj) && negFiltered.includes(obj)) {
                             allTheData.push(obj);
                         }
                     }
@@ -688,7 +640,7 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             else if (logicCount == -1) {
-                allTheData = gtFiltered.concat(scompFiltered).concat(negFiltered).concat(ltFiltered).concat(eqFiltered);
+                allTheData = mcompFiltered.concat(scompFiltered).concat(negFiltered);
             }
 
 
@@ -699,7 +651,7 @@ export default class InsightFacade implements IInsightFacade {
         // MCOMPFILTERED FOR NOW BECAUSE WE WANT TO MAKE SURE THE FUNCTIONALITY WORKS.
         // MCOMPFILTER = TOTALFILTERED AFTER
 
-        function optionParser(allTheData: any[], optionBody: any): any {
+        function optionParser(mcompFiltered: any[], optionBody: any): any {
             if (!("COLUMNS" in optionBody) || !("ORDER" in optionBody) || !("FORM" in optionBody)) {
                 return null;
             }
@@ -732,7 +684,7 @@ export default class InsightFacade implements IInsightFacade {
 
             var colData = new Array();
 
-            for (let key of allTheData) {
+            for (let key of mcompFiltered) {
                 var eachData = new Array();
                 for (let subKey of key) {
 
@@ -780,7 +732,7 @@ export default class InsightFacade implements IInsightFacade {
             // START OF ORDERING //
             //sort with number
             if (mcompLibrary.includes(orderVal)) {
-                processed.sort(function(a: any, b: any) {
+                processed.sort(function (a: any, b: any) {
 
                     return a[orderVal] - b[orderVal];
                 })
@@ -788,7 +740,7 @@ export default class InsightFacade implements IInsightFacade {
             }
             //sort alphabetically
             else if (stringLibrary.includes(orderVal)) {
-                processed.sort(function(a: any, b: any) {
+                processed.sort(function (a: any, b: any) {
                     var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
                     var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
                     if (nameA < nameB) {
