@@ -411,7 +411,7 @@ export default class InsightFacade implements IInsightFacade {
                     if (isValidKeys.every(isValid) == false) {
                         reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
-                    if(misID.length != 0){
+                    if (misID.length != 0) {
                         reject({ code: 424, body: { 'missing': misID } });
                     }
 
@@ -581,7 +581,7 @@ export default class InsightFacade implements IInsightFacade {
                                 for (let subObj of obj)
                                     for (let val of Object.keys(subObj)) {
                                         if (val == key) {
-                                            if (where[filter][key].includes(subObj[val])) {
+                                            if (subObj[val].includes(where[filter][key])) {
                                                 scompFiltered.push(obj);
                                             }
                                             else {
@@ -673,7 +673,7 @@ export default class InsightFacade implements IInsightFacade {
                 colVal.push(val);
             }
 
-            if(optionBody["FORM"] != "TABLE"){
+            if (optionBody["FORM"] != "TABLE") {
                 return null;
             }
             //check if order is valid 
