@@ -35,8 +35,6 @@ export default class InsightFacade implements IInsightFacade {
     addDataset(id: string, content: string): Promise<InsightResponse> {
         var theTable: any;
         var hasTable = false;
-        var theInfo: any;
-        var hasInfo = false;
 
 
         return new Promise(function (fulfill, reject) {
@@ -426,22 +424,7 @@ export default class InsightFacade implements IInsightFacade {
             return hasTable;
         }
 
-        function findBuildingInfo(node: any): boolean {
-            for(let cI in node.childNodes) {
-                if(node.childNodes[cI].nodeName == "div" &&  node.childNodes[cI].attrs.length == 1
-                    && node.childNodes[cI].attrs[0].name == "class"
-                    && node.childNodes[cI].attrs[0].value == "building-field") {
-                    theInfo = node.childNodes[cI];
-                    hasInfo = true;
-                    break;
-                }
-                else {
-                    findBuildingInfo(node.childNodes[cI]);
-                }
-            }
-            return hasInfo;
 
-        }
 
 
         // needed to create the entire dataset
@@ -460,13 +443,37 @@ export default class InsightFacade implements IInsightFacade {
                         })
                         .then(function (parsedHTML:any) {
                             // get fullname of building
-                           return findBuildingInfo(parsedHTML);
+                            var nodeNeeded:any;
+                            var hasNode = false;
+
+                            if(findBuildingInfo(parsedHTML)) {
+                                return nodeNeeded;
+                            } else {
+                                reject({code: 400, body: {'error': "No Building Info found"}});
+                            }
+
+                            function findBuildingInfo(node: any): boolean {
+                                for(let cI in node.childNodes) {
+                                    if(node.childNodes[cI].nodeName == "div" &&  node.childNodes[cI].attrs.length == 1
+                                        && node.childNodes[cI].attrs[0].name == "class"
+                                        && node.childNodes[cI].attrs[0].value == "building-field") {
+                                        hasNode = true;
+                                        nodeNeeded =  node.childNodes;
+                                        break;
+                                    }
+                                    else {
+                                        findBuildingInfo(node.childNodes[cI]);
+                                    }
+                                }
+                                return hasNode;
+
+                            }
                         })
                         .then(function (hasInfo:any) {
                             if(hasInfo == false) {
                                 reject({code: 400, body: {'error': "Cannot find building info"}});
                             }
-                            getBuildingInfo(file,theInfo);
+                            getBuildingInfo(file,hasInfo);
 
                         })
                         .catch(function (err:any) {
@@ -481,9 +488,22 @@ export default class InsightFacade implements IInsightFacade {
         }
 
         function getBuildingInfo(file:any, parsedBuildingInfo:any) {
+            var buildingInfo = { // represents one buildingInfo
+                "rooms_fullname": "",
+                "rooms_shortname": "",
+                "rooms_number": "",
+                "rooms_name": "",
+                "rooms_address": "",
+                "rooms_lat": 0,
+                "rooms_lon": 0,
+                "rooms_seats": 0,
+                "rooms_type": "",
+                "rooms_furniture": "",
+                "rooms_href": ""
+            };
                     for(let j of parsedBuildingInfo.childNodes) {
                         if(j.nodeName == "h2") { // getting fullName
-
+                           buildingInfo["rooms_fullname"] = (j.childNodes[0].childNodes[0].value)
                         }
                     }
                 }
