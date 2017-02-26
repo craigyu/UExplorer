@@ -51,7 +51,6 @@ describe("AddSpec", function () {
     it.only("Testing for Query (loading 3 files)", function () {
         let fs = require("fs");
         let data = fs.readFileSync("test3files.zip", "base64");
-
         return insF.addDataset("courses", data).then(function (value:any) {
             expect(value).to.deep.equal({ code: 201, body: {} })
         }).catch(function (err) {
