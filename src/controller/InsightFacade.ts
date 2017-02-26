@@ -455,34 +455,20 @@ export default class InsightFacade implements IInsightFacade {
                 }
                 if (filter == 'AND') {
                     let waitList = new Array();
-                    while (subLen > 0) {
-                        let toLogic1 = toProcess.pop();
-                        let toLogic2 = toProcess.pop();
-                        if (typeof toLogic2 == 'undefined') {
-                            toLogic2 = toLogic1;
-                        }
-                        if(toLogic1.length == 0 || toLogic2.length == 0){
-                            waitList = [];
-                            break;
-                        }
-                        if (waitList.length == 0) {
-                            for (let obj of toLogic1) {
-                                if (toLogic2.includes(obj)) {
-                                    waitList.push(obj);
-                                }
-                            }
-                        }
-                        else {
-                            for (let obj of waitList) {
-                                if (!toLogic2.includes(obj) || !toLogic1.includes(obj)) {
-                                    let index = waitList.indexOf(obj);
-                                    waitList.splice(index, 1);
-                                }
-                            }
-                        }
-                        subLen = subLen - 2;
+
+                    for(let i = 0; i < subLen; i++){
+                        waitList.push(toProcess.pop());
                     }
-                    toProcess.push(waitList);
+
+                   let newList = waitList.shift().reduce(function(res: any, v: any) {
+                        if (res.indexOf(v) === -1 && waitList.every(function(a: any) {
+                                return a.indexOf(v) !== -1;
+                            })) res.push(v);
+                        return res;
+                    }, []);
+
+
+                    toProcess.push(newList);
                 }
                 else if (filter == 'OR') {
                     let waitList = new Array();

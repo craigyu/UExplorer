@@ -815,12 +815,7 @@ describe("QuerySpec", function () {
             body: {
                 render: 'TABLE',
                 result:
-                    [
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                    []
             }
         };
 
@@ -836,6 +831,81 @@ describe("QuerySpec", function () {
         })
     });
 
+    it.only("Testing for OR with Complex Parsing to output (AND), (EQ), (GT) correct format", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "OR": [
+                    {
+                        "AND": [
+                            {
+                                "IS": {
+                                    "courses_dept": "cell"
+                                }
+                            },
+                            {
+
+                                "GT": {
+                                    "courses_avg": 89.5
+                                }
+
+                            }
+                        ]
+                    },
+                    {
+                        "LT": {
+                            "courses_avg": 50
+                        }
+                    },
+                    {
+                        "NOT": {
+                            "IS" : {
+                                "courses_dept": "cell"
+                            }
+                        }
+                    }
+
+
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result:
+                    [
+                        { courses_dept: 'elec', courses_avg: 76.48 },
+                        { courses_dept: 'elec', courses_avg: 76.48 },
+                        { courses_dept: 'dent', courses_avg: 82.5 },
+                        { courses_dept: 'dent', courses_avg: 82.5 },
+                        { courses_dept: 'dent', courses_avg: 85.4 },
+                        { courses_dept: 'dent', courses_avg: 85.4 },
+                        { courses_dept: 'cell', courses_avg: 89.6 },
+                        { courses_dept: 'cell', courses_avg: 89.6 }
+
+                    ]
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
 
 
 
