@@ -57,7 +57,7 @@ export default class InsightFacade implements IInsightFacade {
                         files.forEach(function (relativePath: any, file: any) {
                             //console.log(processList.length);
                             //console.log(relativePath);
-                            if (relativePath != "courses/") {
+                            if (relativePath != id + "/") {
                                 var promise = file.async("string").then(function (json: any) {
                                     try {
 
@@ -111,7 +111,7 @@ export default class InsightFacade implements IInsightFacade {
                                                     if (obj.hasOwnProperty("id")) {
                                                         let uuid = id + "_uuid";
                                                         let uuidVal = obj["id"];
-                                                        subObjValues.push({ [uuid]: uuidVal });
+                                                        subObjValues.push({ [uuid]: uuidVal.toString() });
                                                     }
 
 
@@ -199,7 +199,7 @@ export default class InsightFacade implements IInsightFacade {
                         files.forEach(function (relativePath: any, file: any) {
                             //console.log(processList.length);
                             //console.log(relativePath);
-                            if (relativePath != "courses/") {
+                            if (relativePath != id + "/") {
                                 var promise = file.async("string").then(function (json: any) {
                                     try {
 
@@ -252,7 +252,7 @@ export default class InsightFacade implements IInsightFacade {
                                                     if (obj.hasOwnProperty("id")) {
                                                         let uuid = id + "_uuid";
                                                         let uuidVal = obj["id"];
-                                                        subObjValues.push({ [uuid]: uuidVal });
+                                                        subObjValues.push({ [uuid]: uuidVal.toString() });
                                                     }
 
 
@@ -585,21 +585,71 @@ export default class InsightFacade implements IInsightFacade {
                             return;
                         }
                         else {
-                            for (let obj of currentData) {
-                                for (let subObj of obj)
-                                    for (let val of Object.keys(subObj)) {
-                                        if (val == key) {
-                                            if (subObj[val].includes(where[filter][key])) {
-                                                waitList.push(obj);
-                                            }
-                                            else {
-                                                isValidKeys.push(false);
-                                                return;
-                                            }
+                            let strIS = where[filter][key];
+                            let star = strIS.indexOf("*");
+                            let keyLen = strIS.length - 1;
 
+                            if(star != 0 && star != keyLen){
+                                for (let obj of currentData) {
+                                    for (let subObj of obj)
+                                        for (let val of Object.keys(subObj)) {
+                                            if (val == key) {
+                                                if (subObj[val] == where[filter][key]) {
+                                                    waitList.push(obj);
+                                                }
+
+                                            }
                                         }
-                                    }
+                                }
+
                             }
+                            else if(star == 0){
+                                if(strIS.substr(keyLen, 1) == "*"){
+                                    let subIsStr = strIS.substr(1, keyLen - 1);
+                                    for (let obj of currentData) {
+                                        for (let subObj of obj)
+                                            for (let val of Object.keys(subObj)) {
+                                                if (val == key) {
+                                                    if (subObj[val].includes(subIsStr)) {
+                                                        waitList.push(obj);
+                                                    }
+
+                                                }
+                                            }
+                                    }
+                                }
+                                else{
+                                    let subIsStr = strIS.substr(1, keyLen);
+                                    for (let obj of currentData) {
+                                        for (let subObj of obj)
+                                            for (let val of Object.keys(subObj)) {
+                                                if (val == key) {
+                                                    if (subObj[val].endsWith(subIsStr)) {
+                                                        waitList.push(obj);
+                                                    }
+
+                                                }
+                                            }
+                                    }
+
+                                }
+                            }
+                            else if(star == keyLen){
+                                let subIsStr = strIS.substr(0, keyLen);
+                                for (let obj of currentData) {
+                                    for (let subObj of obj)
+                                        for (let val of Object.keys(subObj)) {
+                                            if (val == key) {
+                                                if (subObj[val].startsWith(subIsStr)) {
+                                                    waitList.push(obj);
+                                                }
+
+                                            }
+                                        }
+                                }
+
+                            }
+
                             toProcess.push(waitList);
                         }
                     } else {
@@ -616,16 +666,15 @@ export default class InsightFacade implements IInsightFacade {
                     return;
                 }
                 let waitList = new Array();
-                for (let subFilter of where[filter]) {
-                    for (let subSubfilter of Object.keys(subFilter)) {
-                        whereParser(subFilter, subSubfilter, currentData);
+                for (let subFilter of notKeys) {
+                        whereParser(where[filter], subFilter, currentData);
                         let toNot = toProcess.pop();
                         for (let obj of currentData) {
                             if (!toNot.includes(obj)) {
                                 waitList.push(obj);
                             }
                         }
-                    }
+
                 }
                 toProcess.push(waitList);
             }
@@ -659,7 +708,7 @@ export default class InsightFacade implements IInsightFacade {
                 return null;
             }
             else {
-                var s = optionBody["ORDER"];
+               // var s = optionBody["ORDER"];
                 if (!colVal.includes(optionBody["ORDER"])) {
                     return null;
                 }
