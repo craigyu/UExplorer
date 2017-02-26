@@ -1,8 +1,7 @@
-import { expect } from 'chai';
+import {expect} from 'chai';
 import Log from "../src/Util";
-import { InsightResponse, QueryRequest } from "../src/controller/IInsightFacade";
+import {InsightResponse, QueryRequest} from "../src/controller/IInsightFacade";
 import InsightFacade from "../src/controller/InsightFacade";
-
 
 
 describe("QuerySpec", function () {
@@ -34,13 +33,12 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -77,11 +75,10 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 }
-                    ]
+                result: [
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'dent', courses_avg: 85.4}
+                ]
             }
         };
 
@@ -117,11 +114,10 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'elec', courses_avg: 76.48 }
-                    ]
+                result: [
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'elec', courses_avg: 76.48}
+                ]
             }
         };
 
@@ -136,7 +132,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
-
 
 
     it("Testing for (NOT) complex Parsing to output (GT) correct format", () => {
@@ -161,11 +156,10 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'elec', courses_avg: 76.48 }
-                    ]
+                result: [
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'elec', courses_avg: 76.48}
+                ]
             }
         };
 
@@ -180,11 +174,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
-
-
-
-
-
 
 
     it("Testing for Basic Parsing to output (IS) correct format", () => {
@@ -207,12 +196,11 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                [
-                    { courses_dept: 'cell', courses_avg: 89.6 },
-                    { courses_dept: 'cell', courses_avg: 89.6 }
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
 
-                    ]
+                ]
             }
         };
 
@@ -250,16 +238,15 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'dent', courses_avg: 82.5 },
-                        { courses_dept: 'dent', courses_avg: 82.5 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 }
+                result: [
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'dent', courses_avg: 82.5},
+                    {courses_dept: 'dent', courses_avg: 82.5},
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'dent', courses_avg: 85.4}
 
-                    ]
+                ]
             }
         };
 
@@ -282,7 +269,7 @@ describe("QuerySpec", function () {
                     "NOT": {
                         "IS": {
                             "courses_dept": "cell"
-                            }
+                        }
                     }
                 }
             },
@@ -299,11 +286,10 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -348,11 +334,10 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -367,7 +352,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     })
-
 
 
     it("Testing for Basic Parsing to output (IS) correct format for instructor", () => {
@@ -391,11 +375,10 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6, courses_instructor: "o'connor, timothy" }
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6, courses_instructor: "o'connor, timothy"}
 
-                    ]
+                ]
             }
         };
 
@@ -410,7 +393,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
-
 
 
     it("Testing for Basic Parsing to output (IS) correct format for partial name instructor not formatted correctly", () => {
@@ -434,9 +416,7 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                    ]
+                result: []
             }
         };
 
@@ -451,7 +431,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
-
 
 
     it("Testing for Basic Parsing to output (IS) correct format for course instructor verbatim", () => {
@@ -474,10 +453,9 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -492,7 +470,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
-
 
 
     it("Testing for Basic Parsing to output (IS) correct format for partial course instructor beginning" +
@@ -516,10 +493,9 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -556,10 +532,9 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -597,10 +572,9 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -636,12 +610,11 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
+                result: [
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
 
-                    ]
+                ]
             }
         };
 
@@ -687,13 +660,12 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
-                    ]
+                result: [
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
+                ]
             }
         };
 
@@ -740,15 +712,14 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'dent', courses_avg: 82.5 },
-                        { courses_dept: 'dent', courses_avg: 82.5 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 }
-                    ]
+                result: [
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'dent', courses_avg: 82.5},
+                    {courses_dept: 'dent', courses_avg: 82.5},
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'dent', courses_avg: 85.4}
+                ]
             }
         };
 
@@ -792,7 +763,7 @@ describe("QuerySpec", function () {
                     },
                     {
                         "NOT": {
-                            "IS" : {
+                            "IS": {
                                 "courses_dept": "cell"
                             }
                         }
@@ -814,8 +785,7 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    []
+                result: []
             }
         };
 
@@ -831,7 +801,7 @@ describe("QuerySpec", function () {
         })
     });
 
-    it.only("Testing for OR with Complex Parsing to output (AND), (EQ), (GT) correct format", () => {
+    it("Testing for OR with Complex Parsing to output (AND), (EQ), (GT) correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "OR": [
@@ -858,7 +828,7 @@ describe("QuerySpec", function () {
                     },
                     {
                         "NOT": {
-                            "IS" : {
+                            "IS": {
                                 "courses_dept": "cell"
                             }
                         }
@@ -880,18 +850,17 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result:
-                    [
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'elec', courses_avg: 76.48 },
-                        { courses_dept: 'dent', courses_avg: 82.5 },
-                        { courses_dept: 'dent', courses_avg: 82.5 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'dent', courses_avg: 85.4 },
-                        { courses_dept: 'cell', courses_avg: 89.6 },
-                        { courses_dept: 'cell', courses_avg: 89.6 }
+                result: [
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'elec', courses_avg: 76.48},
+                    {courses_dept: 'dent', courses_avg: 82.5},
+                    {courses_dept: 'dent', courses_avg: 82.5},
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'dent', courses_avg: 85.4},
+                    {courses_dept: 'cell', courses_avg: 89.6},
+                    {courses_dept: 'cell', courses_avg: 89.6}
 
-                    ]
+                ]
             }
         };
 
@@ -908,7 +877,51 @@ describe("QuerySpec", function () {
     });
 
 
+    it("Testing Contradictory Case", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "GT": {
+                            "courses_pass": 70
+                        }
+                    },
+                    {
+                        "LT": {
+                            "courses_pass": 70
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_title",
+                    "courses_pass",
+                    "courses_fail"
+                ],
+                "ORDER": "courses_pass",
+                "FORM": "TABLE"
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result: []
+            }
+        };
 
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
 
 
 });
