@@ -470,7 +470,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         })
                         .then(function (hasInfo:any) {
-                            if(hasInfo == false) {
+                            if(typeof(hasInfo) == "undefined") {
                                 reject({code: 400, body: {'error': "Cannot find building info"}});
                             }
                             getBuildingInfo(file,hasInfo);
@@ -501,12 +501,11 @@ export default class InsightFacade implements IInsightFacade {
                 "rooms_furniture": "",
                 "rooms_href": ""
             };
-                    for(let j of parsedBuildingInfo.childNodes) {
-                        if(j.nodeName == "h2") { // getting fullName
-                           buildingInfo["rooms_fullname"] = (j.childNodes[0].childNodes[0].value)
-                        }
-                    }
-                }
+            // getting full name
+            buildingInfo["rooms_fullname"] = (parsedBuildingInfo[1].childNodes[0].childNodes[0].value);
+            //getting address
+            // buildingInfo["room_address"]
+        }
 
     }
 
