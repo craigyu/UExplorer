@@ -57,99 +57,106 @@ export default class InsightFacade implements IInsightFacade {
 
                             files.remove("__MACOSX");
                             if (id == "courses") {
-                                files.folder(id).forEach(function (relativePath: any, file: any) {
+                                files.forEach(function (relativePath: any, file: any) {
                                     //console.log(processList.length);
                                     //console.log(relativePath);
-                                    var promise = file.async("string").then(function (json: any) {
-                                        try {
+                                    if (relativePath != id + "/") {
+                                        //console.log(processList.length);
+                                        //console.log(relativePath);
+                                        var promise = file.async("string").then(function (json: any) {
+                                            try {
 
-                                            var parsed = JSON.parse(json);
-                                            if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
+                                                var parsed = JSON.parse(json);
+                                                if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
 
-                                                var objValues: any[] = [];
-                                                for (let obj of parsed.result) {
-                                                    let subObjValues = {
-                                                        "courses_dept": "",
-                                                        "courses_id": "",
-                                                        "courses_instructor": "",
-                                                        "courses_title": "",
-                                                        "courses_uuid": "",
-                                                        "courses_audit": 0,
-                                                        "courses_avg": 0,
-                                                        "courses_fail": 0,
-                                                        "courses_pass": 0
-                                                    };
+                                                    var objValues: any[] = [];
+                                                    for (let obj of parsed.result) {
+                                                        let subObjValues = {
+                                                            "courses_dept": "",
+                                                            "courses_id": "",
+                                                            "courses_instructor": "",
+                                                            "courses_title": "",
+                                                            "courses_uuid": "",
+                                                            "courses_audit": 0,
+                                                            "courses_avg": 0,
+                                                            "courses_fail": 0,
+                                                            "courses_pass": 0
+                                                        };
 
-                                                    if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                        if (obj.hasOwnProperty("Subject")) {
-                                                            let dept = id + "_dept";
-                                                            let deptVal = obj["Subject"];
-                                                            subObjValues["courses_dept"] = deptVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Course")) {
-                                                            let nameId = id + "_id";
-                                                            let nameIdVal = obj["Course"];
-                                                            subObjValues["courses_id"] = nameIdVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Avg")) {
-                                                            let avg = id + "_avg";
-                                                            let avgVal = obj["Avg"];
-                                                            subObjValues["courses_avg"] = avgVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Professor")) {
-                                                            let instr = id + "_instructor";
-                                                            let instrVal = obj["Professor"];
-                                                            subObjValues["courses_instructor"] = instrVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Title")) {
-                                                            let title = id + "_title";
-                                                            let titleVal = obj["Title"];
-                                                            subObjValues["courses_title"] = titleVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Pass")) {
-                                                            let pass = id + "_pass";
-                                                            let passVal = obj["Pass"];
-                                                            subObjValues["courses_pass"] = passVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Fail")) {
-                                                            let fail = id + "_fail";
-                                                            let failVal = obj["Fail"];
-                                                            subObjValues["courses_fail"] = failVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("Audit")) {
-                                                            let audit = id + "_audit";
-                                                            let auditVal = obj["Audit"];
-                                                            subObjValues["courses_audit"] = auditVal;
-                                                        }
-                                                        if (obj.hasOwnProperty("id")) {
-                                                            let uuid = id + "_uuid";
-                                                            let uuidVal = obj["id"];
-                                                            subObjValues["courses_uuid"] = uuidVal;
-                                                        }
+                                                        if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
+                                                            if (obj.hasOwnProperty("Subject")) {
+                                                                let dept = id + "_dept";
+                                                                let deptVal = obj["Subject"];
+                                                                subObjValues["courses_dept"] = deptVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Course")) {
+                                                                let nameId = id + "_id";
+                                                                let nameIdVal = obj["Course"];
+                                                                subObjValues["courses_id"] = nameIdVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Avg")) {
+                                                                let avg = id + "_avg";
+                                                                let avgVal = obj["Avg"];
+                                                                subObjValues["courses_avg"] = avgVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Professor")) {
+                                                                let instr = id + "_instructor";
+                                                                let instrVal = obj["Professor"];
+                                                                subObjValues["courses_instructor"] = instrVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Title")) {
+                                                                let title = id + "_title";
+                                                                let titleVal = obj["Title"];
+                                                                subObjValues["courses_title"] = titleVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Pass")) {
+                                                                let pass = id + "_pass";
+                                                                let passVal = obj["Pass"];
+                                                                subObjValues["courses_pass"] = passVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Fail")) {
+                                                                let fail = id + "_fail";
+                                                                let failVal = obj["Fail"];
+                                                                subObjValues["courses_fail"] = failVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("Audit")) {
+                                                                let audit = id + "_audit";
+                                                                let auditVal = obj["Audit"];
+                                                                subObjValues["courses_audit"] = auditVal;
+                                                            }
+                                                            if (obj.hasOwnProperty("id")) {
+                                                                let uuid = id + "_uuid";
+                                                                let uuidVal = obj["id"];
+                                                                subObjValues["courses_uuid"] = uuidVal;
+                                                            }
 
+
+                                                        }
+                                                        objValues.push(subObjValues);
 
                                                     }
-                                                    objValues.push(subObjValues);
+
 
                                                 }
 
+                                            }
+                                            catch (err) {
+                                                //console.log(err);
+
+                                                return reject({
+                                                    code: 400,
+                                                    body: {'error': 'file include invalid JSON(s)'}
+                                                });
+                                                //throw err;
 
                                             }
 
+
+                                            return objValues;
+                                        });
+                                        if (typeof promise != 'undefined') {
+                                            processList.push(promise);
                                         }
-                                        catch (err) {
-                                            //console.log(err);
-
-                                            return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
-                                            //throw err;
-
-                                        }
-
-
-                                        return objValues;
-                                    });
-                                    if (typeof promise != 'undefined') {
-                                        processList.push(promise);
                                     }
                                 });
                             }
@@ -208,8 +215,10 @@ export default class InsightFacade implements IInsightFacade {
 
 
                             files.remove("__MACOSX");
-                            if (id == "courses") {
-                                files.folder(id).forEach(function (relativePath: any, file: any) {
+                            files.forEach(function (relativePath: any, file: any) {
+                                //console.log(processList.length);
+                                //console.log(relativePath);
+                                if (relativePath != id + "/") {
                                     //console.log(processList.length);
                                     //console.log(relativePath);
                                     var promise = file.async("string").then(function (json: any) {
@@ -302,8 +311,9 @@ export default class InsightFacade implements IInsightFacade {
                                     if (typeof promise != 'undefined') {
                                         processList.push(promise);
                                     }
-                                });
-                            }
+                                }
+                            });
+
 
                             Promise.all(processList).then(function (arrayOfStrings: any) {
                                 var counter = 0;
@@ -425,8 +435,6 @@ export default class InsightFacade implements IInsightFacade {
         }
 
 
-
-
         // needed to create the entire dataset
         // File is an individual file in the rooms folder
         // content is the acronym names to retrieve data
@@ -438,27 +446,27 @@ export default class InsightFacade implements IInsightFacade {
 
                 if (content.includes(relativePath)) {
                     file.async("string")
-                        .then(function (content:any) {
+                        .then(function (content: any) {
                             return test.parseFragment(content);
                         })
-                        .then(function (parsedHTML:any) {
+                        .then(function (parsedHTML: any) {
                             // get fullname of building
-                            var nodeNeeded:any;
+                            var nodeNeeded: any;
                             var hasNode = false;
 
-                            if(findBuildingInfo(parsedHTML)) {
+                            if (findBuildingInfo(parsedHTML)) {
                                 return nodeNeeded;
                             } else {
                                 reject({code: 400, body: {'error': "No Building Info found"}});
                             }
 
                             function findBuildingInfo(node: any): boolean {
-                                for(let cI in node.childNodes) {
-                                    if(node.childNodes[cI].nodeName == "div" &&  node.childNodes[cI].attrs.length == 1
+                                for (let cI in node.childNodes) {
+                                    if (node.childNodes[cI].nodeName == "div" && node.childNodes[cI].attrs.length == 1
                                         && node.childNodes[cI].attrs[0].name == "class"
                                         && node.childNodes[cI].attrs[0].value == "building-field") {
                                         hasNode = true;
-                                        nodeNeeded =  node.childNodes;
+                                        nodeNeeded = node.childNodes;
                                         break;
                                     }
                                     else {
@@ -469,14 +477,14 @@ export default class InsightFacade implements IInsightFacade {
 
                             }
                         })
-                        .then(function (hasInfo:any) {
-                            if(typeof(hasInfo) == "undefined") {
+                        .then(function (hasInfo: any) {
+                            if (typeof(hasInfo) == "undefined") {
                                 reject({code: 400, body: {'error': "Cannot find building info"}});
                             }
-                            getBuildingInfo(file,hasInfo);
+                            getBuildingInfo(file, hasInfo);
 
                         })
-                        .catch(function (err:any) {
+                        .catch(function (err: any) {
                             reject({code: 400, body: {'error': err.toString('utf8')}});
                         })
                 } else {
@@ -487,7 +495,7 @@ export default class InsightFacade implements IInsightFacade {
 
         }
 
-        function getBuildingInfo(file:any, parsedBuildingInfo:any) {
+        function getBuildingInfo(file: any, parsedBuildingInfo: any) {
             var buildingInfo = { // represents one buildingInfo
                 "rooms_fullname": "",
                 "rooms_shortname": "",
@@ -504,7 +512,9 @@ export default class InsightFacade implements IInsightFacade {
             // getting full name
             buildingInfo["rooms_fullname"] = (parsedBuildingInfo[1].childNodes[0].childNodes[0].value);
             //getting address
-            // buildingInfo["room_address"]
+            //  buildingInfo["room_address"] = (parsedBuildingInfo[3].childNodes[0].childNodes[0].value);
+            var linkForLatLon = parsedBuildingInfo[7].childNodes[0].childNodes[0].attrs[0].value;
+
         }
 
     }
