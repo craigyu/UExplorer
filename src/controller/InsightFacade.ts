@@ -16,7 +16,6 @@ if (!fs.existsSync("./cachedDatasets/")) {
 }
 
 var dataPath = './cachedDatasets/';
-var whereFilters = new Array();
 var toProcess = new Array();
 var allTheData = new Array();
 var misID = new Array();
@@ -377,7 +376,7 @@ export default class InsightFacade implements IInsightFacade {
                 currentData = JSON.parse(thisData);
             }
             catch (err) {
-                reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
+                reject({ code: 400, body: { 'error': 'cannot retrieve data from disk' } });
                 throw err;
             }
 
@@ -472,26 +471,16 @@ export default class InsightFacade implements IInsightFacade {
                 }
                 else if (filter == 'OR') {
                     let waitList = new Array();
-                    while (subLen > 0) {
-                        let toLogic1 = toProcess.pop();
-                        let toLogic2 = toProcess.pop();
-                        if (typeof toLogic2 == 'undefined') {
-                            toLogic2 = [];
-                        }
-                        for (let obj of toLogic1) {
-                            if (!waitList.includes(obj)) {
-                                waitList.push(obj);
-                            }
-                        }
-                        for (let obj of toLogic2) {
-                            if (!waitList.includes(obj)) {
-                                waitList.push(obj);
-                            }
-                        }
-
-                        subLen = subLen - 2;
+                    for (let i = 0; i < subLen; i++) {
+                        let w = toProcess.pop();
+                        waitList = waitList.concat(waitList, w);
                     }
-                    toProcess.push(waitList);
+                   let newList = waitList.filter(function(elem, pos) {
+                        return waitList.indexOf(elem) == pos;
+                    });
+
+
+                    toProcess.push(newList);
                 }
             }
 
@@ -650,6 +639,7 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             else if (filter == 'NOT') {
+
                 let notKeys = Object.keys(where[filter]);
                 if (notKeys.length != 1) {
                     isValidKeys.push(false);
@@ -657,15 +647,10 @@ export default class InsightFacade implements IInsightFacade {
                 }
                 let waitList = new Array();
                 for (let subFilter of notKeys) {
-                        whereParser(where[filter], subFilter, currentData);
-                        let toNot = toProcess.pop();
-                        for (let obj of currentData) {
-                            if (!toNot.includes(obj)) {
-                                waitList.push(obj);
-                            }
-                        }
-
+                    whereParser(where[filter], subFilter, currentData);
                 }
+                let n = toProcess.pop();
+                waitList = currentData.filter(function(x:any) { return n.indexOf(x) < 0 });
                 toProcess.push(waitList);
             }
 

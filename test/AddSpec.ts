@@ -25,16 +25,16 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    // it("Testing Load Zip base64 more than 1 file in zip", function () {
-    //     let fs = require("fs");
-    //     let data = fs.readFileSync("courses.zip", "base64");
-    //
-    //     return insF.addDataset("courses", data).then(function (value:any) {
-    //         expect(value).to.deep.equal({ code: 201, body: {} })
-    //     }).catch(function (err) {
-    //         Log.test(err);
-    //     })
-    // });
+    it.skip("Testing Load Zip base64 more than 1 file in zip", function () {
+        let fs = require("fs");
+        let data = fs.readFileSync("courses.zip", "base64");
+
+        return insF.addDataset("courses", data).then(function (value:any) {
+            expect(value).to.deep.equal({ code: 201, body: {} })
+        }).catch(function (err) {
+            Log.test(err);
+        })
+    });
 
     it("Testing Invalid Zip base64 to fail", function () {
         let fs = require("fs");

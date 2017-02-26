@@ -923,5 +923,40 @@ describe("QuerySpec", function () {
         })
     });
 
+    it("Testing complex nots", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "NOT": {"NOT": {"NOT": {"NOT": {"NOT": {"NOT": {"NOT": {"LT" : {"courses_avg": 50}} }}}}}}
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_title",
+                    "courses_pass",
+                    "courses_fail"
+                ],
+                "ORDER": "courses_pass",
+                "FORM": "TABLE"
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result: []
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
 
 });
