@@ -1,7 +1,7 @@
 /**
  * This is the main programmatic entry point for the project.
  */
-import { IInsightFacade, InsightResponse, QueryRequest } from "./IInsightFacade";
+import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
 
 import Log from "../Util";
 
@@ -20,13 +20,10 @@ var toProcess = new Array();
 var allTheData = new Array();
 var misID = new Array();
 var isValidKeys: boolean[] = [];
-var orderVal: string;
 var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit');
 var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
 var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_dept', 'courses_id',
     'courses_instructor', 'courses_title', 'courses_uuid');
-
-
 
 
 export default class InsightFacade implements IInsightFacade {
@@ -36,303 +33,447 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     addDataset(id: string, content: string): Promise<InsightResponse> {
+        var theTable: any;
+        var hasTable = false;
+
+
         return new Promise(function (fulfill, reject) {
-            var options = { base64: true };
-            if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
+            var options = {base64: true};
+            if (id == '') reject({code: 400, body: {"error": "No id was provided."}});
             //console.log("hiiiii");
             // id contains given id
             var cached = new JSZip();
 
-            if (fs.existsSync(dataPath + id)) {
+            if (id == "courses") {
 
-                fs.unlinkSync(dataPath + id);
+                if (fs.existsSync(dataPath + id)) {
 
-                cached.loadAsync(content, options)
-                    .then(function (files: any) {
-                        var processList: Promise<any>[] = [];
+                    fs.unlinkSync(dataPath + id);
+
+                    cached.loadAsync(content, options)
+                        .then(function (files: any) {
+                            var processList: Promise<any>[] = [];
 
 
-                        files.remove("__MACOSX");
-                        files.forEach(function (relativePath: any, file: any) {
-                            //console.log(processList.length);
-                            //console.log(relativePath);
-                            if (relativePath != id + "/") {
-                                var promise = file.async("string").then(function (json: any) {
-                                    try {
+                            files.remove("__MACOSX");
+                            if (id == "courses") {
+                                files.folder(id).forEach(function (relativePath: any, file: any) {
+                                    //console.log(processList.length);
+                                    //console.log(relativePath);
+                                    var promise = file.async("string").then(function (json: any) {
+                                        try {
 
-                                        var parsed = JSON.parse(json);
-                                        if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
+                                            var parsed = JSON.parse(json);
+                                            if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
 
-                                            var objValues: any[] = [];
-                                            for (let obj of parsed.result) {
-                                                let subObjValues: any[] = [];
-                                                if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                    if (obj.hasOwnProperty("Subject")) {
-                                                        let dept = id + "_dept";
-                                                        let deptVal = obj["Subject"];
-                                                        subObjValues.push({ [dept]: deptVal })
-                                                    }
-                                                    if (obj.hasOwnProperty("Course")) {
-                                                        let nameId = id + "_id";
-                                                        let nameIdVal = obj["Course"];
-                                                        subObjValues.push({ [nameId]: nameIdVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Avg")) {
-                                                        let avg = id + "_avg";
-                                                        let avgVal = obj["Avg"];
-                                                        subObjValues.push({ [avg]: avgVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Professor")) {
-                                                        let instr = id + "_instructor";
-                                                        let instrVal = obj["Professor"];
-                                                        subObjValues.push({ [instr]: instrVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Title")) {
-                                                        let title = id + "_title";
-                                                        let titleVal = obj["Title"];
-                                                        subObjValues.push({ [title]: titleVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Pass")) {
-                                                        let pass = id + "_pass";
-                                                        let passVal = obj["Pass"];
-                                                        subObjValues.push({ [pass]: passVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Fail")) {
-                                                        let fail = id + "_fail";
-                                                        let failVal = obj["Fail"];
-                                                        subObjValues.push({ [fail]: failVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Audit")) {
-                                                        let audit = id + "_audit";
-                                                        let auditVal = obj["Audit"];
-                                                        subObjValues.push({ [audit]: auditVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("id")) {
-                                                        let uuid = id + "_uuid";
-                                                        let uuidVal = obj["id"];
-                                                        subObjValues.push({ [uuid]: uuidVal.toString() });
-                                                    }
+                                                var objValues: any[] = [];
+                                                for (let obj of parsed.result) {
+                                                    let subObjValues = {
+                                                        "courses_dept": "",
+                                                        "courses_id": "",
+                                                        "courses_instructor": "",
+                                                        "courses_title": "",
+                                                        "courses_uuid": "",
+                                                        "courses_audit": 0,
+                                                        "courses_avg": 0,
+                                                        "courses_fail": 0,
+                                                        "courses_pass": 0
+                                                    };
 
+                                                    if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
+                                                        if (obj.hasOwnProperty("Subject")) {
+                                                            let dept = id + "_dept";
+                                                            let deptVal = obj["Subject"];
+                                                            subObjValues["courses_dept"] = deptVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Course")) {
+                                                            let nameId = id + "_id";
+                                                            let nameIdVal = obj["Course"];
+                                                            subObjValues["courses_id"] = nameIdVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Avg")) {
+                                                            let avg = id + "_avg";
+                                                            let avgVal = obj["Avg"];
+                                                            subObjValues["courses_avg"] = avgVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Professor")) {
+                                                            let instr = id + "_instructor";
+                                                            let instrVal = obj["Professor"];
+                                                            subObjValues["courses_instructor"] = instrVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Title")) {
+                                                            let title = id + "_title";
+                                                            let titleVal = obj["Title"];
+                                                            subObjValues["courses_title"] = titleVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Pass")) {
+                                                            let pass = id + "_pass";
+                                                            let passVal = obj["Pass"];
+                                                            subObjValues["courses_pass"] = passVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Fail")) {
+                                                            let fail = id + "_fail";
+                                                            let failVal = obj["Fail"];
+                                                            subObjValues["courses_fail"] = failVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Audit")) {
+                                                            let audit = id + "_audit";
+                                                            let auditVal = obj["Audit"];
+                                                            subObjValues["courses_audit"] = auditVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("id")) {
+                                                            let uuid = id + "_uuid";
+                                                            let uuidVal = obj["id"];
+                                                            subObjValues["courses_uuid"] = uuidVal;
+                                                        }
+
+
+                                                    }
+                                                    objValues.push(subObjValues);
 
                                                 }
-                                                objValues.push(subObjValues);
+
 
                                             }
 
+                                        }
+                                        catch (err) {
+                                            //console.log(err);
+
+                                            return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
+                                            //throw err;
 
                                         }
 
+
+                                        return objValues;
+                                    });
+                                    if (typeof promise != 'undefined') {
+                                        processList.push(promise);
                                     }
-                                    catch (err) {
-                                        //console.log(err);
-
-                                        return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
-                                        //throw err;
-
-                                    }
-
-
-
-                                    return objValues;
                                 });
                             }
-                            if (typeof promise != 'undefined') {
-                                processList.push(promise);
-                            }
-                        })
-                        Promise.all(processList).then(function (arrayOfStrings: any) {
-                            var counter = 0;
-                            for (let i of arrayOfStrings) {
-                                if (i == undefined) {
-                                    counter++
-                                }
-                            }
-                            if (counter == arrayOfStrings.length) {
-                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
-                            }
 
-                            var combine = new Array();
-                            if (arrayOfStrings.length > 2) {
+                            Promise.all(processList).then(function (arrayOfStrings: any) {
+                                var counter = 0;
                                 for (let i of arrayOfStrings) {
-                                    for (let j of i) {
-                                        if (typeof j != "undefined") {
-                                            combine.push(j);
-                                        }
+                                    if (i == undefined) {
+                                        counter++
                                     }
                                 }
-                            } else {
-                                for (let i of arrayOfStrings) {
-                                    if (typeof i != "undefined") {
+                                if (counter == arrayOfStrings.length) {
+                                    reject({code: 400, body: {'error': 'No useful data provided'}});
+                                }
+
+                                var combine = new Array();
+                                if (arrayOfStrings.length > 2) {
+                                    for (let i of arrayOfStrings) {
                                         for (let j of i) {
-                                            combine.push(j);
+                                            if (typeof j != "undefined") {
+                                                combine.push(j);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i of arrayOfStrings) {
+                                        if (typeof i != "undefined") {
+                                            for (let j of i) {
+                                                combine.push(j);
+                                            }
                                         }
                                     }
                                 }
+
+
+                                fs.writeFileSync(dataPath + id, JSON.stringify(combine));
+                                fulfill({code: 201, body: {}});
+                            })
+                                .catch(function (err: any) {
+                                    reject({code: 400, body: {'error': err.toString('utf8')}});
+                                })
+                        })
+                        .catch(function (err: any) {
+                            reject({code: 400, body: {'error': err.toString('utf8')}});
+                        })
+
+
+                }
+
+
+                else {
+
+                    cached.loadAsync(content, options)
+                        .then(function (files: any) {
+                            var processList: Promise<any>[] = [];
+
+
+                            files.remove("__MACOSX");
+                            if (id == "courses") {
+                                files.folder(id).forEach(function (relativePath: any, file: any) {
+                                    //console.log(processList.length);
+                                    //console.log(relativePath);
+                                    var promise = file.async("string").then(function (json: any) {
+                                        try {
+
+                                            var parsed = JSON.parse(json);
+                                            if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
+                                                var objValues: any[] = [];
+                                                for (let obj of parsed.result) {
+                                                    let subObjValues = {
+                                                        "courses_dept": "",
+                                                        "courses_id": "",
+                                                        "courses_instructor": "",
+                                                        "courses_title": "",
+                                                        "courses_uuid": "",
+                                                        "courses_audit": 0,
+                                                        "courses_avg": 0,
+                                                        "courses_fail": 0,
+                                                        "courses_pass": 0
+                                                    };
+
+                                                    if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
+                                                        if (obj.hasOwnProperty("Subject")) {
+                                                            let dept = id + "_dept";
+                                                            let deptVal = obj["Subject"];
+                                                            subObjValues["courses_dept"] = deptVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Course")) {
+                                                            let nameId = id + "_id";
+                                                            let nameIdVal = obj["Course"];
+                                                            subObjValues["courses_id"] = nameIdVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Avg")) {
+                                                            let avg = id + "_avg";
+                                                            let avgVal = obj["Avg"];
+                                                            subObjValues["courses_avg"] = avgVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Professor")) {
+                                                            let instr = id + "_instructor";
+                                                            let instrVal = obj["Professor"];
+                                                            subObjValues["courses_instructor"] = instrVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Title")) {
+                                                            let title = id + "_title";
+                                                            let titleVal = obj["Title"];
+                                                            subObjValues["courses_title"] = titleVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Pass")) {
+                                                            let pass = id + "_pass";
+                                                            let passVal = obj["Pass"];
+                                                            subObjValues["courses_pass"] = passVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Fail")) {
+                                                            let fail = id + "_fail";
+                                                            let failVal = obj["Fail"];
+                                                            subObjValues["courses_fail"] = failVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("Audit")) {
+                                                            let audit = id + "_audit";
+                                                            let auditVal = obj["Audit"];
+                                                            subObjValues["courses_audit"] = auditVal;
+                                                        }
+                                                        if (obj.hasOwnProperty("id")) {
+                                                            let uuid = id + "_uuid";
+                                                            let uuidVal = obj["id"];
+                                                            subObjValues["courses_uuid"] = uuidVal;
+                                                        }
+
+
+                                                    }
+                                                    objValues.push(subObjValues);
+
+                                                }
+
+
+                                            }
+
+                                        }
+                                        catch (err) {
+                                            //console.log(err);
+
+                                            return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
+                                            //throw err;
+
+                                        }
+
+
+                                        return objValues;
+                                    });
+                                    if (typeof promise != 'undefined') {
+                                        processList.push(promise);
+                                    }
+                                });
                             }
 
+                            Promise.all(processList).then(function (arrayOfStrings: any) {
+                                var counter = 0;
+                                for (let i of arrayOfStrings) {
+                                    if (i == undefined) {
+                                        counter++
+                                    }
+                                }
+                                if (counter == arrayOfStrings.length) {
+                                    reject({code: 400, body: {'error': 'No useful data provided'}});
+                                }
 
 
-                            fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                            fulfill({ code: 201, body: {} });
-                        })
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                var combine = new Array();
+                                if (arrayOfStrings.length > 2) {
+                                    for (let i of arrayOfStrings) {
+                                        for (let j of i) {
+                                            if (typeof j != "undefined") {
+                                                combine.push(j);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    for (let i of arrayOfStrings) {
+                                        if (typeof i != "undefined") {
+                                            for (let j of i) {
+                                                combine.push(j);
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                                fs.writeFileSync(dataPath + id, JSON.stringify(combine));
+                                fulfill({code: 204, body: {}});
                             })
-                    })
-                    .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                    })
+                                .catch(function (err: any) {
+                                    reject({code: 400, body: {'error': err.toString('utf8')}});
+                                })
+                        })
+                        .catch(function (err: any) {
+                            reject({code: 400, body: {'error': err.toString('utf8')}});
+                        })
 
 
+                }
             }
 
+            else if (id == "rooms") {
+                let processList: any = [];
+                let zipFiles: any;
+                let test = require("parse5");
 
-            else {
 
                 cached.loadAsync(content, options)
                     .then(function (files: any) {
-                        var processList: Promise<any>[] = [];
+                        zipFiles = files;
+                        return files.file("index.htm").async("string");
+                    })
+                    .then(function (indexFile: any) {
+                        return test.parseFragment(indexFile);
+                    })
+                    .then(function (parsedHTML: any) {
+                        return findTable(parsedHTML);
+                    })
+                    .then(function (tableFound: any) {
+                        if (tableFound) {
+                            let arrayOfShortBuilding = [];
+                            for (let cI of theTable.childNodes) {
+                                if (cI.nodeName == "tr") {
+                                    // a bunch of checks to make sure its actually the building acronym
+                                    for (let inTd of cI.childNodes) {
+                                        if (inTd.attrs && inTd.attrs.length == 1
+                                            && inTd.attrs[0].name == "class"
+                                            && inTd.attrs[0].value == "views-field views-field-field-building-code") {
 
+                                            let value = inTd.childNodes[0].value.trim();
 
-                        files.remove("__MACOSX");
-                        files.forEach(function (relativePath: any, file: any) {
-                            //console.log(processList.length);
-                            //console.log(relativePath);
-                            if (relativePath != id + "/") {
-                                var promise = file.async("string").then(function (json: any) {
-                                    try {
-
-                                        var parsed = JSON.parse(json);
-                                        if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
-                                            var objValues: any[] = [];
-                                            for (let obj of parsed.result) {
-                                                let subObjValues: any[] = [];
-                                                if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                    if (obj.hasOwnProperty("Subject")) {
-                                                        let dept = id + "_dept";
-                                                        let deptVal = obj["Subject"];
-                                                        subObjValues.push({ [dept]: deptVal })
-                                                    }
-                                                    if (obj.hasOwnProperty("Course")) {
-                                                        let nameId = id + "_id";
-                                                        let nameIdVal = obj["Course"];
-                                                        subObjValues.push({ [nameId]: nameIdVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Avg")) {
-                                                        let avg = id + "_avg";
-                                                        let avgVal = obj["Avg"];
-                                                        subObjValues.push({ [avg]: avgVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Professor")) {
-                                                        let instr = id + "_instructor";
-                                                        let instrVal = obj["Professor"];
-                                                        subObjValues.push({ [instr]: instrVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Title")) {
-                                                        let title = id + "_title";
-                                                        let titleVal = obj["Title"];
-                                                        subObjValues.push({ [title]: titleVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Pass")) {
-                                                        let pass = id + "_pass";
-                                                        let passVal = obj["Pass"];
-                                                        subObjValues.push({ [pass]: passVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Fail")) {
-                                                        let fail = id + "_fail";
-                                                        let failVal = obj["Fail"];
-                                                        subObjValues.push({ [fail]: failVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("Audit")) {
-                                                        let audit = id + "_audit";
-                                                        let auditVal = obj["Audit"];
-                                                        subObjValues.push({ [audit]: auditVal });
-                                                    }
-                                                    if (obj.hasOwnProperty("id")) {
-                                                        let uuid = id + "_uuid";
-                                                        let uuidVal = obj["id"];
-                                                        subObjValues.push({ [uuid]: uuidVal.toString() });
-                                                    }
-
-
-                                                }
-                                                objValues.push(subObjValues);
-
-                                            }
-
-
+                                            arrayOfShortBuilding.push(value);
                                         }
-
                                     }
-                                    catch (err) {
-                                        //console.log(err);
-
-                                        return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
-                                        //throw err;
-
-                                    }
-
-
-
-                                    return objValues;
-                                });
+                                }
                             }
-                            if (typeof promise != 'undefined') {
-                                processList.push(promise);
-                            }
+                            return arrayOfShortBuilding;
+                        } else {
+                            reject({code: 400, body: {'error': "no table found"}});
+                        }
+                    })
+                    .then(function (content: any) {
+                        zipFiles.folder("campus/discover/buildings-and-classrooms").forEach(function (relativePath: any, file: any) {
+                            var promise = createDataset(file, content, relativePath);
+                            processList.push(promise);
+
                         })
-                        Promise.all(processList).then(function (arrayOfStrings: any) {
-                            var counter = 0;
-                            for (let i of arrayOfStrings) {
-                                if (i == undefined) {
-                                    counter++
-                                }
-                            }
-                            if (counter == arrayOfStrings.length) {
-                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
-                            }
-
-
-                            var combine = new Array();
-                            if (arrayOfStrings.length > 2) {
-                                for (let i of arrayOfStrings) {
-                                    for (let j of i) {
-                                        if (typeof j != "undefined") {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (let i of arrayOfStrings) {
-                                    if (typeof i != "undefined") {
-                                        for (let j of i) {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
-                            }
-
-
-
-                            fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                            fulfill({ code: 204, body: {} });
-                        })
-                            .catch(function (err: any) {
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                            })
                     })
                     .catch(function (err: any) {
-                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
-                    })
-
-
-
-
+                        reject({code: 400, body: {'error': err.toString('utf8')}});
+                    });
 
             }
 
         });
+
+
+        // finding the TABLE that has all the names
+        function findTable(node: any): boolean {
+            for (let cI in node.childNodes) {
+                if (node.childNodes[cI].nodeName == "tbody") {
+                    theTable = node.childNodes[cI];
+                    hasTable = true;
+                    break;
+                }
+                else {
+                    findTable(node.childNodes[cI])
+                }
+            }
+            return hasTable;
+        }
+
+
+        // needed to create the entire dataset
+        // File is an individual file in the rooms folder
+        // content is the acronym names to retrieve data
+        // if the file is not in our content, will fulfill with empty array, handle in promise.all
+        // else it should fulfill with an array of my data
+        function createDataset(file: any, content: string[], relativePath: string): Promise<any> {
+            return new Promise(function (fulfill: any, reject: any) {
+                let test = require("parse5");
+
+                if (content.includes(relativePath)) {
+                    file.async("string")
+                        .then(function (content:any) {
+                            return test.parseFragment(content);
+                        })
+                        .then(function (parsedHTML:any) {
+                            // get fullname of building
+                           return getFullName(file, parsedHTML);
+                        })
+                        .catch(function (err:any) {
+                            reject({code: 400, body: {'error': err.toString('utf8')}});
+                        })
+                } else {
+                    fulfill([]);
+                }
+
+            })
+
+        }
+
+        function getFullName(file:any, parsedHTML:any) {
+            for(let i in parsedHTML.childNodes) {
+                if(parsedHTML.childNodes[i].nodeName == "div" && parsedHTML.childNodes[i].attrs.length == 1
+                    && parsedHTML.childNodes[i].attrs[0].name == "class"
+                    && parsedHTML.childNodes[i].attrs[0].value == "building-field") {
+                    for(let j of parsedHTML.childNodes) {
+                        if(j.nodeName == "h2") { // getting fullName
+                            j.childNodes[0].childNodes[0].text.value;
+                        }
+                        break;
+                    }
+                } else {
+                    getFullName(file,parsedHTML.childNodes[i]);
+                }
+
+
+
+            }
+        }
     }
+
 
     removeDataset(id: string): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
@@ -340,12 +481,11 @@ export default class InsightFacade implements IInsightFacade {
                 // remove dataset associated with the id
                 fs.unlinkSync(dataPath + id)
 
-                fulfill({ code: 204, body: {} });
+                fulfill({code: 204, body: {}});
             }
-            else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
+            else (reject({code: 404, body: {'error': 'The id does not exist'}}));
         });
     }
-
 
 
     performQuery(query: QueryRequest): Promise<InsightResponse> {
@@ -355,11 +495,15 @@ export default class InsightFacade implements IInsightFacade {
 
             //check if query is valid
             if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
-                reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                reject({code: 400, body: {'error': 'The query is invalid'}});
             }
 
-            try { JSON.parse(JSON.stringify(query)) }
-            catch (err) { reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } }); }
+            try {
+                JSON.parse(JSON.stringify(query))
+            }
+            catch (err) {
+                reject({code: 400, body: {'error': 'The query is not a valid JSON'}});
+            }
 
             // check if the dataset exists, !!!this is only of D1!!!
             // if (!fs.existsSync(dataPath + 'courses')) {
@@ -376,7 +520,7 @@ export default class InsightFacade implements IInsightFacade {
                 currentData = JSON.parse(thisData);
             }
             catch (err) {
-                reject({ code: 400, body: { 'error': 'cannot retrieve data from disk' } });
+                reject({code: 400, body: {'error': 'cannot retrive data from disk'}});
                 throw err;
             }
 
@@ -394,52 +538,47 @@ export default class InsightFacade implements IInsightFacade {
                 misID = [];
                 allTheData = [];
 
+
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
                         whereParser(query.WHERE, filter, currentData);
                     }
 
                     if (isValidKeys.every(isValid) == false) {
-                        reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
+                        reject({code: 400, body: {'error': 'invalid keys for logic comparactor'}})
                     }
                     if (misID.length != 0) {
-                        reject({ code: 424, body: { 'missing': misID } });
+                        reject({code: 424, body: {'missing': misID}});
                     }
                     allTheData = toProcess[0];
                 }
-                else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
+                else (reject({code: 400, body: {'error': 'Invalid WHERE'}}));
             }
             catch (err) {
-                reject({ code: 400, body: { 'error': err.toString() } });
+                reject({code: 400, body: {'error': err.toString()}});
                 throw err;
             }
 
 
-
-            if (Object.keys(query.OPTIONS).length == 3) {
+            if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = optionParser(allTheData, query.OPTIONS);
                 if (finalProduct == null) {
-                    reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
+                    reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
                 }
-                fulfill({ code: 200, body: finalProduct.valueOf() });
+                fulfill({code: 200, body: finalProduct.valueOf()});
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {
-                reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
+                reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
             }
-
-
 
 
             //cached.file('courses'). ... ; get the data here somehow
 
 
-
-
         });
 
         function whereParser(where: any, filter: string, currentData: any) {
-
 
             if (filter == 'AND' || filter == 'OR') {
                 if (where[filter].length < 2) {
@@ -455,12 +594,12 @@ export default class InsightFacade implements IInsightFacade {
                 if (filter == 'AND') {
                     let waitList = new Array();
 
-                    for(let i = 0; i < subLen; i++){
+                    for (let i = 0; i < subLen; i++) {
                         waitList.push(toProcess.pop());
                     }
 
-                   let newList = waitList.shift().reduce(function(res: any, v: any) {
-                        if (res.indexOf(v) === -1 && waitList.every(function(a: any) {
+                    let newList = waitList.shift().reduce(function (res: any, v: any) {
+                        if (res.indexOf(v) === -1 && waitList.every(function (a: any) {
                                 return a.indexOf(v) !== -1;
                             })) res.push(v);
                         return res;
@@ -475,7 +614,7 @@ export default class InsightFacade implements IInsightFacade {
                         let w = toProcess.pop();
                         waitList = waitList.concat(waitList, w);
                     }
-                   let newList = waitList.filter(function(elem, pos) {
+                    let newList = waitList.filter(function (elem, pos) {
                         return waitList.indexOf(elem) == pos;
                     });
 
@@ -483,6 +622,7 @@ export default class InsightFacade implements IInsightFacade {
                     toProcess.push(newList);
                 }
             }
+
 
             else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
                 let mcompKeys = Object.keys(where[filter]);
@@ -507,39 +647,36 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         else {
                             for (let obj of currentData) {
-                                for (let subObj of obj) {
-                                    for (let val of Object.keys(subObj)) {
-                                        if (val == key) {
-                                            if (filter == 'LT') {
-                                                if (subObj[val] < where[filter][key]) {
-                                                    waitList.push(obj)
-                                                }
-                                            }
-                                            if (filter == 'GT') {
-                                                if (subObj[val] > where[filter][key]) {
-                                                    waitList.push(obj)
-                                                }
-                                            }
-                                            if (filter == 'EQ') {
-                                                if (subObj[val] == where[filter][key]) {
-                                                    waitList.push(obj)
-                                                }
-                                            }
+                                if (obj.hasOwnProperty(key)) {
+                                    if (filter == 'LT') {
+                                        if (obj[key] < where[filter][key]) {
+                                            waitList.push(obj)
+                                        }
+                                    }
+                                    if (filter == 'GT') {
+                                        if (obj[key] > where[filter][key]) {
+                                            waitList.push(obj)
+                                        }
+                                    }
+                                    if (filter == 'EQ') {
+                                        if (obj[key] == where[filter][key]) {
+                                            waitList.push(obj)
                                         }
                                     }
                                 }
+
                             }
                             toProcess.push(waitList);
                         }
 
                     }
+
+
                     else {
                         isValidKeys.push(false);
                         return;
                     }
                 }
-
-
             }
 
 
@@ -568,63 +705,52 @@ export default class InsightFacade implements IInsightFacade {
                             let star = strIS.indexOf("*");
                             let keyLen = strIS.length - 1;
 
-                            if(star != 0 && star != keyLen){
+                            if (star != 0 && star != keyLen) {
                                 for (let obj of currentData) {
-                                    for (let subObj of obj)
-                                        for (let val of Object.keys(subObj)) {
-                                            if (val == key) {
-                                                if (subObj[val] == where[filter][key]) {
-                                                    waitList.push(obj);
-                                                }
-
-                                            }
+                                    if (obj.hasOwnProperty(key)) {
+                                        if (obj[key] == where[filter][key]) {
+                                            waitList.push(obj);
                                         }
+
+                                    }
+
                                 }
 
                             }
-                            else if(star == 0){
-                                if(strIS.substr(keyLen, 1) == "*"){
+                            else if (star == 0) {
+                                if (strIS.substr(keyLen, 1) == "*") {
                                     let subIsStr = strIS.substr(1, keyLen - 1);
                                     for (let obj of currentData) {
-                                        for (let subObj of obj)
-                                            for (let val of Object.keys(subObj)) {
-                                                if (val == key) {
-                                                    if (subObj[val].includes(subIsStr)) {
-                                                        waitList.push(obj);
-                                                    }
-
-                                                }
+                                        if (obj.hasOwnProperty(key)) {
+                                            if (obj[key].includes(subIsStr)) {
+                                                waitList.push(obj);
                                             }
+
+                                        }
                                     }
                                 }
-                                else{
+                                else {
                                     let subIsStr = strIS.substr(1, keyLen);
                                     for (let obj of currentData) {
-                                        for (let subObj of obj)
-                                            for (let val of Object.keys(subObj)) {
-                                                if (val == key) {
-                                                    if (subObj[val].endsWith(subIsStr)) {
-                                                        waitList.push(obj);
-                                                    }
-
-                                                }
+                                        if (obj.hasOwnProperty(key)) {
+                                            if (obj[key].endsWith(subIsStr)) {
+                                                waitList.push(obj);
                                             }
+                                        }
                                     }
 
                                 }
                             }
-                            else if(star == keyLen){
+                            else if (star == keyLen) {
                                 let subIsStr = strIS.substr(0, keyLen);
                                 for (let obj of currentData) {
-                                    for (let subObj of obj)
-                                        for (let val of Object.keys(subObj)) {
-                                            if (val == key) {
-                                                if (subObj[val].startsWith(subIsStr)) {
-                                                    waitList.push(obj);
-                                                }
-
-                                            }
+                                    if (obj.hasOwnProperty(key)) {
+                                        if (obj[key].startsWith(subIsStr)) {
+                                            waitList.push(obj);
                                         }
+
+
+                                    }
                                 }
 
                             }
@@ -639,7 +765,6 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             else if (filter == 'NOT') {
-
                 let notKeys = Object.keys(where[filter]);
                 if (notKeys.length != 1) {
                     isValidKeys.push(false);
@@ -650,10 +775,11 @@ export default class InsightFacade implements IInsightFacade {
                     whereParser(where[filter], subFilter, currentData);
                 }
                 let n = toProcess.pop();
-                waitList = currentData.filter(function(x:any) { return n.indexOf(x) < 0 });
+                waitList = currentData.filter(function (x: any) {
+                    return n.indexOf(x) < 0
+                });
                 toProcess.push(waitList);
             }
-
 
 
         }
@@ -663,11 +789,9 @@ export default class InsightFacade implements IInsightFacade {
         // MCOMPFILTER = TOTALFILTERED AFTER
 
         function optionParser(mcompFiltered: any[], optionBody: any): any {
-            if (!("COLUMNS" in optionBody) || !("ORDER" in optionBody) || !("FORM" in optionBody)) {
+            if (!("COLUMNS" in optionBody) || !("FORM" in optionBody)) {
                 return null;
             }
-
-
             // dealing with columns
             let colVal: any = [];
             for (let val of optionBody["COLUMNS"]) {
@@ -677,38 +801,34 @@ export default class InsightFacade implements IInsightFacade {
             if (optionBody["FORM"] != "TABLE") {
                 return null;
             }
-            //check if order is valid 
-            if (typeof optionBody["ORDER"] != 'string' && !allLibrary.includes(optionBody["ORDER"])) {
+            //check if order is valid
+            var orderVal: string;
+            if (optionBody.hasOwnProperty("ORDER")) {
+                if (typeof optionBody["ORDER"] != 'string' && !allLibrary.includes(optionBody["ORDER"])) {
 
-                return null;
-            }
-            else {
-               // var s = optionBody["ORDER"];
-                if (!colVal.includes(optionBody["ORDER"])) {
                     return null;
                 }
                 else {
-                    orderVal = optionBody["ORDER"];
+                    // var s = optionBody["ORDER"];
+                    if (!colVal.includes(optionBody["ORDER"])) {
+                        return null;
+                    }
+                    else {
+                        orderVal = optionBody["ORDER"];
+                    }
                 }
             }
+            else orderVal = "";
 
 
             var colData = new Array();
 
-            for (let key of mcompFiltered) {
+            for (let obj of mcompFiltered) {
                 var eachData = new Array();
-                for (let subKey of key) {
-
-                    for (let subSubkey of Object.keys(subKey)) {
-
-                        for (let val of colVal) {
-                            if (val == subSubkey) {
-                                eachData.push({ [val]: subKey[subSubkey] })
-                            }
-                        }
-
+                for (let val of colVal) {
+                    if (obj.hasOwnProperty(val)) {
+                        eachData.push({[val]: obj[val]})
                     }
-
                 }
                 if (eachData.length > 0) {
                     let parsed = JSON.parse(JSON.stringify(eachData));
@@ -737,35 +857,37 @@ export default class InsightFacade implements IInsightFacade {
                 }
                 return o;
             }
+
             // END OF PROCESS TABLE
 
 
             // START OF ORDERING //
             //sort with number
-            if (mcompLibrary.includes(orderVal)) {
-                processed.sort(function (a: any, b: any) {
+            if (orderVal != "") {
+                if (mcompLibrary.includes(orderVal)) {
+                    processed.sort(function (a: any, b: any) {
+                        return a[orderVal] - b[orderVal];
+                    })
+                    // console.log(processed);
+                }
+                //sort alphabetically
+                else if (stringLibrary.includes(orderVal)) {
+                    processed.sort(function (a: any, b: any) {
+                        var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
+                        var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
 
-                    return a[orderVal] - b[orderVal];
-                })
-                // console.log(processed);
+                        return 0;
+                    })
+                    // console.log(processed);
+                }
+                else return null;
             }
-            //sort alphabetically
-            else if (stringLibrary.includes(orderVal)) {
-                processed.sort(function (a: any, b: any) {
-                    var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
-                    var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
-                    if (nameA < nameB) {
-                        return -1;
-                    }
-                    if (nameA > nameB) {
-                        return 1;
-                    }
-
-                    return 0;
-                })
-                // console.log(processed);
-            }
-            else return null;
             // END OF ORDERING
 
             var result = {
@@ -774,10 +896,6 @@ export default class InsightFacade implements IInsightFacade {
             };
             return result;
         }
-
-
-
-
 
 
     }
