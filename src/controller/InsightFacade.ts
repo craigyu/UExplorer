@@ -35,6 +35,8 @@ export default class InsightFacade implements IInsightFacade {
     addDataset(id: string, content: string): Promise<InsightResponse> {
         var theTable: any;
         var hasTable = false;
+        var theInfo: any;
+        var hasInfo = false;
 
 
         return new Promise(function (fulfill, reject) {
@@ -409,6 +411,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
         // finding the TABLE that has all the names
+        // uses recursion to find table
         function findTable(node: any): boolean {
             for (let cI in node.childNodes) {
                 if (node.childNodes[cI].nodeName == "tbody") {
@@ -421,6 +424,23 @@ export default class InsightFacade implements IInsightFacade {
                 }
             }
             return hasTable;
+        }
+
+        function findBuildingInfo(node: any): boolean {
+            for(let cI in node.childNodes) {
+                if(node.childNodes[cI].nodeName == "div" &&  node.childNodes[cI].attrs.length == 1
+                    && node.childNodes[cI].attrs[0].name == "class"
+                    && node.childNodes[cI].attrs[0].value == "building-field") {
+                    theInfo = node.childNodes[cI];
+                    hasInfo = true;
+                    break;
+                }
+                else {
+                    findBuildingInfo(node.childNodes[cI]);
+                }
+            }
+            return hasInfo;
+
         }
 
 
@@ -440,7 +460,14 @@ export default class InsightFacade implements IInsightFacade {
                         })
                         .then(function (parsedHTML:any) {
                             // get fullname of building
-                           return getFullName(file, parsedHTML);
+                           return findBuildingInfo(parsedHTML);
+                        })
+                        .then(function (hasInfo:any) {
+                            if(hasInfo == false) {
+                                reject({code: 400, body: {'error': "Cannot find building info"}});
+                            }
+                            getBuildingInfo(file,theInfo);
+
                         })
                         .catch(function (err:any) {
                             reject({code: 400, body: {'error': err.toString('utf8')}});
@@ -453,25 +480,14 @@ export default class InsightFacade implements IInsightFacade {
 
         }
 
-        function getFullName(file:any, parsedHTML:any) {
-            for(let i in parsedHTML.childNodes) {
-                if(parsedHTML.childNodes[i].nodeName == "div" && parsedHTML.childNodes[i].attrs.length == 1
-                    && parsedHTML.childNodes[i].attrs[0].name == "class"
-                    && parsedHTML.childNodes[i].attrs[0].value == "building-field") {
-                    for(let j of parsedHTML.childNodes) {
+        function getBuildingInfo(file:any, parsedBuildingInfo:any) {
+                    for(let j of parsedBuildingInfo.childNodes) {
                         if(j.nodeName == "h2") { // getting fullName
-                            j.childNodes[0].childNodes[0].text.value;
+
                         }
-                        break;
                     }
-                } else {
-                    getFullName(file,parsedHTML.childNodes[i]);
                 }
 
-
-
-            }
-        }
     }
 
 
