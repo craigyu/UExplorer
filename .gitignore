@@ -10,3 +10,8 @@ node_modules/
 .idea/
 .yarnclean
 coverage/
+.nyc_output/02a5f0f0fa7095e2aabb1a8d41909d59.json
+.nyc_output/6cac6c9221b19538f2f76e0d5020172f.json
+.nyc_output/ef0cdb8d981dc58b91ae03bf02fd413d.json
+/rooms/
+/.nyc_output/

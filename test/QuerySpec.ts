@@ -926,14 +926,15 @@ describe("QuerySpec", function () {
     it("Testing complex nots", () => {
         let queryR: QueryRequest = {
             "WHERE": {
-                "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "LT": { "courses_avg": 50 } } } } } } } }
+                "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "LT": { "courses_avg": 50 } } } } } } } } }
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_avg"
-
+                    "courses_title",
+                    "courses_pass",
+                    "courses_fail"
                 ],
-                "ORDER": "courses_avg",
+                "ORDER": "courses_pass",
                 "FORM": "TABLE"
             }
         };
@@ -941,16 +942,7 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result: [
-                    { courses_avg: 76.48 },
-                    { courses_avg: 76.48 },
-                    { courses_avg: 82.5 },
-                    { courses_avg: 82.5 },
-                    { courses_avg: 85.4 },
-                    { courses_avg: 85.4 },
-                    { courses_avg: 89.6 },
-                    { courses_avg: 89.6 }
-                ]
+                result: []
             }
         };
 
@@ -1026,96 +1018,12 @@ describe("QuerySpec", function () {
                 "ORDER": "rooms_name"
             }
         };
-        let queryROutput: InsightResponse = {
-            code: 200,
-            body: {
-                render: 'TABLE',
-                result: [{
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4074"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4068"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4058"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4018"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4004"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3074"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3068"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3058"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3018"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3004"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_1001"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4072"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4062"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4052"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4016"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_4002"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3072"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3062"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3052"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3016"
-                }, {
-                    "rooms_address": "6363 Agronomy Road",
-                    "rooms_name": "ORCH_3002"
-                }, {
-                    "rooms_address": "6245 Agronomy Road V6T 1Z4",
-                    "rooms_name": "DMP_310"
-                }, {
-                    "rooms_address": "6245 Agronomy Road V6T 1Z4",
-                    "rooms_name": "DMP_201"
-                }, {
-                    "rooms_address": "6245 Agronomy Road V6T 1Z4",
-                    "rooms_name": "DMP_101"
-                }, {
-                    "rooms_address": "6245 Agronomy Road V6T 1Z4",
-                    "rooms_name": "DMP_301"
-                }, {
-                    "rooms_address": "6245 Agronomy Road V6T 1Z4",
-                    "rooms_name": "DMP_110"
-                }]
-            }
-        };
 
 
         return insF.performQuery(queryR).then(function (value: any) {
             Log.test("Value: " + value);
-            expect(value).to.deep.equal(queryROutput);
+            let len = value.body.result.length;
+            expect(len).to.equal(26);
 
         }).catch(function (err: any) {
             console.log(err);
@@ -1123,6 +1031,322 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
+
+    it("Invalid # of AND keys", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "cell"
+                        }
+
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+    it("Invalid Where", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'Invalid WHERE' } });
+        })
+    });
+
+    it("Invalid Is Keys", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "IS": {
+                    "courses_avg": 23
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+    it("Invalid mcomp Keys", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "GT": {
+                    "courses_dept": "sda"
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+    it("Invalid NOT Keys", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "NOT": {
+                    "courses_dept": "sda",
+                    "courses_avg": 23
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+    it("Invalid # of NOT Keys", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "NOT": {
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+    it("Invalid columns", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "NOT": {
+                    "IS": { "courses_dept": "cell" }
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": ["sd"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { "Error": "Invalid OPTIONS" } });
+        })
+    });
+
+    it("Missing file in IS", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "IS": {
+                    "_instructor": "*o'connor, timothy"
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+     it("wrong id test", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "IS": {
+                    "rooms_name": "*o'connor, timothy"
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: {"Error": "Invalid OPTIONS"} });
+        })
+    });
+
+    it("two diff ids test", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "rooms_name": "cell"
+                        }
+                    },
+                    {
+                        "EQ": {
+                            "courses_avg": 89.6
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: {"error": "invalid keys for logic comparactor"} });
+        })
+    });
+
+
+    it("missing ID file test", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "IS": {
+                    "QWSD_instructor": "*o'connor, timothy"
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 424, body: {"missing": ["QWSD"]} });
+        })
+    });
+
+
+
+
+
+
+
+
 
 
 });

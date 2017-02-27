@@ -678,7 +678,7 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             if (fs.existsSync(dataPath + id)) {
                 // remove dataset associated with the id
-                fs.unlinkSync(dataPath + id)
+                fs.unlinkSync(dataPath + id);
 
                 fulfill({code: 204, body: {}});
             }

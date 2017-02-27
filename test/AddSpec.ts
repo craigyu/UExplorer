@@ -18,16 +18,6 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    it.skip("Testing Load Zip base64 more than 1 file in zip", function () {
-        let fs = require("fs");
-        let data = fs.readFileSync("courses.zip", "base64");
-
-        return insF.addDataset("courses", data).then(function (value:any) {
-            expect(value).to.deep.equal({ code: 201, body: {} })
-        }).catch(function (err) {
-            Log.test(err);
-        })
-    });
 
     it("Testing Invalid Zip base64 to fail", function () {
         let fs = require("fs");
@@ -65,15 +55,70 @@ describe("AddSpec", function () {
         })
     });
 
-    it("Testing for Room (loading files)", function () {
+
+
+
+    it("Testing for new Room (loading files)", function () {
+        let fs = require("fs");
+        let data = fs.readFileSync("rooms.zip", "base64");
+
+        if (fs.existsSync("./cachedDatasets/rooms")) {
+            fs.unlinkSync("./cachedDatasets/rooms");
+        }
+
+        return insF.addDataset("rooms", data).then(function (value:any) {
+            expect(value).to.deep.equal({ code: 204, body: {} })
+        }).catch(function (err) {
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+
+
+    it("Testing Remove Dataset", function () {
+        let fs = require("fs");
+
+        return insF.removeDataset("rooms").then(function (value:any) {
+            expect(value).to.deep.equal({ code: 204, body: {} })
+        }).catch(function (err) {
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+    it("Testing Remove Dataset when already removed", function () {
+        let fs = require("fs");
+
+        return insF.removeDataset("rooms").then(function (value:any) {
+            expect.fail()
+        }).catch(function (err) {
+            Log.test(err);
+            expect(err).to.deep.equal({code: 404, body: {'error': 'The id does not exist'}})
+        })
+    });
+
+
+    it("Readding Room for query tests", function () {
         let fs = require("fs");
         let data = fs.readFileSync("rooms.zip", "base64");
 
         return insF.addDataset("rooms", data).then(function (value:any) {
-            expect(value).to.deep.equal({ code: 201, body: {} })
+            expect(value).to.deep.equal({ code: 204, body: {} })
         }).catch(function (err) {
             Log.test(err);
             expect.fail();
+        })
+    });
+
+    it("Testing for ID with nothing", function () {
+        let fs = require("fs");
+        let data = fs.readFileSync("test3files.zip", "base64");
+        return insF.addDataset("", data).then(function (value:any) {
+            expect.fail()
+        }).catch(function (err) {
+            Log.test(err);
+            expect(err).to.deep.equal({code: 400, body: {"error": "No id was provided."}})
         })
     });
 
