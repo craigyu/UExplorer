@@ -547,6 +547,7 @@ export default class InsightFacade implements IInsightFacade {
                 "rooms_furniture": "",
                 "rooms_href": ""
             };
+         //   buildingInfo["rooms_shortname"]
             // getting full name
             buildingInfo["rooms_fullname"] = (parsedBuildingInfo[1].childNodes[0].childNodes[0].value);
             //getting address
@@ -594,6 +595,8 @@ export default class InsightFacade implements IInsightFacade {
                     throw new Error("could not parse LatLon");
                 }
                 else {
+                    buildingInfo["rooms_lat"] = content["lat"];
+                    buildingInfo["rooms_lon"] = content["lon"];
 
                 }
             });

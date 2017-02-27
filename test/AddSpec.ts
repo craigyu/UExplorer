@@ -25,7 +25,7 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    it.only("Testing Load Zip base64 more than 1 file in zip", function () {
+    it("Testing Load Zip base64 more than 1 file in zip", function () {
         let fs = require("fs");
         let data = fs.readFileSync("courses.zip", "base64");
 
@@ -36,7 +36,7 @@ describe("AddSpec", function () {
         })
     });
 
-    it.skip("Testing Invalid Zip base64 to fail", function () {
+    it("Testing Invalid Zip base64 to fail", function () {
         let fs = require("fs");
         let data = fs.readFileSync("invalidJSON.zip", "base64");
 
@@ -48,7 +48,7 @@ describe("AddSpec", function () {
         })
     });
 
-    it.skip("Testing for Query (loading 3 files)", function () {
+    it("Testing for Query (loading 3 files)", function () {
         let fs = require("fs");
         let data = fs.readFileSync("test3files.zip", "base64");
         return insF.addDataset("courses", data).then(function (value:any) {
@@ -59,7 +59,7 @@ describe("AddSpec", function () {
         })
     });
 
-    it.skip("Testing for Room (loading files)", function () {
+    it.only("Testing for Room (loading files)", function () {
         let fs = require("fs");
         let data = fs.readFileSync("rooms.zip", "base64");
 
