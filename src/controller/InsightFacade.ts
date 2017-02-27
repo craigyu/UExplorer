@@ -21,10 +21,12 @@ var toProcess = new Array();
 var allTheData = new Array();
 var misID = new Array();
 var isValidKeys: boolean[] = [];
-var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_year');
-var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid');
-var allLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_dept', 'courses_id',
-    'courses_instructor', 'courses_title', 'courses_uuid', 'courses_year');
+var currentData: any;
+var idAssure = "";
+var notCount = 0;
+var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_year', 'rooms_lat', 'rooms_lon', 'rooms_seats');
+var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid', 'rooms_fullname',
+    'rooms_shortname', 'rooms_number', 'rooms_name', 'rooms_address', 'rooms_type', 'rooms_furniture', 'rooms_href');
 
 
 export default class InsightFacade implements IInsightFacade {
@@ -441,6 +443,9 @@ export default class InsightFacade implements IInsightFacade {
                     });
 
             }
+            else {
+                reject({code: 400, body: {'error': 'the id is not valid'}});
+            }
 
         });
 
@@ -621,14 +626,14 @@ export default class InsightFacade implements IInsightFacade {
 
             //check if query is valid
             if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
-                reject({code: 400, body: {'error': 'The query is invalid'}});
+                reject({ code: 400, body: { 'error': 'The query is invalid' } });
             }
 
             try {
                 JSON.parse(JSON.stringify(query))
             }
             catch (err) {
-                reject({code: 400, body: {'error': 'The query is not a valid JSON'}});
+                reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } });
             }
 
             // check if the dataset exists, !!!this is only of D1!!!
@@ -638,17 +643,16 @@ export default class InsightFacade implements IInsightFacade {
 
 
             // retrive cached data
-            let id = 'courses';
-            var currentData;
 
-            var thisData = fs.readFileSync(dataPath + id, "utf8");
-            try {
-                currentData = JSON.parse(thisData);
-            }
-            catch (err) {
-                reject({code: 400, body: {'error': 'cannot retrive data from disk'}});
-                throw err;
-            }
+
+            // var thisData = fs.readFileSync(dataPath + id, "utf8");
+            // try {
+            //     currentData = JSON.parse(thisData);
+            // }
+            // catch (err) {
+            //     reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
+            //     throw err;
+            // }
 
             //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
@@ -663,25 +667,28 @@ export default class InsightFacade implements IInsightFacade {
                 toProcess = [];
                 misID = [];
                 allTheData = [];
+                idAssure = "";
+                currentData = null;
+                notCount = 0;
 
 
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
-                        whereParser(query.WHERE, filter, currentData);
+                        whereParser(query.WHERE, filter);
                     }
 
                     if (isValidKeys.every(isValid) == false) {
-                        reject({code: 400, body: {'error': 'invalid keys for logic comparactor'}})
+                        reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
                     if (misID.length != 0) {
-                        reject({code: 424, body: {'missing': misID}});
+                        reject({ code: 424, body: { 'missing': misID } });
                     }
                     allTheData = toProcess[0];
                 }
-                else (reject({code: 400, body: {'error': 'Invalid WHERE'}}));
+                else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
             }
             catch (err) {
-                reject({code: 400, body: {'error': err.toString()}});
+                reject({ code: 400, body: { 'error': err.toString() } });
                 throw err;
             }
 
@@ -689,13 +696,13 @@ export default class InsightFacade implements IInsightFacade {
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = optionParser(allTheData, query.OPTIONS);
                 if (finalProduct == null) {
-                    reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
+                    reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
-                fulfill({code: 200, body: finalProduct.valueOf()});
+                fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {
-                reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
+                reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
             }
 
 
@@ -704,7 +711,7 @@ export default class InsightFacade implements IInsightFacade {
 
         });
 
-        function whereParser(where: any, filter: string, currentData: any) {
+        function whereParser(where: any, filter: string) {
 
             if (filter == 'AND' || filter == 'OR') {
                 if (where[filter].length < 2) {
@@ -714,7 +721,7 @@ export default class InsightFacade implements IInsightFacade {
                 let subLen = Object.keys(where[filter]).length;
                 for (let subFilter of where[filter]) {
                     for (let subSubfilter of Object.keys(subFilter)) {
-                        whereParser(subFilter, subSubfilter, currentData);
+                        whereParser(subFilter, subSubfilter);
                     }
                 }
                 if (filter == 'AND') {
@@ -726,8 +733,8 @@ export default class InsightFacade implements IInsightFacade {
 
                     let newList = waitList.shift().reduce(function (res: any, v: any) {
                         if (res.indexOf(v) === -1 && waitList.every(function (a: any) {
-                                return a.indexOf(v) !== -1;
-                            })) res.push(v);
+                            return a.indexOf(v) !== -1;
+                        })) res.push(v);
                         return res;
                     }, []);
 
@@ -761,8 +768,27 @@ export default class InsightFacade implements IInsightFacade {
                 for (let key of mcompKeys) {
                     let n = key.indexOf("_");
                     let fileName = key.substr(0, n);
+                    if (n < 1) {
+                        isValidKeys.push(false);
+                        return;
+                    }
                     if (!fs.existsSync(dataPath + fileName)) {
                         misID.push(fileName);
+                        return;
+                    }
+                    else if (idAssure == "") {
+                        idAssure = fileName;
+                        let thisData = fs.readFileSync(dataPath + fileName, "utf8");
+                        try {
+                            currentData = JSON.parse(thisData);
+                        }
+                        catch (err) {
+                            isValidKeys.push(false);
+                            return;
+                        }
+                    }
+                    else if (idAssure != fileName) {
+                        isValidKeys.push(false);
                         return;
                     }
 
@@ -817,8 +843,27 @@ export default class InsightFacade implements IInsightFacade {
                 for (let key of isKey) {
                     let n = key.indexOf("_");
                     let fileName = key.substr(0, n);
+                    if (n < 1) {
+                        isValidKeys.push(false);
+                        return;
+                    }
                     if (!fs.existsSync(dataPath + fileName)) {
                         misID.push(fileName);
+                        return;
+                    }
+                    else if (idAssure == "") {
+                        idAssure = fileName;
+                        let thisData = fs.readFileSync(dataPath + fileName, "utf8");
+                        try {
+                            currentData = JSON.parse(thisData);
+                        }
+                        catch (err) {
+                            isValidKeys.push(false);
+                            return;
+                        }
+                    }
+                    else if (idAssure != fileName) {
+                        isValidKeys.push(false);
                         return;
                     }
                     if (stringLibrary.includes(key)) {
@@ -891,20 +936,25 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             else if (filter == 'NOT') {
+                notCount++;
                 let notKeys = Object.keys(where[filter]);
                 if (notKeys.length != 1) {
                     isValidKeys.push(false);
                     return;
                 }
                 let waitList = new Array();
+
                 for (let subFilter of notKeys) {
-                    whereParser(where[filter], subFilter, currentData);
+                    whereParser(where[filter], subFilter);
                 }
-                let n = toProcess.pop();
-                waitList = currentData.filter(function (x: any) {
-                    return n.indexOf(x) < 0
-                });
-                toProcess.push(waitList);
+                if (notCount % 2 != 0) {
+                    let n = toProcess.pop();
+                    waitList = currentData.filter(function (x: any) {
+                        return n.indexOf(x) < 0
+                    });
+                    toProcess.push(waitList);
+                    notCount = 0;
+                }
             }
 
 
@@ -921,6 +971,17 @@ export default class InsightFacade implements IInsightFacade {
             // dealing with columns
             let colVal: any = [];
             for (let val of optionBody["COLUMNS"]) {
+                let n = val.indexOf("_");
+                let fileName = val.substr(0, n);
+                if (n < 1) {
+                    return null;
+                }
+                if (idAssure == "") {
+                    return null;
+                }
+                else if (idAssure != fileName) {
+                    return null;
+                }
                 colVal.push(val);
             }
 
@@ -930,8 +991,7 @@ export default class InsightFacade implements IInsightFacade {
             //check if order is valid
             var orderVal: string;
             if (optionBody.hasOwnProperty("ORDER")) {
-                if (typeof optionBody["ORDER"] != 'string' && !allLibrary.includes(optionBody["ORDER"])) {
-
+                if (typeof optionBody["ORDER"] != 'string') {
                     return null;
                 }
                 else {
@@ -953,7 +1013,7 @@ export default class InsightFacade implements IInsightFacade {
                 var eachData = new Array();
                 for (let val of colVal) {
                     if (obj.hasOwnProperty(val)) {
-                        eachData.push({[val]: obj[val]})
+                        eachData.push({ [val]: obj[val] })
                     }
                 }
                 if (eachData.length > 0) {
