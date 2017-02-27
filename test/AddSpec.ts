@@ -34,21 +34,18 @@ describe("AddSpec", function () {
         let fs = require("fs");
         let data = fs.readFileSync("test3files.zip", "base64");
         return insF.addDataset("courses", data).then(function (value:any) {
-            expect(value).to.deep.equal({ code: 201, body: {} })
+            expect(value).to.deep.equal({ code: 204, body: {} })
         }).catch(function (err) {
             Log.test(err);
             expect.fail();
         })
     });
 
-    it("Testing for Query (loading 3 files) BUT first deleting it", function () {
+    it("Testing for Query (loading 3 files) BUT files already exists", function () {
         let fs = require("fs");
         let data = fs.readFileSync("test3files.zip", "base64");
-        if (fs.existsSync("./cachedDatasets/courses")) {
-            fs.unlinkSync("./cachedDatasets/courses");
-        }
         return insF.addDataset("courses", data).then(function (value:any) {
-            expect(value).to.deep.equal({ code: 204, body: {} })
+            expect(value).to.deep.equal({ code: 201, body: {} })
         }).catch(function (err) {
             Log.test(err);
             expect.fail();
