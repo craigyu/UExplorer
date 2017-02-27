@@ -923,7 +923,7 @@ describe("QuerySpec", function () {
         })
     });
 
-    it("Testing complex nots", () => {
+    it.only("Testing complex nots", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "NOT": {"NOT": {"NOT": {"NOT": {"NOT": {"NOT": {"NOT": {"LT" : {"courses_avg": 50}} }}}}}}
