@@ -18,7 +18,7 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    it("Testing Load Zip base64 more than 1 file in zip", function () {
+    it.skip("Testing Load Zip base64 more than 1 file in zip", function () {
         let fs = require("fs");
         let data = fs.readFileSync("courses.zip", "base64");
 
@@ -37,7 +37,7 @@ describe("AddSpec", function () {
             expect.fail();
         }).catch(function (err) {
             Log.test(err);
-            expect(err).to.deep.equal({code: 400, body: {'error': 'file include invalid JSON(s)'}});
+            expect(err).to.deep.equal({code: 400, body: {'error': 'the id is not valid'}});
         })
     });
 
@@ -52,7 +52,7 @@ describe("AddSpec", function () {
         })
     });
 
-    it.only("Testing for Room (loading files)", function () {
+    it("Testing for Room (loading files)", function () {
         let fs = require("fs");
         let data = fs.readFileSync("rooms.zip", "base64");
 
