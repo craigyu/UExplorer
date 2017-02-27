@@ -31,8 +31,7 @@ describe("AddSpec", function () {
 
     it("Testing Invalid Zip base64 to fail", function () {
         let fs = require("fs");
-        let data = fs.readFileSync("invalidJSON.zip", "base64");
-
+            let data = fs.readFileSync("invalidJSON.zip", "base64");
         return insF.addDataset("invalidJSON", data).then(function () {
             expect.fail();
         }).catch(function (err) {
@@ -52,7 +51,21 @@ describe("AddSpec", function () {
         })
     });
 
-    it.only("Testing for Room (loading files)", function () {
+    it("Testing for Query (loading 3 files) BUT first deleting it", function () {
+        let fs = require("fs");
+        let data = fs.readFileSync("test3files.zip", "base64");
+        if (fs.existsSync("./cachedDatasets/courses")) {
+            fs.unlinkSync("./cachedDatasets/courses");
+        }
+        return insF.addDataset("courses", data).then(function (value:any) {
+            expect(value).to.deep.equal({ code: 204, body: {} })
+        }).catch(function (err) {
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+    it("Testing for Room (loading files)", function () {
         let fs = require("fs");
         let data = fs.readFileSync("rooms.zip", "base64");
 
