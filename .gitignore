@@ -15,3 +15,4 @@ coverage/
 .nyc_output/ef0cdb8d981dc58b91ae03bf02fd413d.json
 /rooms/
 /.nyc_output/
+/cachedDatasets/
