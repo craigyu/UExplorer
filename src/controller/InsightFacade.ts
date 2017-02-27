@@ -1,10 +1,10 @@
 /**
  * This is the main programmatic entry point for the project.
  */
-import { IInsightFacade, InsightResponse, QueryRequest } from "./IInsightFacade";
+import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
 
 import Log from "../Util";
-import { error } from "util";
+import {error} from "util";
 
 var JSZip = require("jszip");
 
@@ -40,8 +40,8 @@ export default class InsightFacade implements IInsightFacade {
         var hasTable = false;
 
         return new Promise(function (fulfill, reject) {
-            var options = { base64: true };
-            if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
+            var options = {base64: true};
+            if (id == '') reject({code: 400, body: {"error": "No id was provided."}});
             //console.log("hiiiii");
             // id contains given id
             var cached = new JSZip();
@@ -160,7 +160,7 @@ export default class InsightFacade implements IInsightFacade {
 
                                                 return reject({
                                                     code: 400,
-                                                    body: { 'error': 'file include invalid JSON(s)' }
+                                                    body: {'error': 'file include invalid JSON(s)'}
                                                 });
                                                 //throw err;
 
@@ -184,7 +184,7 @@ export default class InsightFacade implements IInsightFacade {
                                     }
                                 }
                                 if (counter == arrayOfStrings.length) {
-                                    reject({ code: 400, body: { 'error': 'No useful data provided' } });
+                                    reject({code: 400, body: {'error': 'No useful data provided'}});
                                 }
 
                                 var combine = new Array();
@@ -208,14 +208,14 @@ export default class InsightFacade implements IInsightFacade {
 
 
                                 fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                                fulfill({ code: 201, body: {} });
+                                fulfill({code: 201, body: {}});
                             })
                                 .catch(function (err: any) {
-                                    reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                    reject({code: 400, body: {'error': err.toString('utf8')}});
                                 })
                         })
                         .catch(function (err: any) {
-                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                            reject({code: 400, body: {'error': err.toString('utf8')}});
                         })
 
 
@@ -328,7 +328,7 @@ export default class InsightFacade implements IInsightFacade {
                                         catch (err) {
                                             //console.log(err);
 
-                                            return reject({ code: 400, body: { 'error': 'file include invalid JSON(s)' } });
+                                            return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
                                             //throw err;
 
                                         }
@@ -351,7 +351,7 @@ export default class InsightFacade implements IInsightFacade {
                                     }
                                 }
                                 if (counter == arrayOfStrings.length) {
-                                    reject({ code: 400, body: { 'error': 'No useful data provided' } });
+                                    reject({code: 400, body: {'error': 'No useful data provided'}});
                                 }
 
 
@@ -376,14 +376,14 @@ export default class InsightFacade implements IInsightFacade {
 
 
                                 fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                                fulfill({ code: 204, body: {} });
+                                fulfill({code: 204, body: {}});
                             })
                                 .catch(function (err: any) {
-                                    reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                    reject({code: 400, body: {'error': err.toString('utf8')}});
                                 })
                         })
                         .catch(function (err: any) {
-                            reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                            reject({code: 400, body: {'error': err.toString('utf8')}});
                         })
 
 
@@ -398,7 +398,9 @@ export default class InsightFacade implements IInsightFacade {
                     sucCode = 201;
                     fs.unlinkSync(dataPath + id);
                 }
-                else { sucCode = 204 }
+                else {
+                    sucCode = 204
+                }
 
                 cached.loadAsync(content, options)
                     .then(function (files: any) {
@@ -431,7 +433,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             return arrayOfShortBuilding;
                         } else {
-                            reject({ code: 400, body: { 'error': "no table found" } });
+                            reject({code: 400, body: {'error': "no table found"}});
                         }
                     })
                     .then(function (content: any) {
@@ -447,25 +449,33 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
-                            if(arrayOfStrings.length == 0){
-                                reject({ code: 400, body: { 'error': 'no data' }});
+                            if (arrayOfStrings.length == 0) {
+                                reject({code: 400, body: {'error': 'no data'}});
                             }
-                            fs.writeFileSync(dataPath + id, JSON.stringify(arrayOfStrings));
-                            fulfill({ code: sucCode, body: {} });
+                            let arLen = arrayOfStrings.length;
+                            let newAr = new Array();
+                            for( let i = 0; i< arLen; i++){
+                                newAr = newAr.concat(arrayOfStrings[i]);
+                            }
+                            newAr = newAr.filter(function (n: any) {
+                                return Object.keys(n).length > 0;
+                            });
+                            fs.writeFileSync(dataPath + id, JSON.stringify(newAr));
+                            fulfill({code: sucCode, body: {}});
                         })
                             .catch(function (err: any) {
                                 console.log(err);
-                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                                reject({code: 400, body: {'error': err.toString('utf8')}});
                             })
                     })
 
                     .catch(function (err: any) {
                         console.log(err);
-                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                        reject({code: 400, body: {'error': err.toString('utf8')}});
                     })
             }
             else {
-                reject({ code: 400, body: { 'error': 'the id is not valid' } });
+                reject({code: 400, body: {'error': 'the id is not valid'}});
             }
 
         });
@@ -496,7 +506,6 @@ export default class InsightFacade implements IInsightFacade {
         function createDataset(file: any, content: string[], relativePath: string): Promise<any> {
             return new Promise(function (fulfill: any, reject: any) {
                 let test = require("parse5");
-                let n: any;
                 let emptyB = {};
 
                 if (content.includes(relativePath)) {
@@ -505,12 +514,17 @@ export default class InsightFacade implements IInsightFacade {
                             return test.parseFragment(content);
                         })
                         .then(function (parsedHTML: any) {
-                            // get fullname of building
+                            // parsedHTML is the whole HTML file (individual buildings)
                             var nodeNeeded: any;
                             var hasNode = false;
+                            var theTable: any
+                            var hasTable = false;
+                            var returnData = [];
 
-                            if (findBuildingInfo(parsedHTML)) {
-                                return nodeNeeded;
+                            if (findTable(parsedHTML) && findBuildingInfo(parsedHTML)) {
+                                returnData.push(theTable);
+                                returnData.push(nodeNeeded);
+                                return returnData;
                             } else {
                                 fulfill(emptyB);
                             }
@@ -531,6 +545,21 @@ export default class InsightFacade implements IInsightFacade {
                                 return hasNode;
 
                             }
+
+                            function findTable(node: any): boolean {
+                                for (let cI in node.childNodes) {
+                                    if (node.childNodes[cI].nodeName == "tbody") {
+                                        theTable = node.childNodes[cI];
+                                        hasTable = true;
+                                        break;
+                                    }
+                                    else {
+                                        findTable(node.childNodes[cI])
+                                    }
+                                }
+                                return hasTable;
+                            }
+
                         })
                         .then(function (hasInfo: any) {
                             let objArr: Promise<any>[] = [];
@@ -539,9 +568,9 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             else {
 
-                                objArr.push(getBuildingInfo(file, hasInfo, relativePath));
+                                objArr.push(getBuildingInfo(file, hasInfo[1], hasInfo[0], relativePath));
                                 Promise.all(objArr).then(function (arr: any) {
-                                    if (arr[0] != {}) {
+                                    if (arr[0] != [] && arr[0] != {}) {
                                         fulfill(arr[0]);
                                     }
                                     else fulfill({});
@@ -564,31 +593,42 @@ export default class InsightFacade implements IInsightFacade {
 
         }
 
-        function getBuildingInfo(file: any, parsedBuildingInfo: any, shortname: any) {
+        function getBuildingInfo(file: any, parsedBuildingInfo: any, parsedRoomTable: any, shortname: any) {
             interface GeoResponse {
                 lat?: number;
                 lon?: number;
                 error?: string;
             }
             let emptyB = {};
-            var buildingInfo = { // represents one buildingInfo
-                "rooms_fullname": "",
-                "rooms_shortname": "",
-                "rooms_number": "",
-                "rooms_name": "",
-                "rooms_address": "",
-                "rooms_lat": 0,
-                "rooms_lon": 0,
-                "rooms_seats": 0,
-                "rooms_type": "",
-                "rooms_furniture": "",
-                "rooms_href": ""
-            };
-            buildingInfo["rooms_shortname"] = shortname;
-            // getting full name
-            buildingInfo["rooms_fullname"] = (parsedBuildingInfo[1].childNodes[0].childNodes[0].value);
-            //getting address
-            buildingInfo["rooms_address"] = (parsedBuildingInfo[3].childNodes[0].childNodes[0].value);
+
+            let childLen = parsedRoomTable.childNodes.length;
+            let allRooms = new Array();
+
+            var buildingInfo = {"rooms_address" : parsedBuildingInfo[3].childNodes[0].childNodes[0].value};
+
+            for (let i = 1; i < childLen; i=i+2) {
+                var temp = { // represents one buildingInfo
+                    "rooms_fullname": parsedBuildingInfo[1].childNodes[0].childNodes[0].value,
+                    "rooms_shortname": shortname,
+                    "rooms_number": "",
+                    "rooms_name": "",
+                    "rooms_address": parsedBuildingInfo[3].childNodes[0].childNodes[0].value,
+                    "rooms_lat": 0,
+                    "rooms_lon": 0,
+                    "rooms_seats": 0,
+                    "rooms_type": "",
+                    "rooms_furniture": "",
+                    "rooms_href": ""
+                };
+                temp["rooms_number"] = (parsedRoomTable.childNodes[i].childNodes[1].childNodes[1].childNodes[0].value);
+                temp["rooms_seats"] = parseInt(parsedRoomTable.childNodes[i].childNodes[3].childNodes[0].value.trim());
+                temp["rooms_furniture"] = (parsedRoomTable.childNodes[i].childNodes[5].childNodes[0].value).trim();
+                temp["rooms_type"] = (parsedRoomTable.childNodes[i].childNodes[7].childNodes[0].value).trim();
+                temp["rooms_name"] = temp["rooms_shortname"] + "_" + temp["rooms_number"];
+                temp["rooms_href"]  = "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/" + shortname + "-" + temp["rooms_number"];
+                allRooms.push(temp);
+            }
+
             var linkForLatLon = buildingInfo["rooms_address"].split(" ").join("%20");
             var http = require("http");
             var requestToServer = "http://skaha.cs.ubc.ca:11316/api/v1/team188/" + linkForLatLon;
@@ -610,9 +650,11 @@ export default class InsightFacade implements IInsightFacade {
                                 if ('error' in parseData) {
                                     fulfill(emptyB);
                                 } else {
-                                    buildingInfo["rooms_lat"] = parseData["lat"];
-                                    buildingInfo["rooms_lon"] = parseData["lon"];
-                                    fulfill(buildingInfo);
+                                    for(let obj of allRooms) {
+                                        obj["rooms_lat"] = parseData["lat"];
+                                        obj["rooms_lon"] = parseData["lon"];
+                                    }
+                                    fulfill(allRooms);
                                 }
                             } catch (e) {
                                 fulfill(emptyB);
@@ -638,9 +680,9 @@ export default class InsightFacade implements IInsightFacade {
                 // remove dataset associated with the id
                 fs.unlinkSync(dataPath + id)
 
-                fulfill({ code: 204, body: {} });
+                fulfill({code: 204, body: {}});
             }
-            else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
+            else (reject({code: 404, body: {'error': 'The id does not exist'}}));
         });
     }
 
@@ -652,14 +694,14 @@ export default class InsightFacade implements IInsightFacade {
 
             //check if query is valid
             if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
-                reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                reject({code: 400, body: {'error': 'The query is invalid'}});
             }
 
             try {
                 JSON.parse(JSON.stringify(query))
             }
             catch (err) {
-                reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } });
+                reject({code: 400, body: {'error': 'The query is not a valid JSON'}});
             }
 
             // check if the dataset exists, !!!this is only of D1!!!
@@ -704,17 +746,17 @@ export default class InsightFacade implements IInsightFacade {
                     }
 
                     if (isValidKeys.every(isValid) == false) {
-                        reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
+                        reject({code: 400, body: {'error': 'invalid keys for logic comparactor'}})
                     }
                     if (misID.length != 0) {
-                        reject({ code: 424, body: { 'missing': misID } });
+                        reject({code: 424, body: {'missing': misID}});
                     }
                     allTheData = toProcess[0];
                 }
-                else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
+                else (reject({code: 400, body: {'error': 'Invalid WHERE'}}));
             }
             catch (err) {
-                reject({ code: 400, body: { 'error': err.toString() } });
+                reject({code: 400, body: {'error': err.toString()}});
                 throw err;
             }
 
@@ -722,13 +764,13 @@ export default class InsightFacade implements IInsightFacade {
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = optionParser(allTheData, query.OPTIONS);
                 if (finalProduct == null) {
-                    reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
+                    reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
                 }
-                fulfill({ code: 200, body: finalProduct.valueOf() });
+                fulfill({code: 200, body: finalProduct.valueOf()});
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {
-                reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
+                reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
             }
 
 
@@ -759,8 +801,8 @@ export default class InsightFacade implements IInsightFacade {
 
                     let newList = waitList.shift().reduce(function (res: any, v: any) {
                         if (res.indexOf(v) === -1 && waitList.every(function (a: any) {
-                            return a.indexOf(v) !== -1;
-                        })) res.push(v);
+                                return a.indexOf(v) !== -1;
+                            })) res.push(v);
                         return res;
                     }, []);
 
@@ -1039,7 +1081,7 @@ export default class InsightFacade implements IInsightFacade {
                 var eachData = new Array();
                 for (let val of colVal) {
                     if (obj.hasOwnProperty(val)) {
-                        eachData.push({ [val]: obj[val] })
+                        eachData.push({[val]: obj[val]})
                     }
                 }
                 if (eachData.length > 0) {
