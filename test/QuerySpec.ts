@@ -923,18 +923,17 @@ describe("QuerySpec", function () {
         })
     });
 
-    it("Testing complex nots", () => {
+    it.only("Testing complex nots", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "NOT": { "LT": { "courses_avg": 50 } } } } } } } }
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_title",
-                    "courses_pass",
-                    "courses_fail"
+                    "courses_avg"
+
                 ],
-                "ORDER": "courses_pass",
+                "ORDER": "courses_avg",
                 "FORM": "TABLE"
             }
         };
@@ -942,7 +941,16 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result: []
+                result: [
+                    { courses_avg: 76.48 },
+                    { courses_avg: 76.48 },
+                    { courses_avg: 82.5 },
+                    { courses_avg: 82.5 },
+                    { courses_avg: 85.4 },
+                    { courses_avg: 85.4 },
+                    { courses_avg: 89.6 },
+                    { courses_avg: 89.6 }
+                ]
             }
         };
 

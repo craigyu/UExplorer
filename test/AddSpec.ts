@@ -52,7 +52,7 @@ describe("AddSpec", function () {
         })
     });
 
-    it("Testing for Room (loading files)", function () {
+    it.only("Testing for Room (loading files)", function () {
         let fs = require("fs");
         let data = fs.readFileSync("rooms.zip", "base64");
 
