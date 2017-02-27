@@ -447,6 +447,9 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
+                            if(arrayOfStrings.length == 0){
+                                reject({ code: 400, body: { 'error': 'no data' }});
+                            }
                             fs.writeFileSync(dataPath + id, JSON.stringify(arrayOfStrings));
                             fulfill({ code: sucCode, body: {} });
                         })
