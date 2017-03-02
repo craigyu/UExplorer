@@ -703,7 +703,6 @@ export default class InsightFacade implements IInsightFacade {
             catch (err) {
                 reject({code: 400, body: {'error': 'The query is not a valid JSON'}});
             }
-
             //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
 
