@@ -454,7 +454,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             let arLen = arrayOfStrings.length;
                             let newAr = new Array();
-                            for( let i = 0; i< arLen; i++){
+                            for (let i = 0; i < arLen; i++) {
                                 newAr = newAr.concat(arrayOfStrings[i]);
                             }
                             newAr = newAr.filter(function (n: any) {
@@ -604,9 +604,9 @@ export default class InsightFacade implements IInsightFacade {
             let childLen = parsedRoomTable.childNodes.length;
             let allRooms = new Array();
 
-            var buildingInfo = {"rooms_address" : parsedBuildingInfo[3].childNodes[0].childNodes[0].value};
+            var buildingInfo = {"rooms_address": parsedBuildingInfo[3].childNodes[0].childNodes[0].value};
 
-            for (let i = 1; i < childLen; i=i+2) {
+            for (let i = 1; i < childLen; i = i + 2) {
                 var temp = { // represents one buildingInfo
                     "rooms_fullname": parsedBuildingInfo[1].childNodes[0].childNodes[0].value,
                     "rooms_shortname": shortname,
@@ -625,7 +625,7 @@ export default class InsightFacade implements IInsightFacade {
                 temp["rooms_furniture"] = (parsedRoomTable.childNodes[i].childNodes[5].childNodes[0].value).trim();
                 temp["rooms_type"] = (parsedRoomTable.childNodes[i].childNodes[7].childNodes[0].value).trim();
                 temp["rooms_name"] = temp["rooms_shortname"] + "_" + temp["rooms_number"];
-                temp["rooms_href"]  = "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/" + shortname + "-" + temp["rooms_number"];
+                temp["rooms_href"] = "http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/" + shortname + "-" + temp["rooms_number"];
                 allRooms.push(temp);
             }
 
@@ -650,7 +650,7 @@ export default class InsightFacade implements IInsightFacade {
                                 if ('error' in parseData) {
                                     fulfill(emptyB);
                                 } else {
-                                    for(let obj of allRooms) {
+                                    for (let obj of allRooms) {
                                         obj["rooms_lat"] = parseData["lat"];
                                         obj["rooms_lon"] = parseData["lon"];
                                     }
@@ -703,24 +703,6 @@ export default class InsightFacade implements IInsightFacade {
             catch (err) {
                 reject({code: 400, body: {'error': 'The query is not a valid JSON'}});
             }
-
-            // check if the dataset exists, !!!this is only of D1!!!
-            // if (!fs.existsSync(dataPath + 'courses')) {
-            //     reject({ code: 424, body: { 'missing': ['courses'] } });
-            // }
-
-
-            // retrive cached data
-
-
-            // var thisData = fs.readFileSync(dataPath + id, "utf8");
-            // try {
-            //     currentData = JSON.parse(thisData);
-            // }
-            // catch (err) {
-            //     reject({ code: 400, body: { 'error': 'cannot retrive data from disk' } });
-            //     throw err;
-            // }
 
             //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
@@ -833,70 +815,70 @@ export default class InsightFacade implements IInsightFacade {
                     return;
                 }
 
-                for (let key of mcompKeys) {
-                    let n = key.indexOf("_");
-                    let fileName = key.substr(0, n);
-                    if (n < 1) {
-                        isValidKeys.push(false);
-                        return;
+                let key = mcompKeys[0];
+                let n = key.indexOf("_");
+                let fileName = key.substr(0, n);
+                if (n < 1) {
+                    isValidKeys.push(false);
+                    return;
+                }
+                if (!fs.existsSync(dataPath + fileName)) {
+                    misID.push(fileName);
+                    return;
+                }
+                else if (idAssure == "") {
+                    idAssure = fileName;
+                    let thisData = fs.readFileSync(dataPath + fileName, "utf8");
+                    try {
+                        currentData = JSON.parse(thisData);
                     }
-                    if (!fs.existsSync(dataPath + fileName)) {
-                        misID.push(fileName);
-                        return;
-                    }
-                    else if (idAssure == "") {
-                        idAssure = fileName;
-                        let thisData = fs.readFileSync(dataPath + fileName, "utf8");
-                        try {
-                            currentData = JSON.parse(thisData);
-                        }
-                        catch (err) {
-                            isValidKeys.push(false);
-                            return;
-                        }
-                    }
-                    else if (idAssure != fileName) {
-                        isValidKeys.push(false);
-                        return;
-                    }
-
-                    if (mcompLibrary.includes(key)) {
-                        if (typeof where[filter][key] != 'number') {
-                            isValidKeys.push(false);
-                            return;
-                        }
-                        else {
-                            for (let obj of currentData) {
-                                if (obj.hasOwnProperty(key)) {
-                                    if (filter == 'LT') {
-                                        if (obj[key] < where[filter][key]) {
-                                            waitList.push(obj)
-                                        }
-                                    }
-                                    if (filter == 'GT') {
-                                        if (obj[key] > where[filter][key]) {
-                                            waitList.push(obj)
-                                        }
-                                    }
-                                    if (filter == 'EQ') {
-                                        if (obj[key] == where[filter][key]) {
-                                            waitList.push(obj)
-                                        }
-                                    }
-                                }
-
-                            }
-                            toProcess.push(waitList);
-                        }
-
-                    }
-
-
-                    else {
+                    catch (err) {
                         isValidKeys.push(false);
                         return;
                     }
                 }
+                else if (idAssure != fileName) {
+                    isValidKeys.push(false);
+                    return;
+                }
+
+                if (mcompLibrary.includes(key)) {
+                    if (typeof where[filter][key] != 'number') {
+                        isValidKeys.push(false);
+                        return;
+                    }
+                    else {
+                        for (let obj of currentData) {
+                            if (obj.hasOwnProperty(key)) {
+                                if (filter == 'LT') {
+                                    if (obj[key] < where[filter][key]) {
+                                        waitList.push(obj)
+                                    }
+                                }
+                                if (filter == 'GT') {
+                                    if (obj[key] > where[filter][key]) {
+                                        waitList.push(obj)
+                                    }
+                                }
+                                if (filter == 'EQ') {
+                                    if (obj[key] == where[filter][key]) {
+                                        waitList.push(obj)
+                                    }
+                                }
+                            }
+
+                        }
+                        toProcess.push(waitList);
+                    }
+
+                }
+
+
+                else {
+                    isValidKeys.push(false);
+                    return;
+                }
+
             }
 
 
@@ -908,99 +890,99 @@ export default class InsightFacade implements IInsightFacade {
                     return;
                 }
 
-                for (let key of isKey) {
-                    let n = key.indexOf("_");
-                    let fileName = key.substr(0, n);
-                    if (n < 1) {
-                        isValidKeys.push(false);
-                        return;
+                let key = isKey[0];
+                let n = key.indexOf("_");
+                let fileName = key.substr(0, n);
+                if (n < 1) {
+                    isValidKeys.push(false);
+                    return;
+                }
+                if (!fs.existsSync(dataPath + fileName)) {
+                    misID.push(fileName);
+                    return;
+                }
+                else if (idAssure == "") {
+                    idAssure = fileName;
+                    let thisData = fs.readFileSync(dataPath + fileName, "utf8");
+                    try {
+                        currentData = JSON.parse(thisData);
                     }
-                    if (!fs.existsSync(dataPath + fileName)) {
-                        misID.push(fileName);
-                        return;
-                    }
-                    else if (idAssure == "") {
-                        idAssure = fileName;
-                        let thisData = fs.readFileSync(dataPath + fileName, "utf8");
-                        try {
-                            currentData = JSON.parse(thisData);
-                        }
-                        catch (err) {
-                            isValidKeys.push(false);
-                            return;
-                        }
-                    }
-                    else if (idAssure != fileName) {
-                        isValidKeys.push(false);
-                        return;
-                    }
-                    if (stringLibrary.includes(key)) {
-                        if (typeof where[filter][key] != 'string') {
-                            isValidKeys.push(false);
-                            return;
-                        }
-                        else {
-                            let strIS = where[filter][key];
-                            let star = strIS.indexOf("*");
-                            let keyLen = strIS.length - 1;
-
-                            if (star != 0 && star != keyLen) {
-                                for (let obj of currentData) {
-                                    if (obj.hasOwnProperty(key)) {
-                                        if (obj[key] == where[filter][key]) {
-                                            waitList.push(obj);
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-                            else if (star == 0) {
-                                if (strIS.substr(keyLen, 1) == "*") {
-                                    let subIsStr = strIS.substr(1, keyLen - 1);
-                                    for (let obj of currentData) {
-                                        if (obj.hasOwnProperty(key)) {
-                                            if (obj[key].includes(subIsStr)) {
-                                                waitList.push(obj);
-                                            }
-
-                                        }
-                                    }
-                                }
-                                else {
-                                    let subIsStr = strIS.substr(1, keyLen);
-                                    for (let obj of currentData) {
-                                        if (obj.hasOwnProperty(key)) {
-                                            if (obj[key].endsWith(subIsStr)) {
-                                                waitList.push(obj);
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-                            else if (star == keyLen) {
-                                let subIsStr = strIS.substr(0, keyLen);
-                                for (let obj of currentData) {
-                                    if (obj.hasOwnProperty(key)) {
-                                        if (obj[key].startsWith(subIsStr)) {
-                                            waitList.push(obj);
-                                        }
-
-
-                                    }
-                                }
-
-                            }
-
-                            toProcess.push(waitList);
-                        }
-                    } else {
+                    catch (err) {
                         isValidKeys.push(false);
                         return;
                     }
                 }
+                else if (idAssure != fileName) {
+                    isValidKeys.push(false);
+                    return;
+                }
+                if (stringLibrary.includes(key)) {
+                    if (typeof where[filter][key] != 'string') {
+                        isValidKeys.push(false);
+                        return;
+                    }
+                    else {
+                        let strIS = where[filter][key];
+                        let star = strIS.indexOf("*");
+                        let keyLen = strIS.length - 1;
+
+                        if (star != 0 && star != keyLen) {
+                            for (let obj of currentData) {
+                                if (obj.hasOwnProperty(key)) {
+                                    if (obj[key] == where[filter][key]) {
+                                        waitList.push(obj);
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                        else if (star == 0) {
+                            if (strIS.substr(keyLen, 1) == "*") {
+                                let subIsStr = strIS.substr(1, keyLen - 1);
+                                for (let obj of currentData) {
+                                    if (obj.hasOwnProperty(key)) {
+                                        if (obj[key].includes(subIsStr)) {
+                                            waitList.push(obj);
+                                        }
+
+                                    }
+                                }
+                            }
+                            else {
+                                let subIsStr = strIS.substr(1, keyLen);
+                                for (let obj of currentData) {
+                                    if (obj.hasOwnProperty(key)) {
+                                        if (obj[key].endsWith(subIsStr)) {
+                                            waitList.push(obj);
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                        else if (star == keyLen) {
+                            let subIsStr = strIS.substr(0, keyLen);
+                            for (let obj of currentData) {
+                                if (obj.hasOwnProperty(key)) {
+                                    if (obj[key].startsWith(subIsStr)) {
+                                        waitList.push(obj);
+                                    }
+
+
+                                }
+                            }
+
+                        }
+
+                        toProcess.push(waitList);
+                    }
+                } else {
+                    isValidKeys.push(false);
+                    return;
+                }
+
             }
 
             else if (filter == 'NOT') {

@@ -736,7 +736,8 @@ describe("QuerySpec", function () {
     })
 
 
-    it("Testing for AND with Complex Parsing to output (AND), (EQ), (GT) correct format", () => {
+
+    it.only("Testing for double layer AND with Complex Parsing to output (AND), (EQ), (GT) correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "AND": [
@@ -744,22 +745,19 @@ describe("QuerySpec", function () {
                         "AND": [
                             {
                                 "IS": {
-                                    "courses_dept": "cell"
+                                    "courses_dept": "dent"
                                 }
                             },
                             {
 
-                                "GT": {
-                                    "courses_avg": 89.5
+                                "NOT": {
+                                    "EQ": {
+                                        "courses_avg": 85.4
+                                    }
                                 }
 
                             }
                         ]
-                    },
-                    {
-                        "LT": {
-                            "courses_avg": 50
-                        }
                     },
                     {
                         "NOT": {
@@ -785,7 +783,8 @@ describe("QuerySpec", function () {
             code: 200,
             body: {
                 render: 'TABLE',
-                result: []
+                result: [{ courses_dept: 'dent', courses_avg: 82.5 },
+                    { courses_dept: 'dent', courses_avg: 82.5 }]
             }
         };
 
@@ -800,6 +799,10 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
+
+
+
+
 
     it("Testing for OR with Complex Parsing to output (AND), (EQ), (GT) correct format", () => {
         let queryR: QueryRequest = {
