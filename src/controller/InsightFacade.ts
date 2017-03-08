@@ -1,32 +1,21 @@
 /**
  * This is the main programmatic entry point for the project.
  */
-import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
+import { IInsightFacade, InsightResponse, QueryRequest } from "./IInsightFacade";
 
 import Log from "../Util";
-import {error} from "util";
-
+import { error } from "util";
+import QueryController from "./QueryController";
 var JSZip = require("jszip");
-
 //var zip = new JSZip();
 var fs = require("fs");
-
-
 if (!fs.existsSync("./cachedDatasets/")) {
     fs.mkdirSync('./cachedDatasets/');
 }
-
 var dataPath = './cachedDatasets/';
 var toProcess = new Array();
 var allTheData = new Array();
-var misID = new Array();
-var isValidKeys: boolean[] = [];
 var currentData: any;
-var idAssure = "";
-var notCount = 0;
-var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_year', 'rooms_lat', 'rooms_lon', 'rooms_seats');
-var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid', 'rooms_fullname',
-    'rooms_shortname', 'rooms_number', 'rooms_name', 'rooms_address', 'rooms_type', 'rooms_furniture', 'rooms_href');
 
 
 export default class InsightFacade implements IInsightFacade {
@@ -38,208 +27,32 @@ export default class InsightFacade implements IInsightFacade {
     addDataset(id: string, content: string): Promise<InsightResponse> {
         var theTable: any;
         var hasTable = false;
-
         return new Promise(function (fulfill, reject) {
-            var options = {base64: true};
-            if (id == '') reject({code: 400, body: {"error": "No id was provided."}});
-            //console.log("hiiiii");
-            // id contains given id
+            var options = { base64: true };
+            if (id == '') reject({ code: 400, body: { "error": "No id was provided." } });
             var cached = new JSZip();
-
             if (id == "courses") {
-
+                let sucCode = 0;
                 if (fs.existsSync(dataPath + id)) {
-
+                    sucCode = 201;
                     fs.unlinkSync(dataPath + id);
-
-                    cached.loadAsync(content, options)
-                        .then(function (files: any) {
-                            var processList: Promise<any>[] = [];
-
-
-                            files.remove("__MACOSX");
-                            if (id == "courses") {
-                                files.forEach(function (relativePath: any, file: any) {
-                                    //console.log(processList.length);
-                                    //console.log(relativePath);
-                                    if (relativePath != id + "/") {
-                                        //console.log(processList.length);
-                                        //console.log(relativePath);
-                                        var promise = file.async("string").then(function (json: any) {
-                                            try {
-
-                                                var parsed = JSON.parse(json);
-                                                if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
-
-                                                    var objValues: any[] = [];
-                                                    for (let obj of parsed.result) {
-                                                        let subObjValues = {
-                                                            "courses_dept": "",
-                                                            "courses_id": "",
-                                                            "courses_instructor": "",
-                                                            "courses_title": "",
-                                                            "courses_uuid": "",
-                                                            "courses_audit": 0,
-                                                            "courses_avg": 0,
-                                                            "courses_fail": 0,
-                                                            "courses_pass": 0,
-                                                            "courses_year": 0
-                                                        };
-
-                                                        if (Object.keys(obj) != null && Object.keys(obj) != undefined) {
-                                                            if (obj.hasOwnProperty("Subject")) {
-                                                                let dept = id + "_dept";
-                                                                let deptVal = obj["Subject"];
-                                                                subObjValues["courses_dept"] = deptVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Course")) {
-                                                                let nameId = id + "_id";
-                                                                let nameIdVal = obj["Course"];
-                                                                subObjValues["courses_id"] = nameIdVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Avg")) {
-                                                                let avg = id + "_avg";
-                                                                let avgVal = obj["Avg"];
-                                                                subObjValues["courses_avg"] = avgVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Professor")) {
-                                                                let instr = id + "_instructor";
-                                                                let instrVal = obj["Professor"];
-                                                                subObjValues["courses_instructor"] = instrVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Title")) {
-                                                                let title = id + "_title";
-                                                                let titleVal = obj["Title"];
-                                                                subObjValues["courses_title"] = titleVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Pass")) {
-                                                                let pass = id + "_pass";
-                                                                let passVal = obj["Pass"];
-                                                                subObjValues["courses_pass"] = passVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Fail")) {
-                                                                let fail = id + "_fail";
-                                                                let failVal = obj["Fail"];
-                                                                subObjValues["courses_fail"] = failVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Audit")) {
-                                                                let audit = id + "_audit";
-                                                                let auditVal = obj["Audit"];
-                                                                subObjValues["courses_audit"] = auditVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("id")) {
-                                                                let uuid = id + "_uuid";
-                                                                let uuidVal = obj["id"];
-                                                                subObjValues["courses_uuid"] = uuidVal;
-                                                            }
-                                                            if (obj.hasOwnProperty("Section")) {
-                                                                if (obj["Section"] == "overall") {
-                                                                    subObjValues["courses_year"] = 1900;
-                                                                }
-                                                                else {
-                                                                    if (obj.hasOwnProperty("Year")) {
-                                                                        subObjValues["courses_year"] = parseInt(obj["Year"]);
-                                                                        ;
-                                                                    }
-                                                                }
-
-                                                            }
-
-
-                                                        }
-                                                        objValues.push(subObjValues);
-
-                                                    }
-
-
-                                                }
-
-                                            }
-                                            catch (err) {
-                                                //console.log(err);
-
-                                                return reject({
-                                                    code: 400,
-                                                    body: {'error': 'file include invalid JSON(s)'}
-                                                });
-                                                //throw err;
-
-                                            }
-
-
-                                            return objValues;
-                                        });
-                                        if (typeof promise != 'undefined') {
-                                            processList.push(promise);
-                                        }
-                                    }
-                                });
-                            }
-
-                            Promise.all(processList).then(function (arrayOfStrings: any) {
-                                var counter = 0;
-                                for (let i of arrayOfStrings) {
-                                    if (i == undefined) {
-                                        counter++
-                                    }
-                                }
-                                if (counter == arrayOfStrings.length) {
-                                    reject({code: 400, body: {'error': 'No useful data provided'}});
-                                }
-
-                                var combine = new Array();
-                                if (arrayOfStrings.length > 2) {
-                                    for (let i of arrayOfStrings) {
-                                        for (let j of i) {
-                                            if (typeof j != "undefined") {
-                                                combine.push(j);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    for (let i of arrayOfStrings) {
-                                        if (typeof i != "undefined") {
-                                            for (let j of i) {
-                                                combine.push(j);
-                                            }
-                                        }
-                                    }
-                                }
-
-
-                                fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                                fulfill({code: 201, body: {}});
-                            })
-                                .catch(function (err: any) {
-                                    reject({code: 400, body: {'error': err.toString('utf8')}});
-                                })
-                        })
-                        .catch(function (err: any) {
-                            reject({code: 400, body: {'error': err.toString('utf8')}});
-                        })
-
-
+                }
+                else {
+                    sucCode = 204
                 }
 
+                cached.loadAsync(content, options)
+                    .then(function (files: any) {
+                        var processList: Promise<any>[] = [];
+                        files.remove("__MACOSX");
 
-                else {
-
-                    cached.loadAsync(content, options)
-                        .then(function (files: any) {
-                            var processList: Promise<any>[] = [];
-
-
-                            files.remove("__MACOSX");
+                        if (id == "courses") {
                             files.forEach(function (relativePath: any, file: any) {
-                                //console.log(processList.length);
-                                //console.log(relativePath);
                                 if (relativePath != id + "/") {
-                                    //console.log(processList.length);
-                                    //console.log(relativePath);
                                     var promise = file.async("string").then(function (json: any) {
                                         try {
-
                                             var parsed = JSON.parse(json);
+
                                             if (typeof parsed != 'undefined' && parsed.hasOwnProperty('result')) {
                                                 var objValues: any[] = [];
                                                 for (let obj of parsed.result) {
@@ -312,28 +125,18 @@ export default class InsightFacade implements IInsightFacade {
                                                                     ;
                                                                 }
                                                             }
-
                                                         }
-
-
                                                     }
                                                     objValues.push(subObjValues);
-
                                                 }
-
-
                                             }
-
                                         }
                                         catch (err) {
-                                            //console.log(err);
-
-                                            return reject({code: 400, body: {'error': 'file include invalid JSON(s)'}});
-                                            //throw err;
-
+                                            return reject({
+                                                code: 400,
+                                                body: { 'error': 'file include invalid JSON(s)' }
+                                            });
                                         }
-
-
                                         return objValues;
                                     });
                                     if (typeof promise != 'undefined') {
@@ -341,53 +144,49 @@ export default class InsightFacade implements IInsightFacade {
                                     }
                                 }
                             });
+                        }
 
+                        Promise.all(processList).then(function (arrayOfStrings: any) {
+                            var counter = 0;
+                            for (let i of arrayOfStrings) {
+                                if (i == undefined) {
+                                    counter++
+                                }
+                            }
+                            if (counter == arrayOfStrings.length) {
+                                reject({ code: 400, body: { 'error': 'No useful data provided' } });
+                            }
 
-                            Promise.all(processList).then(function (arrayOfStrings: any) {
-                                var counter = 0;
+                            var combine = new Array();
+                            if (arrayOfStrings.length > 2) {
                                 for (let i of arrayOfStrings) {
-                                    if (i == undefined) {
-                                        counter++
+                                    for (let j of i) {
+                                        if (typeof j != "undefined") {
+                                            combine.push(j);
+                                        }
                                     }
                                 }
-                                if (counter == arrayOfStrings.length) {
-                                    reject({code: 400, body: {'error': 'No useful data provided'}});
-                                }
-
-
-                                var combine = new Array();
-                                if (arrayOfStrings.length > 2) {
-                                    for (let i of arrayOfStrings) {
+                            } else {
+                                for (let i of arrayOfStrings) {
+                                    if (typeof i != "undefined") {
                                         for (let j of i) {
-                                            if (typeof j != "undefined") {
-                                                combine.push(j);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    for (let i of arrayOfStrings) {
-                                        if (typeof i != "undefined") {
-                                            for (let j of i) {
-                                                combine.push(j);
-                                            }
+                                            combine.push(j);
                                         }
                                     }
                                 }
+                            }
 
 
-                                fs.writeFileSync(dataPath + id, JSON.stringify(combine));
-                                fulfill({code: 204, body: {}});
+                            fs.writeFileSync(dataPath + id, JSON.stringify(combine));
+                            fulfill({ code: sucCode, body: {} });
+                        })
+                            .catch(function (err: any) {
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
                             })
-                                .catch(function (err: any) {
-                                    reject({code: 400, body: {'error': err.toString('utf8')}});
-                                })
-                        })
-                        .catch(function (err: any) {
-                            reject({code: 400, body: {'error': err.toString('utf8')}});
-                        })
-
-
-                }
+                    })
+                    .catch(function (err: any) {
+                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
+                    })
             }
 
             else if (id == "rooms") {
@@ -433,7 +232,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             return arrayOfShortBuilding;
                         } else {
-                            reject({code: 400, body: {'error': "no table found"}});
+                            reject({ code: 400, body: { 'error': "no table found" } });
                         }
                     })
                     .then(function (content: any) {
@@ -450,7 +249,7 @@ export default class InsightFacade implements IInsightFacade {
                         });
                         Promise.all(processList).then(function (arrayOfStrings: any) {
                             if (arrayOfStrings.length == 0) {
-                                reject({code: 400, body: {'error': 'no data'}});
+                                reject({ code: 400, body: { 'error': 'no data' } });
                             }
                             let arLen = arrayOfStrings.length;
                             let newAr = new Array();
@@ -461,21 +260,21 @@ export default class InsightFacade implements IInsightFacade {
                                 return Object.keys(n).length > 0;
                             });
                             fs.writeFileSync(dataPath + id, JSON.stringify(newAr));
-                            fulfill({code: sucCode, body: {}});
+                            fulfill({ code: sucCode, body: {} });
                         })
                             .catch(function (err: any) {
                                 console.log(err);
-                                reject({code: 400, body: {'error': err.toString('utf8')}});
+                                reject({ code: 400, body: { 'error': err.toString('utf8') } });
                             })
                     })
 
                     .catch(function (err: any) {
                         console.log(err);
-                        reject({code: 400, body: {'error': err.toString('utf8')}});
+                        reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     })
             }
             else {
-                reject({code: 400, body: {'error': 'the id is not valid'}});
+                reject({ code: 400, body: { 'error': 'the id is not valid' } });
             }
 
         });
@@ -604,7 +403,7 @@ export default class InsightFacade implements IInsightFacade {
             let childLen = parsedRoomTable.childNodes.length;
             let allRooms = new Array();
 
-            var buildingInfo = {"rooms_address": parsedBuildingInfo[3].childNodes[0].childNodes[0].value};
+            var buildingInfo = { "rooms_address": parsedBuildingInfo[3].childNodes[0].childNodes[0].value };
 
             for (let i = 1; i < childLen; i = i + 2) {
                 var temp = { // represents one buildingInfo
@@ -680,9 +479,9 @@ export default class InsightFacade implements IInsightFacade {
                 // remove dataset associated with the id
                 fs.unlinkSync(dataPath + id);
 
-                fulfill({code: 204, body: {}});
+                fulfill({ code: 204, body: {} });
             }
-            else (reject({code: 404, body: {'error': 'The id does not exist'}}));
+            else (reject({ code: 404, body: { 'error': 'The id does not exist' } }));
         });
     }
 
@@ -691,17 +490,17 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
 
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
-
+            var qc = new QueryController();
             //check if query is valid
             if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
-                reject({code: 400, body: {'error': 'The query is invalid'}});
+                reject({ code: 400, body: { 'error': 'The query is invalid' } });
             }
 
             try {
                 JSON.parse(JSON.stringify(query))
             }
             catch (err) {
-                reject({code: 400, body: {'error': 'The query is not a valid JSON'}});
+                reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } });
             }
             //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
 
@@ -712,430 +511,42 @@ export default class InsightFacade implements IInsightFacade {
 
             try {
 
-                isValidKeys = [];
-                toProcess = [];
-                misID = [];
-                allTheData = [];
-                idAssure = "";
-                currentData = null;
-                notCount = 0;
-
+                qc.resetVars();
 
                 if (Object.keys(query.WHERE).length == 1) {
                     for (let filter of Object.keys(query.WHERE)) {
-                        whereParser(query.WHERE, filter);
+                        qc.whereParser(query.WHERE, filter);
                     }
-
+                    let isValidKeys = qc.getValidKeys();
+                    let misID = qc.getMisID();
                     if (isValidKeys.every(isValid) == false) {
-                        reject({code: 400, body: {'error': 'invalid keys for logic comparactor'}})
+                        reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
                     if (misID.length != 0) {
-                        reject({code: 424, body: {'missing': misID}});
+                        reject({ code: 424, body: { 'missing': misID } });
                     }
-                    allTheData = toProcess[0];
+                    allTheData = qc.returnVal();
                 }
-                else (reject({code: 400, body: {'error': 'Invalid WHERE'}}));
+                else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
             }
             catch (err) {
-                reject({code: 400, body: {'error': err.toString()}});
+                reject({ code: 400, body: { 'error': err.toString() } });
                 throw err;
             }
 
 
             if (Object.keys(query.OPTIONS).length > 1) {
-                finalProduct = optionParser(allTheData, query.OPTIONS);
+                finalProduct = qc.optionParser(allTheData, query.OPTIONS);
                 if (finalProduct == null) {
-                    reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
+                    reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
-                fulfill({code: 200, body: finalProduct.valueOf()});
+                fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {
-                reject({code: 400, body: {"Error": "Invalid OPTIONS"}});
+                reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
             }
-
-
-            //cached.file('courses'). ... ; get the data here somehow
-
 
         });
-
-        function whereParser(where: any, filter: string) {
-
-            if (filter == 'AND' || filter == 'OR') {
-                if (where[filter].length < 2) {
-                    isValidKeys.push(false);
-                    return;
-                }
-                let subLen = Object.keys(where[filter]).length;
-                for (let subFilter of where[filter]) {
-                    for (let subSubfilter of Object.keys(subFilter)) {
-                        whereParser(subFilter, subSubfilter);
-                    }
-                }
-                if (filter == 'AND') {
-                    let waitList = new Array();
-
-                    for (let i = 0; i < subLen; i++) {
-                        waitList.push(toProcess.pop());
-                    }
-
-                    let newList = waitList.shift().reduce(function (res: any, v: any) {
-                        if (res.indexOf(v) === -1 && waitList.every(function (a: any) {
-                                return a.indexOf(v) !== -1;
-                            })) res.push(v);
-                        return res;
-                    }, []);
-
-
-                    toProcess.push(newList);
-                }
-                else if (filter == 'OR') {
-                    let waitList = new Array();
-                    for (let i = 0; i < subLen; i++) {
-                        let w = toProcess.pop();
-                        waitList = waitList.concat(waitList, w);
-                    }
-                    let newList = waitList.filter(function (elem, pos) {
-                        return waitList.indexOf(elem) == pos;
-                    });
-
-
-                    toProcess.push(newList);
-                }
-            }
-
-
-            else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
-                let mcompKeys = Object.keys(where[filter]);
-                let waitList = new Array();
-                if (Object.keys(where[filter]).length != 1) {
-                    isValidKeys.push(false);
-                    return;
-                }
-
-                let key = mcompKeys[0];
-                let n = key.indexOf("_");
-                let fileName = key.substr(0, n);
-                if (n < 1) {
-                    isValidKeys.push(false);
-                    return;
-                }
-                if (!fs.existsSync(dataPath + fileName)) {
-                    misID.push(fileName);
-                    return;
-                }
-                else if (idAssure == "") {
-                    idAssure = fileName;
-                    let thisData = fs.readFileSync(dataPath + fileName, "utf8");
-                    try {
-                        currentData = JSON.parse(thisData);
-                    }
-                    catch (err) {
-                        isValidKeys.push(false);
-                        return;
-                    }
-                }
-                else if (idAssure != fileName) {
-                    isValidKeys.push(false);
-                    return;
-                }
-
-                if (mcompLibrary.includes(key)) {
-                    if (typeof where[filter][key] != 'number') {
-                        isValidKeys.push(false);
-                        return;
-                    }
-                    else {
-                        for (let obj of currentData) {
-                            if (obj.hasOwnProperty(key)) {
-                                if (filter == 'LT') {
-                                    if (obj[key] < where[filter][key]) {
-                                        waitList.push(obj)
-                                    }
-                                }
-                                if (filter == 'GT') {
-                                    if (obj[key] > where[filter][key]) {
-                                        waitList.push(obj)
-                                    }
-                                }
-                                if (filter == 'EQ') {
-                                    if (obj[key] == where[filter][key]) {
-                                        waitList.push(obj)
-                                    }
-                                }
-                            }
-
-                        }
-                        toProcess.push(waitList);
-                    }
-
-                }
-
-
-                else {
-                    isValidKeys.push(false);
-                    return;
-                }
-
-            }
-
-
-            else if (filter == 'IS') {
-                let isKey = Object.keys(where[filter]);
-                let waitList = new Array();
-                if (Object.keys(where[filter]).length != 1) {
-                    isValidKeys.push(false);
-                    return;
-                }
-
-                let key = isKey[0];
-                let n = key.indexOf("_");
-                let fileName = key.substr(0, n);
-                if (n < 1) {
-                    isValidKeys.push(false);
-                    return;
-                }
-                if (!fs.existsSync(dataPath + fileName)) {
-                    misID.push(fileName);
-                    return;
-                }
-                else if (idAssure == "") {
-                    idAssure = fileName;
-                    let thisData = fs.readFileSync(dataPath + fileName, "utf8");
-                    try {
-                        currentData = JSON.parse(thisData);
-                    }
-                    catch (err) {
-                        isValidKeys.push(false);
-                        return;
-                    }
-                }
-                else if (idAssure != fileName) {
-                    isValidKeys.push(false);
-                    return;
-                }
-                if (stringLibrary.includes(key)) {
-                    if (typeof where[filter][key] != 'string') {
-                        isValidKeys.push(false);
-                        return;
-                    }
-                    else {
-                        let strIS = where[filter][key];
-                        let star = strIS.indexOf("*");
-                        let keyLen = strIS.length - 1;
-
-                        if (star != 0 && star != keyLen) {
-                            for (let obj of currentData) {
-                                if (obj.hasOwnProperty(key)) {
-                                    if (obj[key] == where[filter][key]) {
-                                        waitList.push(obj);
-                                    }
-
-                                }
-
-                            }
-
-                        }
-                        else if (star == 0) {
-                            if (strIS.substr(keyLen, 1) == "*") {
-                                let subIsStr = strIS.substr(1, keyLen - 1);
-                                for (let obj of currentData) {
-                                    if (obj.hasOwnProperty(key)) {
-                                        if (obj[key].includes(subIsStr)) {
-                                            waitList.push(obj);
-                                        }
-
-                                    }
-                                }
-                            }
-                            else {
-                                let subIsStr = strIS.substr(1, keyLen);
-                                for (let obj of currentData) {
-                                    if (obj.hasOwnProperty(key)) {
-                                        if (obj[key].endsWith(subIsStr)) {
-                                            waitList.push(obj);
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                        else if (star == keyLen) {
-                            let subIsStr = strIS.substr(0, keyLen);
-                            for (let obj of currentData) {
-                                if (obj.hasOwnProperty(key)) {
-                                    if (obj[key].startsWith(subIsStr)) {
-                                        waitList.push(obj);
-                                    }
-
-
-                                }
-                            }
-
-                        }
-
-                        toProcess.push(waitList);
-                    }
-                } else {
-                    isValidKeys.push(false);
-                    return;
-                }
-
-            }
-
-            else if (filter == 'NOT') {
-                notCount++;
-                let notKeys = Object.keys(where[filter]);
-                if (notKeys.length != 1) {
-                    isValidKeys.push(false);
-                    return;
-                }
-
-                let subFilter = notKeys[0]
-                whereParser(where[filter], subFilter);
-
-                let waitList = new Array();
-                if (notCount % 2 != 0) {
-                    let n = toProcess.pop();
-                    waitList = currentData.filter(function (x: any) {
-                        return n.indexOf(x) < 0
-                    });
-                    toProcess.push(waitList);
-                    notCount = 0;
-                }
-            }
-
-
-        }
-
-
-        // MCOMPFILTERED FOR NOW BECAUSE WE WANT TO MAKE SURE THE FUNCTIONALITY WORKS.
-        // MCOMPFILTER = TOTALFILTERED AFTER
-
-        function optionParser(mcompFiltered: any[], optionBody: any): any {
-            if (!("COLUMNS" in optionBody) || !("FORM" in optionBody)) {
-                return null;
-            }
-            // dealing with columns
-            let colVal: any = [];
-            for (let val of optionBody["COLUMNS"]) {
-                let n = val.indexOf("_");
-                let fileName = val.substr(0, n);
-                if (n < 1) {
-                    return null;
-                }
-                if (idAssure == "") {
-                    return null;
-                }
-                else if (idAssure != fileName) {
-                    return null;
-                }
-                colVal.push(val);
-            }
-
-            if (optionBody["FORM"] != "TABLE") {
-                return null;
-            }
-            //check if order is valid
-            var orderVal: string;
-            if (optionBody.hasOwnProperty("ORDER")) {
-                if (typeof optionBody["ORDER"] != 'string') {
-                    return null;
-                }
-                else {
-                    // var s = optionBody["ORDER"];
-                    if (!colVal.includes(optionBody["ORDER"])) {
-                        return null;
-                    }
-                    else {
-                        orderVal = optionBody["ORDER"];
-                    }
-                }
-            }
-            else orderVal = "";
-
-
-            var colData = new Array();
-
-            for (let obj of mcompFiltered) {
-                var eachData = new Array();
-                for (let val of colVal) {
-                    if (obj.hasOwnProperty(val)) {
-                        eachData.push({[val]: obj[val]})
-                    }
-                }
-                if (eachData.length > 0) {
-                    let parsed = JSON.parse(JSON.stringify(eachData));
-                    colData.push(parsed);
-                }
-            }
-
-            var c = colData;
-            var processed = new Array();
-
-
-            // PROCESSED THE RESULT TABLE:
-            for (let outerArray of colData) {
-                var buffer = {};
-                for (let i = 0; i < outerArray.length; i++) {
-                    buffer = joinJSON(buffer, outerArray[i]);
-                }
-                processed.push(buffer);
-
-            }
-            console.log(processed);
-
-            function joinJSON(o: any, ob: any): any {
-                for (var z in ob) {
-                    o[z] = ob[z];
-                }
-                return o;
-            }
-
-            // END OF PROCESS TABLE
-
-
-            // START OF ORDERING //
-            //sort with number
-            if (orderVal != "") {
-                if (mcompLibrary.includes(orderVal)) {
-                    processed.sort(function (a: any, b: any) {
-                        return a[orderVal] - b[orderVal];
-                    })
-                    // console.log(processed);
-                }
-                //sort alphabetically
-                else if (stringLibrary.includes(orderVal)) {
-                    processed.sort(function (a: any, b: any) {
-                        var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
-                        var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-
-                        return 0;
-                    })
-                    // console.log(processed);
-                }
-                else return null;
-            }
-            // END OF ORDERING
-
-            var result = {
-                render: optionBody["FORM"],
-                result: processed
-            };
-            return result;
-        }
-
-
     }
-
-
-    // helper function to parse WHERE in query
-
 }
