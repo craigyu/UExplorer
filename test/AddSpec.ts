@@ -4,7 +4,6 @@ import { InsightResponse } from "../src/controller/IInsightFacade";
 import InsightFacade from "../src/controller/InsightFacade";
 
 
-
 describe("AddSpec", function () {
     let fs = require("fs");
 

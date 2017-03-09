@@ -488,7 +488,7 @@ export default class InsightFacade implements IInsightFacade {
 
     performQuery(query: QueryRequest): Promise<InsightResponse> {
         return new Promise(function (fulfill, reject) {
-
+            var idAssure;
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
             var qc = new QueryController();
             //check if query is valid
@@ -514,18 +514,65 @@ export default class InsightFacade implements IInsightFacade {
                 qc.resetVars();
 
                 if (Object.keys(query.WHERE).length == 1) {
-                    for (let filter of Object.keys(query.WHERE)) {
-                        qc.whereParser(query.WHERE, filter);
-                    }
+                    let whereKeys = Object.keys(query.WHERE);
+                    let filter = whereKeys[0];
+                    qc.getKeys(query.WHERE, filter);
+                    let allKeys = qc.returnKeys();
+                    let keyLen = allKeys.length;
                     let isValidKeys = qc.getValidKeys();
-                    let misID = qc.getMisID();
                     if (isValidKeys.every(isValid) == false) {
                         reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
-                    if (misID.length != 0) {
-                        reject({ code: 424, body: { 'missing': misID } });
+                    let misID = new Array();
+                    if (keyLen == 1) {
+                        let name = allKeys[0];
+                        if (!fs.existsSync(dataPath + name)) {
+                            reject({ code: 424, body: { 'missing': allKeys } });
+                        }
+                        else {
+                            idAssure = name;
+                            currentData = fs.readFileSync(dataPath + name, "utf8");
+                        }
                     }
-                    allTheData = qc.returnVal();
+                    else if (keyLen > 1) {
+                        for (let i = 1; i < keyLen; i++) {
+                            if (allKeys[0] != allKeys[i]) {
+                                reject({ code: 400, body: { 'error': 'Invalid WHERE' } });
+                            }
+                        }
+                        let name = allKeys[0];
+                        if (!fs.existsSync(dataPath + name)) {
+                            reject({ code: 424, body: { 'missing': [name] } });
+                        }
+                        else {
+                            idAssure = name;
+                            currentData = fs.readFileSync(dataPath + allKeys[0], "utf8");
+                        }
+                    }
+                    else {
+                        reject({ code: 400, body: { 'error': 'No keys were found' } });
+                    }
+                    isValidKeys = qc.getValidKeys();
+                    if (isValidKeys.every(isValid) == false) {
+                        reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
+                    }
+
+                    currentData = JSON.parse(currentData);
+                    allTheData = [];
+                    for (let obj of currentData) {
+                        qc.whereParser(query.WHERE, filter, obj);
+                        isValidKeys = qc.getValidKeys();
+                        if (isValidKeys.every(isValid) == false) {
+                            reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
+                        }
+                        if (qc.returnVal()) {
+                            allTheData.push(obj);
+                            
+                        }
+                        qc.resetVars();
+                    }
+
+
                 }
                 else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
             }
@@ -536,10 +583,11 @@ export default class InsightFacade implements IInsightFacade {
 
 
             if (Object.keys(query.OPTIONS).length > 1) {
-                finalProduct = qc.optionParser(allTheData, query.OPTIONS);
+                finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
+                
                 fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.

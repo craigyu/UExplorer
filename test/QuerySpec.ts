@@ -1311,7 +1311,7 @@ describe("QuerySpec", function () {
 
         }).catch(function (err: any) {
             Log.test(err);
-            expect(err).to.deep.equal({ code: 400, body: { "error": "invalid keys for logic comparactor" } });
+            expect(err).to.deep.equal({ code: 400, body: { "error": "Invalid WHERE" } });
         })
     });
 
@@ -1425,13 +1425,6 @@ describe("QuerySpec", function () {
             expect.fail();
         })
     });
-
-
-
-
-
-
-
 
 
 });
