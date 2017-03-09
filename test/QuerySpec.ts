@@ -1039,12 +1039,7 @@ describe("QuerySpec", function () {
         let queryR: QueryRequest = {
             "WHERE": {
                 "AND": [
-                    {
-                        "IS": {
-                            "courses_dept": "cell"
-                        }
-
-                    }
+                    
                 ]
             },
             "OPTIONS": {
