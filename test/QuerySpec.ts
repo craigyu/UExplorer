@@ -1426,5 +1426,134 @@ describe("QuerySpec", function () {
         })
     });
 
+    it("Invalid filter", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "cell"
+                        }
+                    },
+                    {
+                        "EBQ": {
+                            "courses_avg": 89.6
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            expect.fail();
+
+        }).catch(function (err: any) {
+            Log.test(err);
+            expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
+        })
+    });
+
+
+    it("Testing for Basic Parsing to output (IS) correct format for partial course instructor beginning" +
+        "has star", () => {
+            let queryR: QueryRequest = {
+                "WHERE": {
+                    "IS": {
+                        "courses_instructor": "*o'connor, timothy"
+                    }
+                },
+                "OPTIONS": {
+                    "COLUMNS": [
+                        "courses_dept",
+                        "courses_avg"
+                    ],
+                    "ORDER": "courses_avg",
+                    "FORM": "TABLE"
+                }
+            };
+            let queryROutput: InsightResponse = {
+                code: 200,
+                body: {
+                    render: 'TABLE',
+                    result: [
+                        { courses_dept: 'cell', courses_avg: 89.6 }
+                    ]
+                }
+            };
+
+
+            return insF.performQuery(queryR).then(function (value: any) {
+                Log.test("Value: " + value);
+                expect(value).to.deep.equal(queryROutput);
+
+            }).catch(function (err: any) {
+                console.log(err);
+                Log.test(err);
+                expect.fail();
+            })
+        });
+
+    it('should get partial dept', () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "cell"
+                        }
+                    },
+                    {
+                        "IS": {
+                            "courses_instructor": "o*"
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_instructor"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result: [
+                    {
+                        courses_dept: 'cell',
+                        courses_avg: 89.6,
+                        courses_instructor: 'o\'connor, timothy'
+                    }
+
+                ]
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
 
 });

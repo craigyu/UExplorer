@@ -559,6 +559,7 @@ export default class InsightFacade implements IInsightFacade {
 
                     currentData = JSON.parse(currentData);
                     allTheData = [];
+                    qc.resetVars();
                     for (let obj of currentData) {
                         qc.whereParser(query.WHERE, filter, obj);
                         isValidKeys = qc.getValidKeys();
@@ -584,6 +585,8 @@ export default class InsightFacade implements IInsightFacade {
 
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
+                console.log(finalProduct);
+                
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }

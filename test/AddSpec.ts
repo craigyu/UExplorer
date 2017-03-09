@@ -27,7 +27,7 @@ describe("AddSpec", function () {
             expect.fail();
         })
     });
-
+    
 
     it("Testing Invalid Zip base64 to fail", function () {
         let fs = require("fs");
@@ -42,6 +42,9 @@ describe("AddSpec", function () {
 
     it("Testing for Query (loading 3 files)", function () {
         let fs = require("fs");
+        if (fs.existsSync("./cachedDatasets/courses")) {
+            fs.unlinkSync("./cachedDatasets/courses");
+        }
         let data = fs.readFileSync("test3files.zip", "base64");
         return insF.addDataset("courses", data).then(function (value: any) {
             expect(value).to.deep.equal({ code: 204, body: {} })

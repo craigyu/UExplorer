@@ -14,7 +14,7 @@ var toProcess = new Array();
 var mcompLibrary = new Array('courses_avg', 'courses_pass', 'courses_fail', 'courses_audit', 'courses_year', 'rooms_lat', 'rooms_lon', 'rooms_seats');
 var stringLibrary = new Array('courses_dept', 'courses_id', 'courses_instructor', 'courses_title', 'courses_uuid', 'rooms_fullname',
     'rooms_shortname', 'rooms_number', 'rooms_name', 'rooms_address', 'rooms_type', 'rooms_furniture', 'rooms_href');
-
+var filterLib = ['AND', 'OR', 'NOT', 'IS', 'GT', 'EQ', 'LT'];
 
 export default class QueryController {
 
@@ -36,9 +36,7 @@ export default class QueryController {
     }
 
     public getValidKeys() {
-        let temp = isValidKeys;
-        isValidKeys = [];
-        return temp;
+        return isValidKeys;
     }
 
     public returnVal() {
@@ -50,9 +48,13 @@ export default class QueryController {
     }
 
     public getKeys(where: any, filter: string) {
+        if (!filterLib.includes(filter)) {
+            isValidKeys.push(false);
+            return;
+        }
         if (filter == 'AND' || filter == 'OR' || filter == 'NOT') {
             if (filter == 'AND' || filter == 'OR') {
-                if (where[filter].length < 2) {
+                if (where[filter].length < 2 || Array.isArray(where[filter] == false)) {
                     isValidKeys.push(false);
                     return;
                 }
@@ -113,10 +115,10 @@ export default class QueryController {
                 for (let i = 0; i < subLen; i++) {
                     waitList.push(toProcess.pop());
                 }
-                if (waitList.every(allTrue) == true){
+                if (waitList.every(allTrue) == true) {
                     toProcess.push(true);
                 }
-                else{
+                else {
                     toProcess.push(false);
                 }
             }
@@ -125,10 +127,10 @@ export default class QueryController {
                 for (let i = 0; i < subLen; i++) {
                     waitList.push(toProcess.pop());
                 }
-                if(waitList.includes(true)){
+                if (waitList.includes(true)) {
                     toProcess.push(true);
                 }
-                else{
+                else {
                     toProcess.push(false);
                 }
             }
@@ -192,7 +194,10 @@ export default class QueryController {
                     let strIS = where[filter][key];
                     let star = strIS.indexOf("*");
                     let keyLen = strIS.length - 1;
-
+                    if (keyLen == 0 && star == 0) {
+                        isValidKeys.push(false);
+                        return;
+                    }
                     if (star != 0 && star != keyLen) {
                         if (theObj.hasOwnProperty(key)) {
                             if (theObj[key] == where[filter][key]) {
@@ -226,7 +231,7 @@ export default class QueryController {
                             let subIsStr = strIS.substr(1, keyLen);
 
                             if (theObj.hasOwnProperty(key)) {
-                                if (theObj[key].includes(subIsStr)) {
+                                if (theObj[key].endsWith(subIsStr)) {
                                     toProcess.push(true);
                                 }
                                 else {
