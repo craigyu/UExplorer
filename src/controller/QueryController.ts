@@ -54,7 +54,7 @@ export default class QueryController {
         }
         if (filter == 'AND' || filter == 'OR' || filter == 'NOT') {
             if (filter == 'AND' || filter == 'OR') {
-                if (where[filter].length < 2 || Array.isArray(where[filter] == false)) {
+                if (where[filter].length < 1 || Array.isArray(where[filter] == false)) {
                     isValidKeys.push(false);
                     return;
                 }
