@@ -492,27 +492,97 @@ export default class InsightFacade implements IInsightFacade {
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
             var qc = new QueryController();
             //check if query is valid
-            if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length != 2) {
-                reject({ code: 400, body: { 'error': 'The query is invalid' } });
-            }
-
             try {
                 JSON.parse(JSON.stringify(query))
             }
             catch (err) {
                 reject({ code: 400, body: { 'error': 'The query is not a valid JSON' } });
             }
-            //***************************** STARTING HERE WE ASSUME WE HAVE ALL THE DATA ******************************** //
+            /**********   check in depth    **************/
+            if (query == null || !('WHERE' in query) || !('OPTIONS' in query) || typeof query == 'undefined' || Object.keys(query).length < 2) {
+                reject({ code: 400, body: { 'error': 'The query is invalid' } });
+            }
+            else if (Object.keys(query).length > 2) {
+                let transBody = query.TRANSFORMATIONS;
+                if (Object.keys(query).length > 3) {
+                    reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                }
+                else if (!('TRANSFORMATIONS' in query)) {
+                    reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                }
+                else if (!Object.keys(transBody).includes('GROUP') || !Object.keys(transBody).includes('APPLY') || Object.keys(transBody).length != 2) {
+                    reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                }
+
+                let tKeys = qc.transTerms(transBody);
+                let aKeys, gKeys, subAks;
+                if (tKeys[0] == false) {
+                    reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                }
+                else {
+                    gKeys = tKeys[0]; // group keys
+                    aKeys = tKeys[1]; // apply keys
+                    subAks = tKeys[2]; // apply token keys
+                }
+                let trimedColn = new Array();
+                // Option[COLUMNS] validation 
+                if (Object.keys(query.OPTIONS).length > 1) {
+                    let opColn = query.OPTIONS['COLUMNS'];
+                    for (let str of opColn) {
+                        let underS = str.indexOf('_');
+                        if (underS == 0 || underS == str.length - 1) {
+                            reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                        }
+                        else if (underS == -1) {
+                            if (!aKeys.includes(str)) {
+                                reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                            }
+                        }
+                        else {
+                            if (!gKeys.includes(str)) {
+                                reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                            }
+                            let trimStr = str.substr(0, underS);
+                            trimedColn.push(trimStr);
+                        }
+                    }
+                    for (let str of gKeys) {
+                        let underS = str.indexOf('_');
+                        let trimStr = str.substr(0, underS);
+                        trimedColn.push(trimStr);
+                    }
+                    trimedColn = trimedColn.concat(subAks);
+                    for (let i = 1; i < trimedColn.length; i++) {
+                        if (trimedColn[0] != trimedColn[i]) {
+                            reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                        }
+                    }
+                    let fileName: string = trimedColn[0];
+
+                    if (!fs.existsSync(dataPath + fileName)) {
+                        reject({ code: 424, body: { 'missing': [fileName] } });
+                    }
+                    else {
+                        idAssure = fileName;
+                        currentData = fs.readFileSync(dataPath + fileName, "utf8");
+                        currentData = JSON.parse(currentData);
+                    }
+                } else {
+                    reject({ code: 400, body: { 'error': 'The query is invalid' } });
+                }
+
+            }
 
 
+            // helper for an arr callback, ignore
             function isValid(element: boolean, index: any, array: any) {
                 return element == true;
             }
-
+            /**
+             * 1st Process WHERE 
+             */
             try {
-
                 qc.resetVars();
-
                 if (Object.keys(query.WHERE).length == 1) {
                     let whereKeys = Object.keys(query.WHERE);
                     let filter = whereKeys[0];
@@ -568,12 +638,12 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         if (qc.returnVal()) {
                             allTheData.push(obj);
-                            
                         }
                         qc.resetVars();
                     }
-
-
+                }
+                else if (Object.keys(query.WHERE).length == 0) {
+                    allTheData = currentData;
                 }
                 else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
             }
@@ -582,15 +652,25 @@ export default class InsightFacade implements IInsightFacade {
                 throw err;
             }
 
+            // 2nd: Process TRANSFORMATIONS if exists
+            if (query.hasOwnProperty('TRANSFORMATIONS')) {
+                let gBody = query.TRANSFORMATIONS['GROUP'];
+                let result = new Array();
+                result = qc.groupParser(gBody, allTheData);
+                
 
+            }
+
+
+            // 3rd: process options
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
-                console.log(finalProduct);
-                
+                //console.log(finalProduct);
+
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
-                
+
                 fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.

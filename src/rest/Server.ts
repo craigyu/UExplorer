@@ -6,7 +6,7 @@
 import restify = require('restify');
 
 import Log from "../Util";
-import {InsightResponse} from "../controller/IInsightFacade";
+import { InsightResponse } from "../controller/IInsightFacade";
 
 /**
  * This configures the REST endpoints for the server.
@@ -54,6 +54,8 @@ export default class Server {
                     name: 'insightUBC'
                 });
 
+                that.rest.use(restify.bodyParser({ mapParams: true, mapFiles: true }));
+
                 that.rest.get('/', function (req: restify.Request, res: restify.Response, next: restify.Next) {
                     res.send(200);
                     return next();
@@ -62,7 +64,7 @@ export default class Server {
                 // provides the echo service
                 // curl -is  http://localhost:4321/echo/myMessage
                 that.rest.get('/echo/:msg', Server.echo);
-
+                that.rest.get('/square/:num', Server.square);
                 // Other endpoints will go here
 
                 that.rest.listen(that.port, function () {
@@ -83,6 +85,7 @@ export default class Server {
     }
 
     // The next two methods handle the echo service.
+    // req.params.num
     // These are almost certainly not the best place to put these, but are here for your reference.
     // By updating the Server.echo function pointer above, these methods can be easily moved.
 
@@ -94,17 +97,30 @@ export default class Server {
             res.json(result.code, result.body);
         } catch (err) {
             Log.error('Server::echo(..) - responding 400');
-            res.json(400, {error: err.message});
+            res.json(400, { error: err.message });
         }
         return next();
     }
 
     public static performEcho(msg: string): InsightResponse {
         if (typeof msg !== 'undefined' && msg !== null) {
-            return {code: 200, body: {message: msg + '...' + msg}};
+            return { code: 200, body: { message: msg + '...' + msg } };
         } else {
-            return {code: 400, body: {error: 'Message not provided'}};
+            return { code: 400, body: { error: 'Message not provided' } };
         }
+    }
+
+
+
+    public static square(req: restify.Request, res: restify.Response, next: restify.Next) {
+        let number = req.params.num;
+        let squared_number = number * number;
+
+        let response_jason = { 'squared_number': squared_number };
+
+
+        res.json(200, response_jason);
+        return next();
     }
 
 }

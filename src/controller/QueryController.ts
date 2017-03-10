@@ -139,9 +139,7 @@ export default class QueryController {
 
         else if (filter == 'LT' || filter == 'GT' || filter == 'EQ') {
             let mcompKeys = Object.keys(where[filter]);
-
             let key = mcompKeys[0];
-
             if (mcompLibrary.includes(key)) {
                 if (typeof where[filter][key] != 'number') {
                     isValidKeys.push(false);
@@ -210,7 +208,6 @@ export default class QueryController {
                         else {
                             toProcess.push(false);
                         }
-
                     }
                     else if (star == 0) {
                         if (strIS.substr(keyLen, 1) == "*") {
@@ -292,13 +289,6 @@ export default class QueryController {
 
     }
 
-
-
-
-
-
-    // MCOMPFILTERED FOR NOW BECAUSE WE WANT TO MAKE SURE THE FUNCTIONALITY WORKS.
-    // MCOMPFILTER = TOTALFILTERED AFTER
 
     public optionParser(mcompFiltered: any[], optionBody: any, idAssure: string): any {
         if (!("COLUMNS" in optionBody) || !("FORM" in optionBody)) {
@@ -418,6 +408,104 @@ export default class QueryController {
         };
         return result;
     }
+
+    // get group key and apply string
+    // param: trans = query.TRANSFORMATIONS
+    // return an array: if not valid return [false]; else return [[group keys*], [apply string*]]
+    public transTerms(trans: any) {
+        let ret = [];
+        let applyK = new Array();  //e.g. 'maxSeats'
+        let subAK = new Array();  // e.g."rooms_seats" in -> { "MAX": "rooms_seats"}
+        let tKeys = Object.keys(trans);
+        let gLen = trans['GROUP'].length;
+        let tokenLib = ['MAX', 'MIN', 'AVG', 'COUNT', 'SUM'];
+        if (tKeys[0] != 'GROUP' || tKeys[1] != 'APPLY' || Object.keys(trans).length != 2 || gLen < 1) {
+            ret = [false];
+            return ret;
+        }
+
+        for (let i = 1; i < gLen; i++) {
+            if (trans['GROUP'][0] == trans['GROUP'][i]) {
+                ret = [false];
+                return ret;
+            }
+        }
+        ret.push(trans['GROUP']);
+        if (trans['APPLY'].length > 0) {
+            for (let obj of trans['APPLY']) {
+                let subKs = Object.keys(obj);
+                let subK = subKs[0];
+                let subsubKs = Object.keys(obj[subK]);
+                let subsubK = subsubKs[0];
+                if (!tokenLib.includes(subsubK)) {
+                    ret = [false];
+                    return ret;
+                }
+                else {
+                    let str = obj[subK][subsubK];
+                    let underS = str.indexOf('_');
+                    if (underS == -1 || underS == str.length - 1) {
+                        ret = [false];
+                        return ret;
+                    }
+                    let trimStr = str.substr(0, underS);
+                    subAK.push(trimStr);
+
+                }
+                // all string should be unique
+                if (!applyK.includes(subK)) {
+                    applyK.push(subK);
+                }
+                else {
+                    ret = [false];
+                    return ret;
+                }
+            }
+        }
+        ret.push(applyK);
+        ret.push(subAK);
+        return ret;
+    }
+
+
+    public groupParser(group: any, data: any) {
+        let gLen = group.length;
+        interface groups {
+            [OP: string]: any
+        }
+        var groups: groups = {};
+        function groupBy(array: any, f: any) {
+            array.forEach(function (o: any) {
+                var group = f(o);
+                groups[group] = groups[group] || [];
+                groups[group].push(o);
+            });
+            return Object.keys(groups).map(function (group) {
+                return groups[group];
+            })
+        }
+
+        var result = groupBy(data, function (item: any) {
+            let arr = new Array();
+            for (let i = 0; i < gLen; i++) {
+                if (typeof item[group[i]] != 'undefined') {
+                    arr.push(item[group[i]])
+                }
+            }
+            
+            return arr;
+        });
+        console.log(result);
+        return result;
+
+    }
+
+
+
+    public applyParser(apply: any, allData: any) {
+
+    }
+
 
 
 }

@@ -12,11 +12,15 @@ export interface InsightResponse {
 export interface QueryRequest {
     // you can define your own structure that complies with the EBNF here
     WHERE: {}; 
-    OPTIONS: {};
+    OPTIONS: {
+        [OP:string]:any
+    };
+    TRANSFORMATIONS?: null|{
+         [GA:string]:any
+    }
     //COLUMNS: string[];
     //ORDER: string;
     //VIEW: any;    // not sure about this
-
 }
 
 export interface IInsightFacade {
