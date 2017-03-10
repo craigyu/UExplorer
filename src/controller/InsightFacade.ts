@@ -491,6 +491,7 @@ export default class InsightFacade implements IInsightFacade {
             var idAssure;
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
             var qc = new QueryController();
+            var apTerm, aKeys;
             //check if query is valid
             try {
                 JSON.parse(JSON.stringify(query))
@@ -515,7 +516,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 let tKeys = qc.transTerms(transBody);
-                let aKeys, gKeys, subAks;
+                let gKeys, subAks;
                 if (tKeys[0] == false) {
                     reject({ code: 400, body: { 'error': 'The query is invalid' } });
                 }
@@ -523,6 +524,7 @@ export default class InsightFacade implements IInsightFacade {
                     gKeys = tKeys[0]; // group keys
                     aKeys = tKeys[1]; // apply keys
                     subAks = tKeys[2]; // apply token keys
+                    apTerm = tKeys[3]; // apply terms e.g. {"MAX": "rooms_seats"}
                 }
                 let trimedColn = new Array();
                 // Option[COLUMNS] validation 
@@ -657,7 +659,33 @@ export default class InsightFacade implements IInsightFacade {
                 let gBody = query.TRANSFORMATIONS['GROUP'];
                 let result = new Array();
                 result = qc.groupParser(gBody, allTheData);
-                
+                let aBody = query.TRANSFORMATIONS['APPLY'];
+                let aLen = aBody.length;
+                let rLen = result.length;
+                if(aLen == 0){
+                    allTheData = [];
+                    for(let i of result){
+                        allTheData.push(i.pop());
+                    }
+                }
+                else{
+                    allTheData = [];
+                  
+                    let rLen = result.length;
+                    while (result.length > 0){
+                        let obj = result.shift();
+                        let term = new Array();
+                        let keys = new Array();
+                        term = term.concat(apTerm);
+                        keys = keys.concat(aKeys);
+                        let val = qc.applyParser(keys, obj, term);
+                        if (val == false){
+                            reject({ code: 400, body: { 'error': "Malformed apply"} });
+                        }
+                        allTheData.push(val);
+                    }
+                    
+                }
 
             }
 
@@ -665,7 +693,7 @@ export default class InsightFacade implements IInsightFacade {
             // 3rd: process options
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
-                //console.log(finalProduct);
+                console.log(finalProduct);
 
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });

@@ -295,21 +295,8 @@ export default class QueryController {
             return null;
         }
         // dealing with columns
-        let colVal: any = [];
-        for (let val of optionBody["COLUMNS"]) {
-            let n = val.indexOf("_");
-            let fileName = val.substr(0, n);
-            if (n < 1) {
-                return null;
-            }
-            if (idAssure == "") {
-                return null;
-            }
-            else if (idAssure != fileName) {
-                return null;
-            }
-            colVal.push(val);
-        }
+        let colVal = optionBody['COLUMNS'];
+        
 
         if (optionBody["FORM"] != "TABLE") {
             return null;
@@ -416,6 +403,7 @@ export default class QueryController {
         let ret = [];
         let applyK = new Array();  //e.g. 'maxSeats'
         let subAK = new Array();  // e.g."rooms_seats" in -> { "MAX": "rooms_seats"}
+        let appTerm = new Array();
         let tKeys = Object.keys(trans);
         let gLen = trans['GROUP'].length;
         let tokenLib = ['MAX', 'MIN', 'AVG', 'COUNT', 'SUM'];
@@ -429,7 +417,12 @@ export default class QueryController {
                 ret = [false];
                 return ret;
             }
+            if (!stringLibrary.includes(trans['GROUP'][i]) && !mcompLibrary.includes(trans['GROUP'][i])) {
+                ret = [false];
+                return ret;
+            }
         }
+
         ret.push(trans['GROUP']);
         if (trans['APPLY'].length > 0) {
             for (let obj of trans['APPLY']) {
@@ -443,6 +436,11 @@ export default class QueryController {
                 }
                 else {
                     let str = obj[subK][subsubK];
+                    if (!stringLibrary.includes(str) && !mcompLibrary.includes(str)) {
+                        ret = [false];
+                        return ret;
+                    }
+                    appTerm.push(obj[subK]);
                     let underS = str.indexOf('_');
                     if (underS == -1 || underS == str.length - 1) {
                         ret = [false];
@@ -464,10 +462,12 @@ export default class QueryController {
         }
         ret.push(applyK);
         ret.push(subAK);
+        ret.push(appTerm);
         return ret;
     }
 
 
+    // group the data and return an array with grouped data
     public groupParser(group: any, data: any) {
         let gLen = group.length;
         interface groups {
@@ -492,17 +492,74 @@ export default class QueryController {
                     arr.push(item[group[i]])
                 }
             }
-            
+
             return arr;
         });
-        console.log(result);
         return result;
-
     }
 
 
 
-    public applyParser(apply: any, allData: any) {
+    public applyParser(keys:any, arr: any, apt: any) {
+        let aptLen = apt.length;
+        let ret = false;
+        while (aptLen > 0) {
+            let app = apt.pop();
+            let k = Object.keys(app);
+            let token = k[0];
+            let name = keys.pop();
+            let key = app[token];
+            if(arr.length < 1) return false;
+            ret = this.tokenParser(token, key, arr, name);
+            if (ret == false) {
+                return false;
+            }
+            aptLen--;
+        }
+        return ret;
+
+    }
+
+    private tokenParser(tk: any, key: any, arr: any, name: string) {
+        let len = arr.length;
+        let temp = null;
+        let obj, val;
+        interface keyval {
+            [OP: string]: any
+        }
+        if (tk == 'MAX' || tk == 'MIN') {
+            if (!mcompLibrary.includes(key)) {
+                return false;
+            }
+            for (let i = 0; i < len; i++) {
+                obj = arr[i];
+                val = obj[key];
+                if(typeof val != 'number') return false;
+                if(temp == null){
+                    temp = val;
+                }
+                else{
+                    if(tk == 'MAX'){
+                        if(val > temp){
+                            temp = val
+                        }
+                         continue;
+                    }
+                    else{
+                        if(val < temp){
+                            temp = val
+                        }
+                        continue;
+                    }
+                }
+            }
+            let unique = arr.pop();
+            let max:keyval = {[name]: temp};
+            unique = Object.assign(max, unique);
+            return unique;
+        }
+
+
 
     }
 

@@ -28,7 +28,7 @@ describe("Transformation Tests", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "rooms_furniture","rooms_shortname"
+                    "rooms_furniture", "rooms_shortname", "maxSeats"
 
                 ],
                 "ORDER": "rooms_furniture",
@@ -36,7 +36,11 @@ describe("Transformation Tests", function () {
             },
             "TRANSFORMATIONS": {
                 "GROUP": ["rooms_furniture", "rooms_shortname"],
-                "APPLY": []
+                "APPLY": [{
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }]
             }
         };
         let queryROutput: InsightResponse = {
