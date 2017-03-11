@@ -1062,7 +1062,7 @@ describe("QuerySpec", function () {
         })
     });
 
-    it.skip("Invalid Where", () => {
+    it("Invalid Where", () => {
         let queryR: QueryRequest = {
             "WHERE": {
 
@@ -1266,6 +1266,7 @@ describe("QuerySpec", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
             expect.fail();
 
         }).catch(function (err: any) {

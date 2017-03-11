@@ -188,7 +188,7 @@ describe("Transformation Tests", function () {
                 "APPLY": [{
                     "maxSeats": {
                         "AVG": "rooms_seats"
-                    }   
+                    }
                 }]
             }
         };
@@ -212,7 +212,7 @@ describe("Transformation Tests", function () {
         })
     });
 
-        it.only("should work for queryB example", () => {
+    it("should work for queryB example", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "AND": [{
@@ -227,7 +227,7 @@ describe("Transformation Tests", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "rooms_furniture", "rooms_shortname", "maxSeats"
+                    "rooms_furniture", "rooms_shortname", "countType" , "avgSeats"
 
                 ],
                 "ORDER": "rooms_furniture",
@@ -236,10 +236,17 @@ describe("Transformation Tests", function () {
             "TRANSFORMATIONS": {
                 "GROUP": ["rooms_furniture", "rooms_shortname"],
                 "APPLY": [{
-                    "maxSeats": {
-                        "COUNT": "rooms_seats"
+                    "countType": {
+                        "COUNT": "rooms_number"
                     }
-                }]
+
+                },
+                {
+                    "avgSeats": {
+                        "AVG": "rooms_seats"
+                    }
+                }
+                ]
             }
         };
         let queryROutput: InsightResponse = {

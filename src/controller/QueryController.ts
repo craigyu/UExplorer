@@ -296,7 +296,20 @@ export default class QueryController {
         }
         // dealing with columns
         let colVal = optionBody['COLUMNS'];
-
+        for (let val of optionBody["COLUMNS"]) {
+            let n = val.indexOf("_");
+            let fileName = val.substr(0, n);
+            if (n < 1) {
+                return null;
+            }
+            if (idAssure == "") {
+                return null;
+            }
+            else if (idAssure != fileName) {
+                return null;
+            }
+            colVal.push(val);
+        }
 
         if (optionBody["FORM"] != "TABLE") {
             return null;
@@ -501,22 +514,42 @@ export default class QueryController {
 
 
     public applyParser(keys: any, arr: any, apt: any) {
-        let aptLen = apt.length;
-        let ret = false;
-        while (aptLen > 0) {
-            let app = apt.pop();
-            let k = Object.keys(app);
-            let token = k[0];
-            let name = keys.pop();
-            let key = app[token];
-            if (arr.length < 1) return false;
-            ret = this.tokenParser(token, key, arr, name);
+        let aptLen = apt.length - 1;
+        let ret: any = false;
+        let ar = new Array();
+        let app = apt.pop();
+        let k = Object.keys(app);
+        let token = k[0]; let result;
+        let name = keys.pop();
+        let tempAr = new Array();
+        tempAr = tempAr.concat(arr);
+        let key = app[token];
+        if (arr.length < 1) return false;
+        ret = this.tokenParser(token, key, tempAr, name);
+        ar.push(ret);
+        if (ret == false) {
+            return false;
+        }
+        while (aptLen-- > 0) {
+            name = keys.pop();
+            app = apt.pop();
+            k = Object.keys(app);
+            token = k[0];
+            key = app[token];
+            tempAr = tempAr.concat(arr);
+            ret = this.tokenParser(token, key, tempAr, name);
             if (ret == false) {
                 return false;
             }
-            aptLen--;
+            ar.push(ret);
         }
-        return ret;
+        let arLen = ar.length;
+        let unique = arr[0];
+        for (let i = 0; i < arLen; i++) {
+            unique = Object.assign(ar[i], unique);
+        }
+
+        return unique;
 
     }
 
@@ -553,10 +586,8 @@ export default class QueryController {
                     }
                 }
             }
-            let unique = arr.pop();
             let max: keyval = { [name]: temp };
-            unique = Object.assign(max, unique);
-            return unique;
+            return max;
         }
         else if (tk == 'SUM') {
             if (!mcompLibrary.includes(key)) {
@@ -566,20 +597,27 @@ export default class QueryController {
                 obj = arr[i];
                 temp = temp + obj[key];
             }
-            let unique = arr.pop();
             let sum: keyval = { [name]: temp };
-            unique = Object.assign(sum, unique);
-            return unique;
+
+            return sum;
         }
         else if (tk == 'COUNT') {
             if (!mcompLibrary.includes(key) && !stringLibrary.includes(key)) {
                 return false;
             }
-            temp = arr.length;
-            let unique = arr.pop();
+            temp = null; let num = new Array();
+            for (let i = 0; i < len; i++) {
+                obj = arr[i];
+                val = obj[key];
+                num.push(val);
+            }
+            let newList = num.filter(function (elem, pos) {
+                return num.indexOf(elem) == pos;
+            });
+
+            temp = newList.length;
             let count: keyval = { [name]: temp };
-            unique = Object.assign(count, unique);
-            return unique;
+            return count;
         }
         else if (tk == 'AVG') {
             if (!mcompLibrary.includes(key)) {
@@ -596,10 +634,8 @@ export default class QueryController {
             temp = temp / len;
             temp = temp / 10;
             temp = Number(temp.toFixed(2));
-            let unique = arr.pop();
             let avg: keyval = { [name]: temp };
-            unique = Object.assign(avg, unique);
-            return unique;
+            return avg;
         }
 
 

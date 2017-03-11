@@ -491,7 +491,9 @@ export default class InsightFacade implements IInsightFacade {
             var idAssure;
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
             var qc = new QueryController();
-            var apTerm, aKeys;
+            var apTerm, aKeys,  gKeys, subAks
+         
+            let trimedColn = new Array();
             //check if query is valid
             try {
                 JSON.parse(JSON.stringify(query))
@@ -516,7 +518,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 let tKeys = qc.transTerms(transBody);
-                let gKeys, subAks;
+                
                 if (tKeys[0] == false) {
                     reject({ code: 400, body: { 'error': 'The query is invalid' } });
                 }
@@ -552,6 +554,7 @@ export default class InsightFacade implements IInsightFacade {
                         let underS = str.indexOf('_');
                         let trimStr = str.substr(0, underS);
                         trimedColn.push(trimStr);
+                       
                     }
                     trimedColn = trimedColn.concat(subAks);
                     for (let i = 1; i < trimedColn.length; i++) {
@@ -594,6 +597,9 @@ export default class InsightFacade implements IInsightFacade {
                     let isValidKeys = qc.getValidKeys();
                     if (isValidKeys.every(isValid) == false) {
                         reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
+                    }
+                    if('TRANSFORMATIONS' in query){
+                        allKeys = allKeys.concat(subAks);
                     }
                     let misID = new Array();
                     if (keyLen == 1) {
@@ -693,8 +699,7 @@ export default class InsightFacade implements IInsightFacade {
             // 3rd: process options
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
-                console.log(finalProduct);
-
+               
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
