@@ -112,12 +112,10 @@ export default class Server {
 
 
 
-    public static square(req: restify.Request, res: restify.Response, next: restify.Next) {
+    public static square(req: restify.Request, res: restify.Response, next: restify.Next) { 
         let number = req.params.num;
         let squared_number = number * number;
-
         let response_jason = { 'squared_number': squared_number };
-
 
         res.json(200, response_jason);
         return next();

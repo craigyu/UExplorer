@@ -534,7 +534,7 @@ export default class QueryController {
             for (let i = 0; i < len; i++) {
                 obj = arr[i];
                 val = obj[key];
-                if(typeof val != 'number') return false;
+                
                 if(temp == null){
                     temp = val;
                 }

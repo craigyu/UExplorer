@@ -693,7 +693,7 @@ export default class InsightFacade implements IInsightFacade {
             // 3rd: process options
             if (Object.keys(query.OPTIONS).length > 1) {
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
-                console.log(finalProduct);
+               // console.log(finalProduct);
 
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
