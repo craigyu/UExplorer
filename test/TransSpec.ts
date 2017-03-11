@@ -4,7 +4,7 @@ import { InsightResponse, QueryRequest } from "../src/controller/IInsightFacade"
 import InsightFacade from "../src/controller/InsightFacade";
 
 
-describe("Transformation Tests", function () {
+describe.skip("Transformation Tests", function () {
 
     let insF: InsightFacade = null;
 

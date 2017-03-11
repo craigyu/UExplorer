@@ -491,8 +491,7 @@ export default class InsightFacade implements IInsightFacade {
             var idAssure;
             let finalProduct; // THIS IS THE FINAL JSON AFTER PARSING EVERYTHING
             var qc = new QueryController();
-            var apTerm, aKeys,  gKeys, subAks
-         
+            var apTerm, aKeys, gKeys, subAks, trimedGK = new Array();
             let trimedColn = new Array();
             //check if query is valid
             try {
@@ -554,6 +553,7 @@ export default class InsightFacade implements IInsightFacade {
                         let underS = str.indexOf('_');
                         let trimStr = str.substr(0, underS);
                         trimedColn.push(trimStr);
+                        trimedGK.push(trimStr);
                        
                     }
                     trimedColn = trimedColn.concat(subAks);
@@ -599,7 +599,7 @@ export default class InsightFacade implements IInsightFacade {
                         reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
                     if('TRANSFORMATIONS' in query){
-                        allKeys = allKeys.concat(subAks);
+                        allKeys = allKeys.concat(subAks).concat.apply(trimedGK);
                     }
                     let misID = new Array();
                     if (keyLen == 1) {
@@ -652,6 +652,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
                 else if (Object.keys(query.WHERE).length == 0) {
                     allTheData = currentData;
+                    idAssure = 'geteverything';
                 }
                 else (reject({ code: 400, body: { 'error': 'Invalid WHERE' } }));
             }
@@ -698,7 +699,11 @@ export default class InsightFacade implements IInsightFacade {
 
             // 3rd: process options
             if (Object.keys(query.OPTIONS).length > 1) {
-                finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure);
+                let hasTrans = false;
+                if('TRANSFORMATIONS' in query){
+                    hasTrans = true;
+                }
+                finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure, hasTrans);
                
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });

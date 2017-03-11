@@ -1079,11 +1079,13 @@ describe("QuerySpec", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-            expect.fail();
+            Log.test("Value " + value);
+            expect(value.code).deep.equal(200);
+            expect(value.body.result.length).equal(8);
 
         }).catch(function (err: any) {
             Log.test(err);
-            expect(err).to.deep.equal({ code: 400, body: { 'error': 'Invalid WHERE' } });
+            expect.fail();
         })
     });
 

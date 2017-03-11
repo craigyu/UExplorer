@@ -290,25 +290,40 @@ export default class QueryController {
     }
 
 
-    public optionParser(mcompFiltered: any[], optionBody: any, idAssure: string): any {
+    public optionParser(mcompFiltered: any, optionBody: any, idAssure: string, hasTrans: boolean): any {
         if (!("COLUMNS" in optionBody) || !("FORM" in optionBody)) {
             return null;
         }
         // dealing with columns
-        let colVal = optionBody['COLUMNS'];
-        for (let val of optionBody["COLUMNS"]) {
-            let n = val.indexOf("_");
-            let fileName = val.substr(0, n);
-            if (n < 1) {
-                return null;
+        let colVal: any = [];
+        if (hasTrans) {
+            colVal = optionBody["COLUMNS"];
+        }
+        else {
+            for (let val of optionBody["COLUMNS"]) {
+                let n = val.indexOf("_");
+                let fileName = val.substr(0, n);
+                if (n < 1) {
+                    return null;
+                }
+                if (idAssure == "") {
+                    return null;
+                }
+                else if (idAssure == "geteverything") {
+                    idAssure = fileName;
+                    if (!fs.existsSync(dataPath + fileName)) {
+                        return null;
+                    }
+                    else {
+                        mcompFiltered = fs.readFileSync(dataPath + fileName, "utf8");
+                        mcompFiltered = JSON.parse(mcompFiltered);
+                    }
+                }
+                else if (idAssure != fileName) {
+                    return null;
+                }
+                colVal.push(val);
             }
-            if (idAssure == "") {
-                return null;
-            }
-            else if (idAssure != fileName) {
-                return null;
-            }
-            colVal.push(val);
         }
 
         if (optionBody["FORM"] != "TABLE") {
