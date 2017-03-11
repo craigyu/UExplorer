@@ -4,7 +4,7 @@ import { InsightResponse, QueryRequest } from "../src/controller/IInsightFacade"
 import InsightFacade from "../src/controller/InsightFacade";
 
 
-describe.only("QuerySpec", function () {
+describe("QuerySpec", function () {
 
     let insF: InsightFacade = null;
 

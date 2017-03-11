@@ -13,7 +13,7 @@ describe("Transformation Tests", function () {
     });
 
 
-    it.only("should work for queryB example", () => {
+    it("should work for queryB example", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "AND": [{
@@ -47,27 +47,206 @@ describe("Transformation Tests", function () {
             code: 200,
             body: {
                 "render": "TABLE",
-                "result": [{
-                    "rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs"
+                "result": []
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+    it("should work for queryB example", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [{
+                    "IS": {
+                        "rooms_furniture": "*Tables*"
+                    }
                 }, {
-                    "rooms_furniture": "Classroom-Fixed Tables/Movable Chairs"
-                }, {
-                    "rooms_furniture": "Classroom-Fixed Tables/Moveable Chairs"
-                }, {
-                    "rooms_furniture": "Classroom-Fixed Tablets"
-                }, {
-                    "rooms_furniture": "Classroom-Hybrid Furniture"
-                }, {
-                    "rooms_furniture": "Classroom-Learn Lab"
-                }, {
-                    "rooms_furniture": "Classroom-Movable Tables & Chairs"
-                }, {
-                    "rooms_furniture": "Classroom-Movable Tablets"
-                }, {
-                    "rooms_furniture": "Classroom-Moveable Tables & Chairs"
-                }, {
-                    "rooms_furniture": "Classroom-Moveable Tablets"
+                    "GT": {
+                        "rooms_seats": 150
+                    }
                 }]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_furniture", "rooms_shortname", "maxSeats"
+
+                ],
+                "ORDER": "rooms_furniture",
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_furniture", "rooms_shortname"],
+                "APPLY": [{
+                    "maxSeats": {
+                        "SUM": "rooms_seats"
+                    }
+                }]
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": []
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+    it("should work for queryB example", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [{
+                    "IS": {
+                        "rooms_furniture": "*Tables*"
+                    }
+                }, {
+                    "GT": {
+                        "rooms_seats": 150
+                    }
+                }]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_furniture", "rooms_shortname", "maxSeats"
+
+                ],
+                "ORDER": "rooms_furniture",
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_furniture", "rooms_shortname"],
+                "APPLY": [{
+                    "maxSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                }]
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": []
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+    it("should work for queryB example", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [{
+                    "IS": {
+                        "rooms_furniture": "*Tables*"
+                    }
+                }, {
+                    "GT": {
+                        "rooms_seats": 150
+                    }
+                }]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_furniture", "rooms_shortname", "maxSeats"
+
+                ],
+                "ORDER": "rooms_furniture",
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_furniture", "rooms_shortname"],
+                "APPLY": [{
+                    "maxSeats": {
+                        "AVG": "rooms_seats"
+                    }   
+                }]
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": []
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+        it.only("should work for queryB example", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [{
+                    "IS": {
+                        "rooms_furniture": "*Tables*"
+                    }
+                }, {
+                    "GT": {
+                        "rooms_seats": 150
+                    }
+                }]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_furniture", "rooms_shortname", "maxSeats"
+
+                ],
+                "ORDER": "rooms_furniture",
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_furniture", "rooms_shortname"],
+                "APPLY": [{
+                    "maxSeats": {
+                        "COUNT": "rooms_seats"
+                    }
+                }]
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": []
             }
         };
 

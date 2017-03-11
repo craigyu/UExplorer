@@ -296,7 +296,7 @@ export default class QueryController {
         }
         // dealing with columns
         let colVal = optionBody['COLUMNS'];
-        
+
 
         if (optionBody["FORM"] != "TABLE") {
             return null;
@@ -500,7 +500,7 @@ export default class QueryController {
 
 
 
-    public applyParser(keys:any, arr: any, apt: any) {
+    public applyParser(keys: any, arr: any, apt: any) {
         let aptLen = apt.length;
         let ret = false;
         while (aptLen > 0) {
@@ -509,7 +509,7 @@ export default class QueryController {
             let token = k[0];
             let name = keys.pop();
             let key = app[token];
-            if(arr.length < 1) return false;
+            if (arr.length < 1) return false;
             ret = this.tokenParser(token, key, arr, name);
             if (ret == false) {
                 return false;
@@ -534,19 +534,19 @@ export default class QueryController {
             for (let i = 0; i < len; i++) {
                 obj = arr[i];
                 val = obj[key];
-                
-                if(temp == null){
+
+                if (temp == null) {
                     temp = val;
                 }
-                else{
-                    if(tk == 'MAX'){
-                        if(val > temp){
+                else {
+                    if (tk == 'MAX') {
+                        if (val > temp) {
                             temp = val
                         }
-                         continue;
+                        continue;
                     }
-                    else{
-                        if(val < temp){
+                    else {
+                        if (val < temp) {
                             temp = val
                         }
                         continue;
@@ -554,8 +554,51 @@ export default class QueryController {
                 }
             }
             let unique = arr.pop();
-            let max:keyval = {[name]: temp};
+            let max: keyval = { [name]: temp };
             unique = Object.assign(max, unique);
+            return unique;
+        }
+        else if (tk == 'SUM') {
+            if (!mcompLibrary.includes(key)) {
+                return false;
+            }
+            for (let i = 0; i < len; i++) {
+                obj = arr[i];
+                temp = temp + obj[key];
+            }
+            let unique = arr.pop();
+            let sum: keyval = { [name]: temp };
+            unique = Object.assign(sum, unique);
+            return unique;
+        }
+        else if (tk == 'COUNT') {
+            if (!mcompLibrary.includes(key) && !stringLibrary.includes(key)) {
+                return false;
+            }
+            temp = arr.length;
+            let unique = arr.pop();
+            let count: keyval = { [name]: temp };
+            unique = Object.assign(count, unique);
+            return unique;
+        }
+        else if (tk == 'AVG') {
+            if (!mcompLibrary.includes(key)) {
+                return false;
+            }
+            temp = 0;
+            for (let i = 0; i < len; i++) {
+                obj = arr[i];
+                val = obj[key];
+                val = val * 10;
+                val = Number(val.toFixed(0))
+                temp = temp + val;
+            }
+            temp = temp / len;
+            temp = temp / 10;
+            temp = Number(temp.toFixed(2));
+            let unique = arr.pop();
+            let avg: keyval = { [name]: temp };
+            unique = Object.assign(avg, unique);
             return unique;
         }
 
