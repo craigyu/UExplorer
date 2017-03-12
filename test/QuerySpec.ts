@@ -1249,7 +1249,7 @@ describe("QuerySpec", function () {
         })
     });
 
-    it("wrong id test", () => {
+    it.only("wrong id test", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "IS": {

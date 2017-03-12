@@ -517,7 +517,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 let tKeys = qc.transTerms(transBody);
-                
+
                 if (tKeys[0] == false) {
                     reject({ code: 400, body: { 'error': 'The query is invalid' } });
                 }
@@ -554,7 +554,7 @@ export default class InsightFacade implements IInsightFacade {
                         let trimStr = str.substr(0, underS);
                         trimedColn.push(trimStr);
                         trimedGK.push(trimStr);
-                       
+
                     }
                     trimedColn = trimedColn.concat(subAks);
                     for (let i = 1; i < trimedColn.length; i++) {
@@ -598,8 +598,8 @@ export default class InsightFacade implements IInsightFacade {
                     if (isValidKeys.every(isValid) == false) {
                         reject({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } })
                     }
-                    if('TRANSFORMATIONS' in query){
-                        allKeys = allKeys.concat(subAks).concat.apply(trimedGK);
+                    if ('TRANSFORMATIONS' in query) {
+                        allKeys = allKeys.concat(subAks).concat(trimedGK);
                     }
                     let misID = new Array();
                     if (keyLen == 1) {
@@ -669,29 +669,29 @@ export default class InsightFacade implements IInsightFacade {
                 let aBody = query.TRANSFORMATIONS['APPLY'];
                 let aLen = aBody.length;
                 let rLen = result.length;
-                if(aLen == 0){
+                if (aLen == 0) {
                     allTheData = [];
-                    for(let i of result){
+                    for (let i of result) {
                         allTheData.push(i.pop());
                     }
                 }
-                else{
+                else {
                     allTheData = [];
-                  
+
                     let rLen = result.length;
-                    while (result.length > 0){
+                    while (result.length > 0) {
                         let obj = result.shift();
                         let term = new Array();
                         let keys = new Array();
                         term = term.concat(apTerm);
                         keys = keys.concat(aKeys);
                         let val = qc.applyParser(keys, obj, term);
-                        if (val == false){
-                            reject({ code: 400, body: { 'error': "Malformed apply"} });
+                        if (val == false) {
+                            reject({ code: 400, body: { 'error': "Malformed apply" } });
                         }
                         allTheData.push(val);
                     }
-                    
+
                 }
 
             }
@@ -700,16 +700,22 @@ export default class InsightFacade implements IInsightFacade {
             // 3rd: process options
             if (Object.keys(query.OPTIONS).length > 1) {
                 let hasTrans = false;
-                if('TRANSFORMATIONS' in query){
+                if ('TRANSFORMATIONS' in query) {
                     hasTrans = true;
                 }
+                if (allTheData.length == 0) fulfill({
+                    code: 200, body: {
+                        render: 'TABLE',
+                        result: []
+                    }
+                });
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure, hasTrans);
-               
+                //              console.log(finalProduct);
                 if (finalProduct == null) {
                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
 
-                fulfill({ code: 200, body: finalProduct.valueOf() });
+                 fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {

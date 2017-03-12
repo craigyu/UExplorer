@@ -330,13 +330,14 @@ export default class QueryController {
             return null;
         }
         //check if order is valid
-        var orderVal: string;
+        var orderVal: string; var newStyle = false; var dir = ""; var dirKeys;
         if (optionBody.hasOwnProperty("ORDER")) {
-            if (typeof optionBody["ORDER"] != 'string') {
+            if (typeof optionBody["ORDER"] != 'string' && typeof optionBody["ORDER"] != 'object') {
                 return null;
             }
-            else {
+            else if (typeof optionBody["ORDER"] == 'string') {
                 // var s = optionBody["ORDER"];
+                newStyle = false;
                 if (!colVal.includes(optionBody["ORDER"])) {
                     return null;
                 }
@@ -344,6 +345,26 @@ export default class QueryController {
                     orderVal = optionBody["ORDER"];
                 }
             }
+            else if (typeof optionBody["ORDER"] == 'object') {
+                newStyle = true;
+                let oobj = optionBody["ORDER"];
+                let oobjKeys = Object.keys(oobj);
+                if (oobjKeys.length < 2) return null;
+                if (oobjKeys[0] != 'dir') return null;
+                if (oobjKeys[1] != 'keys') return null;
+                if (oobj['dir'] != 'DOWN' && oobj['dir'] != 'UP') return null;
+                else {
+                    dir = oobj['dir'];
+                }
+                if (!Array.isArray(oobj['keys'])) return null;
+                dirKeys = oobj['keys']; let kLen = dirKeys.length;
+                for (let i = 0; i < kLen; i++) {
+                    if (!colVal.includes(dirKeys[i])) {
+                        return null;
+                    }
+                }
+            }
+            else return null;
         }
         else orderVal = "";
 
@@ -377,43 +398,49 @@ export default class QueryController {
 
         }
         //console.log(processed);
-
         function joinJSON(o: any, ob: any): any {
             for (var z in ob) {
                 o[z] = ob[z];
             }
             return o;
         }
-
         // END OF PROCESS TABLE
 
 
         // START OF ORDERING //
         //sort with number
-        if (orderVal != "") {
-            if (mcompLibrary.includes(orderVal)) {
-                processed.sort(function (a: any, b: any) {
-                    return a[orderVal] - b[orderVal];
-                })
-                // console.log(processed);
-            }
-            //sort alphabetically
-            else if (stringLibrary.includes(orderVal)) {
-                processed.sort(function (a: any, b: any) {
-                    var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
-                    var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
-                    if (nameA < nameB) {
-                        return -1;
-                    }
-                    if (nameA > nameB) {
-                        return 1;
-                    }
+        if (!newStyle) {
+            // oldStyle 
+            if (orderVal != "") {
 
-                    return 0;
-                })
-                // console.log(processed);
+               let testVal = processed[0][orderVal];
+
+                if (typeof testVal == 'number') {
+                    processed.sort(function (a: any, b: any) {
+                        return a[orderVal] - b[orderVal];
+                    })
+                    // console.log(processed);
+                }
+                //sort alphabetically
+                else if (typeof testVal == 'string') {
+                    processed.sort(function (a: any, b: any) {
+                        var nameA = a[orderVal].toUpperCase(); // ignore upper and lowercase
+                        var nameB = b[orderVal].toUpperCase(); // ignore upper and lowercase
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                    // console.log(processed);
+                }
+                else return null;
             }
-            else return null;
+        }
+        else {
+            processed = this.sortMulti(processed, dir, dirKeys);
         }
         // END OF ORDERING
 
@@ -652,10 +679,115 @@ export default class QueryController {
             let avg: keyval = { [name]: temp };
             return avg;
         }
+    }
 
+    private sortMulti(arr: any, dir: any, dirKeys: any) {
+        let that = this;
+        if (dir == 'UP') {
+            let firstK = dirKeys.shift();
 
+            arr.sort(function (a: any, b: any) {
+                let valA, valB;
+                if (typeof a[firstK] == 'number') {
+                    valA = a[firstK];
+                    valB = b[firstK];
+                }
+                else {
+                    valA = a[firstK].toUpperCase();
+                    valB = b[firstK].toUpperCase();
+                }
+                if (valA < valB) return -1;
+                else if (valA > valB) return 1;
+                else {
+                    if (dirKeys.length == 0) return 0;
+                    return that.subSort(a, b, dir, dirKeys)
+                }
+
+            })
+        }
+        else {
+            let firstK = dirKeys.shift();
+            arr.sort(function (a: any, b: any) {
+                let valA, valB;
+                if (typeof a[firstK] == 'number') {
+                    valA = a[firstK];
+                    valB = b[firstK];
+                }
+                else {
+                    valA = a[firstK].toUpperCase();
+                    valB = b[firstK].toUpperCase();
+                }
+                if (valA > valB) return -1;
+                else if (valA < valB) return 1;
+                else {
+                    if (dirKeys.length == 0) return 0;
+                    return that.subSort(a, b, dir, dirKeys)
+                }
+
+            })
+        }
+        return arr;
 
     }
+
+    private subSort(a: any, b: any, dir: any, dirKeys: any): number {
+        if (dirKeys.length == 0) return 0;
+        let firstK = dirKeys.shift();
+        if (dir == "UP") {
+            if (typeof a[firstK] == 'number') {
+                let valA = a[firstK];
+                let valB = b[firstK];
+                if (valA < valB) return -1;
+                else if (valA > valB) return 1;
+                else {
+                    return this.subSort(a, b, dir, dirKeys);
+                }
+            }
+            //sort alphabetically
+            else if (typeof a[firstK] == 'string') {
+                var nameA = a[firstK].toUpperCase(); // ignore upper and lowercase
+                var nameB = b[firstK].toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                else {
+                    return this.subSort(a, b, dir, dirKeys);
+                }
+            }
+        }
+        else {
+            if (typeof a[firstK] == 'number') {
+                let valA = a[firstK];
+                let valB = b[firstK];
+                if (valA > valB) return -1;
+                else if (valA < valB) return 1;
+                else {
+                    return this.subSort(a, b, dir, dirKeys);
+                }
+            }
+            //sort alphabetically
+            else if (typeof a[firstK] == 'string') {
+                var nameA = a[firstK].toUpperCase(); // ignore upper and lowercase
+                var nameB = b[firstK].toUpperCase(); // ignore upper and lowercase
+                if (nameA > nameB) {
+                    return -1;
+                }
+                if (nameA < nameB) {
+                    return 1;
+                }
+                else {
+                    return this.subSort(a, b, dir, dirKeys);
+                }
+            }
+        }
+    }
+
+
+
+
 
 
 
