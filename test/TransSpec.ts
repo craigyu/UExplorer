@@ -15,24 +15,28 @@ describe("Transformation Tests", function () {
 
     it.skip("testing for stress test apply", () => {
         let queryR: QueryRequest = {
-            "WHERE": {},
-            "OPTIONS": {
-                "COLUMNS": [
-                    "courses_dept", "courses_year", "courses_id", "courses_avg", "courses_instructor",
-                    "courses_title", "minGrade"
-                ],
-                "ORDER": {"dir":"DOWN", "keys" : ["courses_dept", "courses_avg"]},
-                "FORM": "TABLE"
-            },
-            "TRANSFORMATIONS": {
-                "GROUP": ["courses_dept", "courses_year", "courses_id", "courses_avg", "courses_instructor", "courses_title"],
-                "APPLY": [
+            "WHERE":{
+                "AND":[
                     {
-                        "minGrade": {
-                            "MIN": "courses_avg"
+                        "IS":{
+                            "courses_title":"*op*"
+                        }
+                    },
+                    {
+                        "EQ":{
+                            "courses_year":2016
                         }
                     }
                 ]
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_title",
+                    "courses_uuid",
+                    "courses_year"
+                ],
+                "ORDER":"courses_uuid",
+                "FORM":"TABLE"
             }
         }
         let queryROutput: InsightResponse = {
@@ -60,8 +64,8 @@ describe("Transformation Tests", function () {
 
         return insF.performQuery(queryR).then(function (value: any) {
             let fs = require('fs');
+            fs.writeFileSync("./cachedDatasets/test", JSON.stringify(value));
             
-            Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {

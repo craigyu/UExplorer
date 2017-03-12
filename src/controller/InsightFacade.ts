@@ -113,7 +113,7 @@ export default class InsightFacade implements IInsightFacade {
                                                         if (obj.hasOwnProperty("id")) {
                                                             let uuid = id + "_uuid";
                                                             let uuidVal = obj["id"];
-                                                            subObjValues["courses_uuid"] = uuidVal;
+                                                            subObjValues["courses_uuid"] = uuidVal.toString();
                                                         }
                                                         if (obj.hasOwnProperty("Section")) {
                                                             if (obj["Section"] == "overall") {
