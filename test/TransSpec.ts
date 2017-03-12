@@ -688,7 +688,7 @@ describe("Transformation Tests", function () {
     });
 
 
-    it.only("Testing for multiple APPLY and multiple order keys", () => {
+    it("Testing for multiple APPLY and multiple order keys", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "AND": [{

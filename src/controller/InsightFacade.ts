@@ -166,14 +166,6 @@ export default class InsightFacade implements IInsightFacade {
                                         }
                                     }
                                 }
-                            } else {
-                                for (let i of arrayOfStrings) {
-                                    if (typeof i != "undefined") {
-                                        for (let j of i) {
-                                            combine.push(j);
-                                        }
-                                    }
-                                }
                             }
 
 
