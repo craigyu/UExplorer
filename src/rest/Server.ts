@@ -65,12 +65,12 @@ export default class Server {
                 /**
                  *          GET
                  */
-                that.rest.get('/echo/:msg', Server.echo);
+                //that.rest.get('/echo/:msg', Server.echo);
                 // that.rest.get('/square/:num', Server.square);
                 /**
                  *          PUT
                  */
-                that.rest.put('/dataset/:id', Server.add);
+                //that.rest.put('/dataset/:id', Server.add);
                 /**
                  *          DEL
                  */
@@ -78,7 +78,7 @@ export default class Server {
                 /**
                  *          POST
                  */
-                that.rest.post('/query', restify.bodyParser(), Server.query);
+                //that.rest.post('/query', restify.bodyParser(), Server.query);
 
                 // Other endpoints will go here
                 that.rest.listen(that.port, function () {
