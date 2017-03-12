@@ -703,19 +703,16 @@ export default class InsightFacade implements IInsightFacade {
                 if ('TRANSFORMATIONS' in query) {
                     hasTrans = true;
                 }
-                if (allTheData.length == 0) fulfill({
-                    code: 200, body: {
-                        render: 'TABLE',
-                        result: []
-                    }
-                });
+
+
                 finalProduct = qc.optionParser(allTheData, query.OPTIONS, idAssure, hasTrans);
                 //              console.log(finalProduct);
                 if (finalProduct == null) {
-                    reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
+                     reject({ code: 400, body: { "Error": "Invalid OPTIONS" } });
                 }
 
-                 fulfill({ code: 200, body: finalProduct.valueOf() });
+
+                fulfill({ code: 200, body: finalProduct.valueOf() });
 
                 // IF SOMETHING WAS MISSING SUCH AS THE KEYS NEEDED INSIDE THE OPTIONS.
             } else {

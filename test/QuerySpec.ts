@@ -1249,7 +1249,7 @@ describe("QuerySpec", function () {
         })
     });
 
-    it.only("wrong id test", () => {
+    it("wrong id test", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "IS": {
@@ -1341,88 +1341,6 @@ describe("QuerySpec", function () {
         })
     });
 
-
-    it.skip("triggered Complex AND", () => {
-        let queryR: QueryRequest = {
-            "WHERE": {
-                "AND": [
-                    {
-                        "AND": [
-                            {
-                                "AND": [
-                                    {
-                                        "AND": [
-                                            {
-                                                "AND": [
-                                                    {
-                                                        "NOT": {
-                                                            "IS": { "courses_dept": "cpsc" }
-                                                        }
-                                                    },
-                                                    {
-                                                        "GT": {
-                                                            "courses_avg": 60
-                                                        }
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "GT": {
-                                                    "courses_avg": 65
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "NOT": {
-                                            "IS": { "courses_dept": "chem" }
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "LT": {
-                                    "courses_avg": 90
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "IS": {
-                            "courses_dept": "cell"
-                        }
-                    }
-                ]
-            },
-            "OPTIONS": {
-                "COLUMNS": [
-                    "courses_dept",
-                    "courses_avg"
-                ],
-                "ORDER": "courses_avg",
-                "FORM": "TABLE"
-            }
-        };
-        let queryROutput: InsightResponse = {
-            code: 200,
-            body: {
-                render: 'TABLE',
-                result: [{ courses_dept: 'dent', courses_avg: 82.5 },
-                { courses_dept: 'dent', courses_avg: 82.5 }]
-            }
-        };
-
-
-        return insF.performQuery(queryR).then(function (value: any) {
-            Log.test("Value: " + value);
-            expect(value).to.deep.equal(queryROutput);
-
-        }).catch(function (err: any) {
-            console.log(err);
-            Log.test(err);
-            expect.fail();
-        })
-    });
 
     it("Invalid filter", () => {
         let queryR: QueryRequest = {

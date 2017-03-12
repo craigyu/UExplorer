@@ -291,6 +291,10 @@ export default class QueryController {
 
 
     public optionParser(mcompFiltered: any, optionBody: any, idAssure: string, hasTrans: boolean): any {
+
+
+
+
         if (!("COLUMNS" in optionBody) || !("FORM" in optionBody)) {
             return null;
         }
@@ -367,6 +371,10 @@ export default class QueryController {
             else return null;
         }
         else orderVal = "";
+
+
+        if(mcompFiltered.length == 0)
+            return { render: "TABLE", result: []};
 
 
         var colData = new Array();
