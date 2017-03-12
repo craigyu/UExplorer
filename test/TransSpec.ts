@@ -763,33 +763,37 @@ describe("Transformation Tests", function () {
             "WHERE": {
                 "AND": [{
                     "IS": {
-                        "rooms_furniture": "*Tables*"
+                        "courses_dept": "cpsc"
                     }
                 }, {
                     "GT": {
-                        "rooms_seats": 300
+                        "courses_year": 1900
                     }
                 }]
 
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "rooms_shortname",
-                    "countType"
-
+                    "courses_dept", "courses_year",
+                    "countType", "avgAvg"
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["countType"]
+                    "keys": ["countType", "avgAvg"]
                 },
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["rooms_shortname"],
+                "GROUP": ["courses_title"],
                 "APPLY": [
                     {
                         "countType": {
-                            "COUNT": "rooms_furniture"
+                            "COUNT": "courses_title"
+                        }
+                    },
+                    {
+                        "avgAvg" :{
+                            "AVG" : "courses_avg"
                         }
                     }]
             }
