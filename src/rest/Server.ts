@@ -71,7 +71,14 @@ export default class Server {
                  *          PUT
                  */
                 that.rest.put('/dataset/:id', Server.add);
-               
+                /**
+                 *          DEL
+                 */
+                that.rest.del('/dataset/:id', Server.del);
+                /**
+                 *          POST
+                 */
+                that.rest.post('/query', restify.bodyParser(), Server.query);
 
                 // Other endpoints will go here
                 that.rest.listen(that.port, function () {
@@ -129,6 +136,7 @@ export default class Server {
     }
 
     public static add(req: restify.Request, res: restify.Response, next: restify.Next) {
+        Log.trace('Server::Add - params: ' + JSON.stringify(req.params));
         let id = req.params.id;
         try {
             let buffer: any = [];
@@ -151,5 +159,42 @@ export default class Server {
         }
         return next();
     }
+
+    public static del(req: restify.Request, res: restify.Response, next: restify.Next) {
+        Log.trace('Server::Del - params: ' + JSON.stringify(req.params));
+        let id = req.params.id;
+        let insF = new InsightFacade();
+        try {
+            insF.removeDataset(id).then(function (result) {
+                res.json(result.code, result.body);
+            })
+                .catch(function (error) {
+                    res.json(error.code, error.body);
+                })
+        }
+        catch (err) {
+            res.send(400, { error: err.message });
+        }
+        return next();
+    }
+
+    public static query(req: restify.Request, res: restify.Response, next: restify.Next) {
+        Log.trace('Server::Del - query: ' + JSON.stringify(req.params));
+        let inputQ: QueryRequest = req.params;
+        let insF = new InsightFacade();
+        try {
+            insF.performQuery(inputQ).then(function (result) {
+                res.json(result.code, result.body);
+            })
+                .catch(function (error) {
+                    res.json(error.code, error.body);
+                })
+
+        }
+        catch (err) {
+            res.send(400, { error: err.message });
+        }
+    }
+
 
 }
