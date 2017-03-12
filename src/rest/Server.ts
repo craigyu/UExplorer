@@ -194,6 +194,7 @@ export default class Server {
         catch (err) {
             res.send(400, { error: err.message });
         }
+        return next();
     }
 
 
