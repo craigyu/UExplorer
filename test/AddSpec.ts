@@ -17,7 +17,7 @@ describe("AddSpec", function () {
         insF = new InsightFacade();
     })
 
-    it.skip("should load courses.zip", function () {
+    it("should load courses.zip", function () {
         let fs = require("fs");
         let data = fs.readFileSync("courses.zip", "base64");
         return insF.addDataset("courses", data).then(function (value: any) {

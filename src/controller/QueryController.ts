@@ -707,8 +707,10 @@ export default class QueryController {
                 if (valA < valB) return -1;
                 else if (valA > valB) return 1;
                 else {
+                    let dumAr = new Array();
+                    dumAr = dumAr.concat(dirKeys);
                     if (dirKeys.length == 0) return 0;
-                    return that.subSort(a, b, dir, dirKeys)
+                    return that.subSort(a, b, dir, dumAr)
                 }
 
             })
@@ -728,8 +730,10 @@ export default class QueryController {
                 if (valA > valB) return -1;
                 else if (valA < valB) return 1;
                 else {
+                    let dumAr = new Array();
+                    dumAr = dumAr.concat(dirKeys);
                     if (dirKeys.length == 0) return 0;
-                    return that.subSort(a, b, dir, dirKeys)
+                    return that.subSort(a, b, dir, dumAr)
                 }
 
             })

@@ -13,6 +13,64 @@ describe("Transformation Tests", function () {
     });
 
 
+    it.only("testing for stress test apply", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {},
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept", "courses_year", "courses_id", "courses_avg", "courses_instructor",
+                    "courses_title", "minGrade"
+                ],
+                "ORDER": {"dir":"DOWN", "keys" : ["courses_dept", "courses_avg"]},
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["courses_dept", "courses_year", "courses_id", "courses_avg", "courses_instructor", "courses_title"],
+                "APPLY": [
+                    {
+                        "minGrade": {
+                            "MIN": "courses_avg"
+                        }
+                    }
+                ]
+            }
+        }
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": [{"rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs", "rooms_shortname": "HEBB"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs", "rooms_shortname": "IBLC"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Fixed Chairs", "rooms_shortname": "LSK"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "LSC"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "ANGU"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "DMP"}, {
+                        "rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "CHBE"
+                    },
+                    {"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "FRDM"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "PHRM"},
+                    {"rooms_furniture": "Classroom-Fixed Tables/Movable Chairs", "rooms_shortname": "SWNG"},
+                    {"rooms_furniture": "Classroom-Movable Tables & Chairs", "rooms_shortname": "OSBO"}, {
+                        "rooms_furniture": "Classroom-Movable Tables & Chairs", "rooms_shortname": "SRC"
+                    }]
+
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            let fs = require('fs');
+            fs.writeFileSync("./cachedDatasets/" + 'testVal', JSON.stringify(value));
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
     it("testing for basic group", () => {
         let queryR: QueryRequest = {
             "WHERE": {
