@@ -15,28 +15,28 @@ describe("Transformation Tests", function () {
 
     it.skip("testing for stress test apply", () => {
         let queryR: QueryRequest = {
-            "WHERE":{
-                "AND":[
+            "WHERE": {
+                "AND": [
                     {
-                        "IS":{
-                            "courses_title":"*op*"
+                        "IS": {
+                            "courses_title": "*op*"
                         }
                     },
                     {
-                        "EQ":{
-                            "courses_year":2016
+                        "EQ": {
+                            "courses_year": 2016
                         }
                     }
                 ]
             },
-            "OPTIONS":{
-                "COLUMNS":[
+            "OPTIONS": {
+                "COLUMNS": [
                     "courses_title",
                     "courses_uuid",
                     "courses_year"
                 ],
-                "ORDER":"courses_uuid",
-                "FORM":"TABLE"
+                "ORDER": "courses_uuid",
+                "FORM": "TABLE"
             }
         }
         let queryROutput: InsightResponse = {
@@ -65,7 +65,7 @@ describe("Transformation Tests", function () {
         return insF.performQuery(queryR).then(function (value: any) {
             let fs = require('fs');
             fs.writeFileSync("./cachedDatasets/test", JSON.stringify(value));
-            
+
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
@@ -688,7 +688,7 @@ describe("Transformation Tests", function () {
     });
 
 
-    it("Testing for multiple APPLY and multiple order keys", () => {
+    it.only("Testing for multiple APPLY and multiple order keys", () => {
         let queryR: QueryRequest = {
             "WHERE": {
                 "AND": [{
@@ -718,13 +718,18 @@ describe("Transformation Tests", function () {
             "TRANSFORMATIONS": {
                 "GROUP": ["rooms_shortname"],
                 "APPLY": [{
-                    "avgSeats": {
-                        "AVG": "rooms_seats"
+                    "countType": {
+                        "COUNT": "rooms_furniture"
                     }
                 },
                     {
-                        "countType": {
-                            "COUNT": "rooms_number"
+                        "sumSeats": {
+                            "SUM": "rooms_seats"
+                        }
+                    },
+                    {
+                        "avgSeats": {
+                            "AVG": "rooms_seats"
                         }
                     }]
             }
@@ -733,9 +738,69 @@ describe("Transformation Tests", function () {
             code: 200,
             body: {
                 "render": "TABLE",
-                "result": [{"rooms_shortname":"HEBB","countType":1,"avgSeats":375},
-                    {"rooms_shortname":"OSBO","countType":1,"avgSeats":442},
-                    {"rooms_shortname":"LSC","countType":2,"avgSeats":350}]
+                "result": [{"rooms_shortname": "HEBB", "countType": 1, "avgSeats": 375},
+                    {"rooms_shortname": "OSBO", "countType": 1, "avgSeats": 442},
+                    {"rooms_shortname": "LSC", "countType": 2, "avgSeats": 350}]
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            console.log(JSON.stringify(value.body.result));
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+
+    it("Testing for multiple APPLY and ordering with String", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [{
+                    "IS": {
+                        "rooms_furniture": "*Tables*"
+                    }
+                }, {
+                    "GT": {
+                        "rooms_seats": 300
+                    }
+                }]
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_shortname",
+                    "countType"
+
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["countType"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_shortname"],
+                "APPLY": [
+                    {
+                        "countType": {
+                            "COUNT": "rooms_furniture"
+                        }
+                    }]
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": [{"rooms_shortname": "HEBB", "countType": 1},
+                    {"rooms_shortname": "LSC", "countType": 1},
+                    {"rooms_shortname": "OSBO", "countType": 1}]
             }
         };
 

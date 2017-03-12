@@ -1472,4 +1472,51 @@ describe("QuerySpec", function () {
     });
 
 
+    it('Should Should be able to perform valid query even if it makes no sense', () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "GT": {
+                            "courses_avg": 100
+                        }
+                    },
+                    {
+                        "LT": {
+                            "courses_avg": 0
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_instructor"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                render: 'TABLE',
+                result: []
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+
 });
