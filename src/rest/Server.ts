@@ -65,12 +65,12 @@ export default class Server {
                 /**
                  *          GET
                  */
-                //that.rest.get('/echo/:msg', Server.echo);
+                that.rest.get('/echo/:msg', Server.echo);
                 // that.rest.get('/square/:num', Server.square);
                 /**
                  *          PUT
                  */
-                //that.rest.put('/dataset/:id', Server.add);
+                that.rest.put('/dataset/:id', Server.add);
                 /**
                  *          DEL
                  */
@@ -164,18 +164,17 @@ export default class Server {
         Log.trace('Server::Del - params: ' + JSON.stringify(req.params));
         let id = req.params.id;
         let insF = new InsightFacade();
-        try {
-            insF.removeDataset(id).then(function (result) {
-                res.json(result.code, result.body);
+
+        insF.removeDataset(id).then(function (result: InsightResponse) {
+            res.json(result.code, result.body);
+            return next();
+        })
+            .catch(function (error: InsightResponse) {
+                res.json(error.code, error.body);
+                return next();
             })
-                .catch(function (error) {
-                    res.json(error.code, error.body);
-                })
-        }
-        catch (err) {
-            res.send(400, { error: err.message });
-        }
-        return next();
+
+        
     }
 
     public static query(req: restify.Request, res: restify.Response, next: restify.Next) {

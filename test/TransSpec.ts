@@ -758,33 +758,24 @@ describe("Transformation Tests", function () {
     });
 
 
-    it("Testing for multiple APPLY and ordering with String", () => {
+    it.only("Testing for multiple APPLY and ordering with String", () => {
         let queryR: QueryRequest = {
             "WHERE": {
-                "AND": [{
-                    "IS": {
-                        "courses_dept": "cpsc"
-                    }
-                }, {
-                    "GT": {
-                        "courses_year": 1900
-                    }
-                }]
 
             },
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept", "courses_year",
-                    "countType", "avgAvg"
+                    "countType", "avgAvg", "courses_instructor"
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["countType", "avgAvg"]
+                    "keys": ["countType",  "courses_instructor", "avgAvg"]
                 },
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["courses_title"],
+                "GROUP": ["courses_dept", "courses_instructor", "courses_year"],
                 "APPLY": [
                     {
                         "countType": {
