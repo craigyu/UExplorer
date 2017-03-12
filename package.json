@@ -10,6 +10,7 @@
   "keywords": [],
   "version": "0.0.1",
   "devDependencies": {
+    "@types/node": "^6.0.65",
     "bunyan": "^1.8.5",
     "icedfrisby": "^0.3.X",
     "joi": "^10.0.X",

@@ -4,9 +4,9 @@
  */
 
 import restify = require('restify');
-
+import { IInsightFacade, InsightResponse, QueryRequest } from "../controller/IInsightFacade";
+import InsightFacade from "../controller/InsightFacade";
 import Log from "../Util";
-import { InsightResponse } from "../controller/IInsightFacade";
 
 /**
  * This configures the REST endpoints for the server.
@@ -60,13 +60,20 @@ export default class Server {
                     res.send(200);
                     return next();
                 });
-
                 // provides the echo service
                 // curl -is  http://localhost:4321/echo/myMessage
+                /**
+                 *          GET
+                 */
                 that.rest.get('/echo/:msg', Server.echo);
                 that.rest.get('/square/:num', Server.square);
-                // Other endpoints will go here
+                /**
+                 *          PUT
+                 */
+                that.rest.put('/dataset/:id', Server.add);
+               
 
+                // Other endpoints will go here
                 that.rest.listen(that.port, function () {
                     Log.info('Server::start() - restify listening: ' + that.rest.url);
                     fulfill(true);
@@ -112,12 +119,36 @@ export default class Server {
 
 
 
-    public static square(req: restify.Request, res: restify.Response, next: restify.Next) { 
+    public static square(req: restify.Request, res: restify.Response, next: restify.Next) {
         let number = req.params.num;
         let squared_number = number * number;
         let response_jason = { 'squared_number': squared_number };
 
         res.json(200, response_jason);
+        return next();
+    }
+
+    public static add(req: restify.Request, res: restify.Response, next: restify.Next) {
+        let id = req.params.id;
+        try {
+            let buffer: any = [];
+            req.on('data', function getData(bits: any) {
+                buffer.push(bits);
+            });
+            req.once('end', function () {
+                let concated = Buffer.concat(buffer);
+                req.body = concated.toString('base64');
+                let insF = new InsightFacade();
+                insF.addDataset(id, req.body).then(function (result) {
+                    res.json(result.code, result.body);
+                }).catch(function (error) {
+                    res.json(error.code, error.body);
+                })
+            });
+        }
+        catch (err) {
+            res.send(400, { error: err.message });
+        }
         return next();
     }
 
