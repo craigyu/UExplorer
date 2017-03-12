@@ -66,19 +66,19 @@ export default class Server {
                  *          GET
                  */
                 that.rest.get('/echo/:msg', Server.echo);
-                that.rest.get('/square/:num', Server.square);
+              // that.rest.get('/square/:num', Server.square);
                 /**
                  *          PUT
                  */
-                that.rest.put('/dataset/:id', Server.add);
+               // that.rest.put('/dataset/:id', Server.add);
                 /**
                  *          DEL
                  */
-                that.rest.del('/dataset/:id', Server.del);
+               // that.rest.del('/dataset/:id', Server.del);
                 /**
                  *          POST
                  */
-                that.rest.post('/query', restify.bodyParser(), Server.query);
+               // that.rest.post('/query', restify.bodyParser(), Server.query);
 
                 // Other endpoints will go here
                 that.rest.listen(that.port, function () {
@@ -126,14 +126,14 @@ export default class Server {
 
 
 
-    public static square(req: restify.Request, res: restify.Response, next: restify.Next) {
-        let number = req.params.num;
-        let squared_number = number * number;
-        let response_jason = { 'squared_number': squared_number };
+    // public static square(req: restify.Request, res: restify.Response, next: restify.Next) {
+    //     let number = req.params.num;
+    //     let squared_number = number * number;
+    //     let response_jason = { 'squared_number': squared_number };
 
-        res.json(200, response_jason);
-        return next();
-    }
+    //     res.json(200, response_jason);
+    //     return next();
+    // }
 
     public static add(req: restify.Request, res: restify.Response, next: restify.Next) {
         Log.trace('Server::Add - params: ' + JSON.stringify(req.params));
@@ -187,7 +187,7 @@ export default class Server {
                 res.json(result.code, result.body);
             })
                 .catch(function (error) {
-                    res.json(error.code, error.body);
+                    res.send(Number(error.code), JSON.stringify(error.body));
                 })
 
         }

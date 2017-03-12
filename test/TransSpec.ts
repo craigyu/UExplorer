@@ -13,7 +13,7 @@ describe("Transformation Tests", function () {
     });
 
 
-    it.only("testing for stress test apply", () => {
+    it.skip("testing for stress test apply", () => {
         let queryR: QueryRequest = {
             "WHERE": {},
             "OPTIONS": {
@@ -60,7 +60,7 @@ describe("Transformation Tests", function () {
 
         return insF.performQuery(queryR).then(function (value: any) {
             let fs = require('fs');
-            fs.writeFileSync("./cachedDatasets/" + 'testVal', JSON.stringify(value));
+            
             Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
