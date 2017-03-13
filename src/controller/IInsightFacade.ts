@@ -18,9 +18,6 @@ export interface QueryRequest {
     TRANSFORMATIONS?: null|{
          [GA:string]:any
     }
-    //COLUMNS: string[];
-    //ORDER: string;
-    //VIEW: any;    // not sure about this
 }
 
 export interface IInsightFacade {
