@@ -738,9 +738,8 @@ describe("Transformation Tests", function () {
             code: 200,
             body: {
                 "render": "TABLE",
-                "result": [{"rooms_shortname": "HEBB", "countType": 1, "avgSeats": 375},
-                    {"rooms_shortname": "OSBO", "countType": 1, "avgSeats": 442},
-                    {"rooms_shortname": "LSC", "countType": 2, "avgSeats": 350}]
+                "result": [{"rooms_shortname":"LSC","countType":1,"avgSeats":350},{"rooms_shortname":"HEBB","countType":1,"avgSeats":375},{"rooms_shortname":"OSBO","countType":1,"avgSeats":442}]
+
             }
         };
 
@@ -758,7 +757,7 @@ describe("Transformation Tests", function () {
     });
 
 
-    it("Testing for multiple APPLY and ordering with String", () => {
+    it("Testing for multiple APPLY and ordering with String and UP", () => {
         let queryR: QueryRequest = {
             "WHERE": {
 
@@ -793,9 +792,61 @@ describe("Transformation Tests", function () {
             code: 200,
             body: {
                 "render": "TABLE",
-                "result": [{"rooms_shortname": "HEBB", "countType": 1},
-                    {"rooms_shortname": "LSC", "countType": 1},
-                    {"rooms_shortname": "OSBO", "countType": 1}]
+                "result": [{"courses_dept":"elec","courses_year":2015,"countType":1,"avgAvg":76.5,"courses_instructor":""},{"courses_dept":"elec","courses_year":1900,"countType":1,"avgAvg":76.5,"courses_instructor":""},{"courses_dept":"dent","courses_year":2014,"countType":1,"avgAvg":82.5,"courses_instructor":""},{"courses_dept":"dent","courses_year":1900,"countType":1,"avgAvg":83.95,"courses_instructor":""},{"courses_dept":"cell","courses_year":1900,"countType":1,"avgAvg":89.6,"courses_instructor":""},{"courses_dept":"dent","courses_year":2015,"countType":1,"avgAvg":85.4,"courses_instructor":"chen, hui;yen, edwin h"},{"courses_dept":"cell","courses_year":2010,"countType":1,"avgAvg":89.6,"courses_instructor":"o'connor, timothy"}]
+
+            }
+        };
+
+
+        return insF.performQuery(queryR).then(function (value: any) {
+            Log.test("Value: " + value);
+            expect(value).to.deep.equal(queryROutput);
+
+        }).catch(function (err: any) {
+            console.log(err);
+            Log.test(err);
+            expect.fail();
+        })
+    });
+
+
+    it("Testing for multiple APPLY and ordering with String and DOWN", () => {
+        let queryR: QueryRequest = {
+            "WHERE": {
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept", "courses_year",
+                    "countType", "avgAvg", "courses_instructor"
+                ],
+                "ORDER": {
+                    "dir": "DOWN",
+                    "keys": ["countType",  "courses_instructor", "avgAvg"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["courses_dept", "courses_instructor", "courses_year"],
+                "APPLY": [
+                    {
+                        "countType": {
+                            "COUNT": "courses_title"
+                        }
+                    },
+                    {
+                        "avgAvg" :{
+                            "AVG" : "courses_avg"
+                        }
+                    }]
+            }
+        };
+        let queryROutput: InsightResponse = {
+            code: 200,
+            body: {
+                "render": "TABLE",
+                "result": [{"courses_dept":"cell","courses_year":2010,"countType":1,"avgAvg":89.6,"courses_instructor":"o'connor, timothy"},{"courses_dept":"dent","courses_year":2015,"countType":1,"avgAvg":85.4,"courses_instructor":"chen, hui;yen, edwin h"},{"courses_dept":"cell","courses_year":1900,"countType":1,"avgAvg":89.6,"courses_instructor":""},{"courses_dept":"dent","courses_year":1900,"countType":1,"avgAvg":83.95,"courses_instructor":""},{"courses_dept":"dent","courses_year":2014,"countType":1,"avgAvg":82.5,"courses_instructor":""},{"courses_dept":"elec","courses_year":2015,"countType":1,"avgAvg":76.5,"courses_instructor":""},{"courses_dept":"elec","courses_year":1900,"countType":1,"avgAvg":76.5,"courses_instructor":""}]
+
             }
         };
 
