@@ -44,13 +44,13 @@ describe("ServerSpec", function () {
     });
 
 
-    it.only("Test add", function () {
+    it("Test add", function () {
         return chai.request("192.168.1.72:4321")
             .put('/dataset/rooms')
             .attach("body", fs.readFileSync("./rooms.zip"), "rooms.zip")
             .then(function (res: any) {
                 Log.trace('then:');
-                // some assertions
+                expect(res.status).to.equal(204);
             })
             .catch(function (err:any) {
                 Log.trace('catch:');
@@ -78,9 +78,24 @@ describe("ServerSpec", function () {
             .send(queryJSONObject)
             .then(function (res: any) {
                 Log.trace('then:');
-                // some assertions
+                expect(res.status).to.equal(200);
             })
             .catch(function (err: any) {
+                Log.trace('catch:');
+                // some assertions
+                expect.fail();
+            });
+    });
+
+    it("Test add", function () {
+        return chai.request("192.168.1.72:4321")
+            .put('/dataset/rooms')
+            .attach("body", fs.readFileSync("./rooms.zip"), "rooms.zip")
+            .then(function (res: any) {
+                Log.trace('then:');
+                expect(res.status).to.equal(201);
+            })
+            .catch(function (err:any) {
                 Log.trace('catch:');
                 // some assertions
                 expect.fail();

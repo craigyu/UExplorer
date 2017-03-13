@@ -78,7 +78,7 @@ export default class Server {
                 /**
                  *          POST
                  */
-                that.rest.post('/query', restify.bodyParser(), Server.query);
+                that.rest.post('/query',  Server.query);
 
                 // Other endpoints will go here
                 that.rest.listen(that.port, function () {
@@ -136,23 +136,16 @@ export default class Server {
     // }
 
     public static add(req: restify.Request, res: restify.Response, next: restify.Next) {
-        Log.trace('Server::Add - params: ' + JSON.stringify(req.params));
         let id = req.params.id;
+        Log.trace('Server::Add - params: ' + id);
         try {
-            let buffer: any = [];
-            req.on('data', function getData(bits: any) {
-                buffer.push(bits);
-            });
-            req.once('end', function () {
-                let concated = Buffer.concat(buffer);
-                req.body = concated.toString('base64');
+                let hello = req.params.body.toString('base64');
                 let insF = new InsightFacade();
-                insF.addDataset(id, req.body).then(function (result) {
+                insF.addDataset(id, hello).then(function (result) {
                     res.json(result.code, result.body);
                 }).catch(function (error) {
                     res.json(error.code, error.body);
                 })
-            });
         }
         catch (err) {
             res.send(400, { error: err.message });
@@ -177,7 +170,7 @@ export default class Server {
     }
 
     public static query(req: restify.Request, res: restify.Response, next: restify.Next) {
-        Log.trace('Server::Del - query: ' + JSON.stringify(req.params));
+        Log.trace('Server::Del - query: ');
         let inputQ: QueryRequest = req.params;
         let insF = new InsightFacade();
         try {
