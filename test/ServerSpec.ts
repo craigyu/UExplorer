@@ -114,4 +114,19 @@ describe("ServerSpec", function () {
             });
     });
 
+
+    it(" Test Echo works", function () {
+        return chai.request("localhost:4321")
+            .get('/echo/hello')
+            .then(function (res: any) {
+                Log.trace('then:');
+                expect(res.status).to.equal(200);
+            })
+            .catch(function (err: any) {
+                Log.trace('catch:');
+                // some assertions
+                expect.fail();
+            });
+    });
+
 });

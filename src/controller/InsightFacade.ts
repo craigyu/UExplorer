@@ -255,13 +255,11 @@ export default class InsightFacade implements IInsightFacade {
                             fulfill({ code: sucCode, body: {} });
                         })
                             .catch(function (err: any) {
-                                console.log(err);
                                 reject({ code: 400, body: { 'error': err.toString('utf8') } });
                             })
                     })
 
                     .catch(function (err: any) {
-                        console.log(err);
                         reject({ code: 400, body: { 'error': err.toString('utf8') } });
                     })
             }

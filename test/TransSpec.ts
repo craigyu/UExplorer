@@ -69,7 +69,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -128,7 +128,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -225,7 +225,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -332,7 +332,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -438,7 +438,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -567,7 +567,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -624,7 +624,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -681,7 +681,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -745,12 +745,11 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-            console.log(JSON.stringify(value.body.result));
             Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -803,7 +802,7 @@ describe("Transformation Tests", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -852,16 +851,15 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-            console.log(JSON.stringify(value.body.result));
             Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
     });
 
 
-})
+});

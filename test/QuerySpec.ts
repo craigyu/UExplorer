@@ -48,7 +48,6 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
             Log.test(err);
             expect.fail();
         })
@@ -88,7 +87,6 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
             Log.test(err);
             expect.fail();
         })
@@ -127,8 +125,6 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
-            Log.test(err);
             expect.fail();
         })
     });
@@ -169,7 +165,6 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
             Log.test(err);
             expect.fail();
         })
@@ -210,7 +205,6 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
             Log.test(err);
             expect.fail();
         })
@@ -256,7 +250,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -299,7 +293,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -347,7 +341,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -388,7 +382,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -426,7 +420,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -465,7 +459,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -505,7 +499,7 @@ describe("QuerySpec", function () {
                 expect(value).to.deep.equal(queryROutput);
 
             }).catch(function (err: any) {
-                console.log(err);
+                
                 Log.test(err);
                 expect.fail();
             })
@@ -544,7 +538,7 @@ describe("QuerySpec", function () {
                 expect(value).to.deep.equal(queryROutput);
 
             }).catch(function (err: any) {
-                console.log(err);
+                
                 Log.test(err);
                 expect.fail();
             })
@@ -584,7 +578,7 @@ describe("QuerySpec", function () {
                 expect(value).to.deep.equal(queryROutput);
 
             }).catch(function (err: any) {
-                console.log(err);
+                
                 Log.test(err);
                 expect.fail();
             })
@@ -624,7 +618,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -675,7 +669,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -729,7 +723,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -794,7 +788,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -873,7 +867,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -920,7 +914,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -955,7 +949,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -1000,7 +994,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -1029,7 +1023,7 @@ describe("QuerySpec", function () {
             expect(len).to.equal(26);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -1167,6 +1161,8 @@ describe("QuerySpec", function () {
 
         }).catch(function (err: any) {
             Log.test(err);
+            Log.warn(err);
+            Log.error(err);
             expect(err).to.deep.equal({ code: 400, body: { 'error': 'invalid keys for logic comparactor' } });
         })
     });
@@ -1412,7 +1408,7 @@ describe("QuerySpec", function () {
                 expect(value).to.deep.equal(queryROutput);
 
             }).catch(function (err: any) {
-                console.log(err);
+                
                 Log.test(err);
                 expect.fail();
             })
@@ -1465,7 +1461,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
@@ -1512,7 +1508,7 @@ describe("QuerySpec", function () {
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
-            console.log(err);
+            
             Log.test(err);
             expect.fail();
         })
