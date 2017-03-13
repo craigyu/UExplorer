@@ -45,7 +45,7 @@ describe("ServerSpec", function () {
 
 
     it("Test add", function () {
-        return chai.request("192.168.1.72:4321")
+        return chai.request("localhost:4321")
             .put('/dataset/rooms')
             .attach("body", fs.readFileSync("./rooms.zip"), "rooms.zip")
             .then(function (res: any) {
@@ -60,7 +60,7 @@ describe("ServerSpec", function () {
     });
 
     it("Test Delete", function () {
-        return chai.request("192.168.1.72:4321")
+        return chai.request("localhost:4321")
             .del('/dataset/rooms')
             .then(function (res: any) {
                 Log.trace('then:');
@@ -73,7 +73,7 @@ describe("ServerSpec", function () {
             });
     });
     it("POST Test Query", function () {
-        return chai.request("192.168.1.72:4321")
+        return chai.request("localhost:4321")
             .post('/query')
             .send(queryJSONObject)
             .then(function (res: any) {
@@ -88,7 +88,7 @@ describe("ServerSpec", function () {
     });
 
     it("Test add", function () {
-        return chai.request("192.168.1.72:4321")
+        return chai.request("localhost:4321")
             .put('/dataset/rooms')
             .attach("body", fs.readFileSync("./rooms.zip"), "rooms.zip")
             .then(function (res: any) {
