@@ -21,11 +21,11 @@ describe("QuerySpec", function () {
                 }
             },
             "OPTIONS": {
+                "ORDER": "courses_avg",
                 "COLUMNS": [
                     "courses_dept",
                     "courses_avg"
                 ],
-                "ORDER": "courses_avg",
                 "FORM": "TABLE"
             }
         };

@@ -354,8 +354,7 @@ export default class QueryController {
                 let oobj = optionBody["ORDER"];
                 let oobjKeys = Object.keys(oobj);
                 if (oobjKeys.length < 2) return null;
-                if (oobjKeys[0] != 'dir') return null;
-                if (oobjKeys[1] != 'keys') return null;
+                if (!oobjKeys.includes('dir') || !oobjKeys.includes('keys')) return null;
                 if (oobj['dir'] != 'DOWN' && oobj['dir'] != 'UP') return null;
                 else {
                     dir = oobj['dir'];
@@ -470,7 +469,7 @@ export default class QueryController {
         let tKeys = Object.keys(trans);
         let gLen = trans['GROUP'].length;
         let tokenLib = ['MAX', 'MIN', 'AVG', 'COUNT', 'SUM'];
-        if (tKeys[0] != 'GROUP' || tKeys[1] != 'APPLY' || Object.keys(trans).length != 2 || gLen < 1) {
+        if (!tKeys.includes('GROUP') || !tKeys.includes('APPLY') || Object.keys(trans).length != 2 || gLen < 1) {
             ret = [false];
             return ret;
         }
