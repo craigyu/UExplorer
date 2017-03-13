@@ -758,7 +758,7 @@ describe("Transformation Tests", function () {
     });
 
 
-    it.only("Testing for multiple APPLY and ordering with String", () => {
+    it("Testing for multiple APPLY and ordering with String", () => {
         let queryR: QueryRequest = {
             "WHERE": {
 

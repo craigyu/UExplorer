@@ -78,7 +78,7 @@ export default class Server {
                 /**
                  *          POST
                  */
-                //that.rest.post('/query', restify.bodyParser(), Server.query);
+                that.rest.post('/query', restify.bodyParser(), Server.query);
 
                 // Other endpoints will go here
                 that.rest.listen(that.port, function () {
@@ -167,14 +167,13 @@ export default class Server {
 
         insF.removeDataset(id).then(function (result: InsightResponse) {
             res.json(result.code, result.body);
-            return next();
+
         })
             .catch(function (error: InsightResponse) {
                 res.json(error.code, error.body);
-                return next();
-            })
 
-        
+            })
+        return next();
     }
 
     public static query(req: restify.Request, res: restify.Response, next: restify.Next) {
