@@ -1,5 +1,5 @@
 module.exports = {
-    entry: "./src/rest/public/index.tsx",
+    entry: "./src/rest/public",
     output: {
         filename: "bundle.js",
         path: __dirname + "/dist"
@@ -18,6 +18,13 @@ module.exports = {
             { test: /\.ts$/, loader: 'ts' },
             { test: /\.css$/, loader: 'style!css' },
             { test: /\.html/, loader: 'html' },
+            {
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                    'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            },
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             { test: /\.tsx?$/, loader: "ts-loader" },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.

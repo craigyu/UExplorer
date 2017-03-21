@@ -13,7 +13,7 @@
     "/test/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "src/rest/public"
+    "node_modules"
+    //,"src/rest/public"
   ]
 }

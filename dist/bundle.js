@@ -125,6 +125,9 @@ var React = __webpack_require__(0);
 var ReactDOM = __webpack_require__(2);
 var Hello_1 = __webpack_require__(1);
 ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById("example"));
+var ubcIn = React.createElement("h2", null, " This is UBC Insight ");
+ReactDOM.render(ubcIn, document.getElementById("ubcin"));
+ReactDOM.render(React.createElement("img", { src: "https://leahhanvey.files.wordpress.com/2015/07/ubc-header-official.png" }), document.getElementById("headimg"));
 
 
 /***/ })
