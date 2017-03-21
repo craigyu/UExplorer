@@ -191,7 +191,12 @@ export default class QueryController {
                 else {
                     let strIS = where[filter][key];
                     let star = strIS.indexOf("*");
-                    let keyLen = strIS.length - 1;
+                    let keyLen;
+                    if (strIS != "") {
+                        keyLen = strIS.length - 1;
+                    }
+                    else keyLen = 0;
+
                     if (keyLen == 0 && star == 0) {
                         isValidKeys.push(false);
                         return;
@@ -372,8 +377,8 @@ export default class QueryController {
         else orderVal = "";
 
 
-        if(mcompFiltered.length == 0)
-            return { render: "TABLE", result: []};
+        if (mcompFiltered.length == 0)
+            return { render: "TABLE", result: [] };
 
 
         var colData = new Array();
@@ -420,7 +425,7 @@ export default class QueryController {
             // oldStyle 
             if (orderVal != "") {
 
-               let testVal = processed[0][orderVal];
+                let testVal = processed[0][orderVal];
 
                 if (typeof testVal == 'number') {
                     processed.sort(function (a: any, b: any) {
@@ -487,9 +492,20 @@ export default class QueryController {
 
         ret.push(trans['GROUP']);
         if (trans['APPLY'].length > 0) {
+            // var withEscape = JSON.stringify(trans['APPLY']);
+            // var noEscape = withEscape.replace(/\n/g, "\\n")
+            //     .replace(/\'/g, "\\'")
+            //     .replace(/\"/g, '\\"')
+            //     .replace(/\&/g, "\\&")
+            //     .replace(/\r/g, "\\r")
+            //     .replace(/\t/g, "\\t")
+            //     .replace(/\\b/g, "\\b")
+            //     .replace(/\f/g, "\\f");
+            // var newApply = JSON.parse(noEscape);
+
             for (let obj of trans['APPLY']) {
                 let subKs = Object.keys(obj);
-                let subK = subKs[0];
+                let subK = subKs[0]
                 let subsubKs = Object.keys(obj[subK]);
                 let subsubK = subsubKs[0];
                 if (!tokenLib.includes(subsubK)) {
@@ -514,7 +530,14 @@ export default class QueryController {
                 }
                 // all string should be unique
                 if (!applyK.includes(subK)) {
-                    applyK.push(subK);
+                    applyK.push(subK.replace(/\\n/g, "\\n")
+                    .replace(/\\'/g, "\\'")
+                    .replace(/\\"/g, '\\"')
+                    .replace(/\\&/g, "\\&")
+                    .replace(/\\r/g, "\\r")
+                    .replace(/\\t/g, "\\t")
+                    .replace(/\\b/g, "\\b")
+                    .replace(/\\f/g, "\\f"));
                 }
                 else {
                     ret = [false];

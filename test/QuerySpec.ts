@@ -305,7 +305,7 @@ describe("QuerySpec", function () {
                 "AND": [
                     {
                         "IS": {
-                            "courses_dept": "cell"
+                            "courses_instructor": ""
                         }
                     },
                     {
@@ -317,7 +317,7 @@ describe("QuerySpec", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_dept",
+                    "courses_instructor",
                     "courses_avg"
                 ],
                 "ORDER": "courses_avg",
@@ -337,7 +337,7 @@ describe("QuerySpec", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-            Log.test("Value: " + value);
+            Log.test("Value: " + JSON.stringify(value.body.result)) ;
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
