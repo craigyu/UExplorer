@@ -11,11 +11,15 @@
   "version": "0.0.1",
   "devDependencies": {
     "@types/node": "^6.0.65",
+    "awesome-typescript-loader": "^3.1.2",
     "bunyan": "^1.8.5",
+    "chai": "^3.5.0",
     "icedfrisby": "^0.3.X",
     "joi": "^10.0.X",
     "mocha": "^3.2.0",
-    "tslint": "^4.1.X"
+    "source-map-loader": "^0.2.0",
+    "tslint": "^4.1.X",
+    "typescript": "^2.2.1"
   },
   "scripts": {
     "clean": "rm -rf ./node_modules/",
@@ -31,21 +35,29 @@
   },
   "dependencies": {
     "@types/chai": "^3.4.34",
+    "@types/chai-http": "0.0.30",
     "@types/core-js": "^0.9.35",
     "@types/jszip": "0.0.31",
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.52",
     "@types/parse5": "^2.2.34",
+    "@types/react": "^15.0.17",
+    "@types/react-dom": "^0.14.23",
     "@types/restify": "^2.0.35",
     "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "jszip": "^3.1.2",
     "mocha": "^3.2.0",
     "mochawesome": "^1.5.2",
     "nyc": "^10.0.0",
     "parse5": "^3.0.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3",
     "restify": "^4.0.3",
-    "typescript": "^2.1.X"
+    "ts-loader": "^2.0.2",
+    "typescript": "^2.2.1",
+    "webpack": "^2.2.1"
   }
 }
