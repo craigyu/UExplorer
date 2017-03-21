@@ -305,7 +305,7 @@ describe("QuerySpec", function () {
                 "AND": [
                     {
                         "IS": {
-                            "courses_instructor": ""
+                            "courses_dept": "cell"
                         }
                     },
                     {
@@ -317,7 +317,7 @@ describe("QuerySpec", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_instructor",
+                    "courses_dept",
                     "courses_avg"
                 ],
                 "ORDER": "courses_avg",
