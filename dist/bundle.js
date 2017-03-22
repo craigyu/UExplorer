@@ -4778,10 +4778,10 @@ var Query = exports.Query = function (_React$Component) {
             };
             return React.createElement(
                 "div",
-                { className: "flex-box" },
+                { className: "flex-box", style: { float: "left", border: 0, margin: 0 } },
                 React.createElement(
                     "div",
-                    { className: "scroll" },
+                    { className: "scroll", style: { float: "left", border: 150, margin: 30 } },
                     React.createElement(_reactQuerybuilder2.default, { fields: this.props.fields,
                         combinators: this.props.combinators,
                         operators: this.props.operators,
@@ -4791,11 +4791,11 @@ var Query = exports.Query = function (_React$Component) {
                 ),
                 React.createElement(
                     "div",
-                    { className: "shrink query-log scroll" },
+                    { className: "shrink query-log scroll", style: { backgroundColor: "#CCCCCC", float: "right" } },
                     React.createElement(
                         "h4",
                         null,
-                        "Query"
+                        "Your Input Query"
                     ),
                     React.createElement(
                         "pre",
