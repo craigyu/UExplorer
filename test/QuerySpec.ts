@@ -13,6 +13,9 @@ describe("QuerySpec", function () {
     });
 
 
+    // sum of lats did not work
+    // different symbols besides normal strings dont work
+
     it("Testing for Basic Parsing to output (GT) correct format", () => {
         let queryR: QueryRequest = {
             "WHERE": {
@@ -305,7 +308,7 @@ describe("QuerySpec", function () {
                 "AND": [
                     {
                         "IS": {
-                            "courses_dept": "cell"
+                            "courses_instructor": ""
                         }
                     },
                     {
@@ -318,7 +321,8 @@ describe("QuerySpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
-                    "courses_avg"
+                    "courses_avg",
+                    "courses_instructor"
                 ],
                 "ORDER": "courses_avg",
                 "FORM": "TABLE"
