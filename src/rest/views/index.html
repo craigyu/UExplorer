@@ -1,18 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Hello React!</title>
-    </head>
-    <body>
-        <div id="example"></div>
-        <div id="ubcin"></div>
-        <div id="headimg"></div>
-        <!-- Dependencies -->
-        <script src="../../../node_modules/react/dist/react.js"></script>
-        <script src="../../../node_modules/react-dom/dist/react-dom.js"></script>
 
-        <!-- Main -->
-        <script src="../../../dist/bundle.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <title>UBC Insight</title>
+    <script src="../../../node_modules/react/dist/react.js"></script>
+    <script src="../../../node_modules/react-dom/dist/react-dom.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .flex-box {
+            display: inline-block;
+        }
+
+        .flex-box > * {
+            flex: 1;
+        }
+
+        .scroll {
+            overflow: auto;
+        }
+
+        .shrink {
+            flex: 0 1 auto;
+        }
+
+        .query-log {
+            font-family: Consolas, "Courier New", monospace;
+            white-space: nowrap;
+            max-width: 400px;
+            margin-left: 2rem;
+        }
+    </style>
+
+</head>
+<body class="flex-box">
+    <div>
+    <div id="react-container"></div>
+    <div class="container flex-box"></div>
+    </div>
+   
+    <!-- Dependencies -->
+    <!-- Main -->
+    <script src="../../../dist/bundle.js"></script>
+</body>
+
+
 </html>

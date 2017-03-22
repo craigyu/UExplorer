@@ -1,5 +1,5 @@
 module.exports = {
-    entry: "./src/rest/public",
+    entry: "./src/rest/public/Index.js",
     output: {
         filename: "bundle.js",
         path: __dirname + "/dist"
@@ -13,8 +13,17 @@ module.exports = {
         extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
 
+    devServer: {
+        inline: true,
+        contentBase: "./dist",
+        port: 3000
+    },
+    node: {
+        fs: "empty"
+    },
     module: {
         rules: [
+            { test: /\.json$/, loader: "json-loader" },
             { test: /\.ts$/, loader: 'ts' },
             { test: /\.css$/, loader: 'style!css' },
             { test: /\.html/, loader: 'html' },
@@ -28,7 +37,7 @@ module.exports = {
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             { test: /\.tsx?$/, loader: "ts-loader" },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { test: /\.js$/, loader: "source-map-loader" }
+            { test: /\.js$/, loader: "babel-loader", query: { presets: ["react", "es2015", "stage-0"] } }
         ]
     },
 

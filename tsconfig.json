@@ -6,7 +6,8 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "jsx": "react"
+    "jsx": "react",
+    "allowJs":false
   },
   "filesGlob": [
     "/src/**/*.ts",
