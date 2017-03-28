@@ -1,90 +1,87 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import QueryBuilder from 'react-querybuilder';
 
-export const fields = [
-    {name: 'firstName', label: 'First Name'},
-    {name: 'lastName', label: 'Last Name'},
-    {name: 'age', label: 'Age'},
-    {name: 'address', label: 'Address'},
-    {name: 'phone', label: 'Phone'},
-    {name: 'email', label: 'Email'},
-    {name: 'twitter', label: 'Twitter'},
-    {name: 'isDev', label: 'Is a Developer?', value: false},
-];
 
-export const combinators = [
-    {name: 'WHERE', label: 'Where'},
-    {name: 'OPTIONS', label: 'Options'},
-    {name: 'TRANSFORMATION', label: 'Transformation'},
-]
-export const operators = [
-    {name: 'AND', label: 'And'},
-    {name: 'OR', label: 'Or'},
-    {name: 'IS', label: 'is'},
-    {name: 'GT', label: '>'},
-    {name: 'LT', label: '<'},
-    {name: 'EQ', label: '='},
-]
-
-export class Query extends React.Component{
-    constructor() {
-        super();
-        this.state = {
-            query: {}
-        };
-    }
-
-    render() {
-        let controlElements = {
-            valueEditor: this.customValueEditor()
-        }
-        return (
-            <div className="flex-box" style ={{float:"left", border:0, margin: 0}}>
-                <div className="scroll" style ={{float:"left", border:150, margin:30}}>
-                    <QueryBuilder fields={this.props.fields}
-                                  combinators={this.props.combinators}
-                                  operators={this.props.operators}
-                                  controlElements={controlElements}
-                                  controlClassnames={{fields: 'form-control'}}
-                                  onQueryChange={this.logQuery.bind(this)}/>
-                </div>
-                <div className="shrink query-log scroll" style ={{backgroundColor: "#CCCCCC", float:"right" }}>
-                    <h4>Your Input Query</h4>
-                    <pre>{JSON.stringify(this.state.query, null, 2)}</pre>
-                </div>
-            </div>
-        );
-    }
-
-    customValueEditor() {
-        let checkbox = class MyCheckbox extends React.Component {
-            constructor(props) {
-                super(props);
-            }
-
-            render() {
-                if (this.props.field !== 'isDev' || this.props.operator !== '=') {
-                    return <input type="text" 
-                                  value={this.props.value}
-                                  onChange={e => this.props.handleOnChange(e.target.value)}/>
-                                  
+export const schema = {
+    "title": "Course and Room explorer",
+    "id": "query",
+    "properties": {
+        "WHERE": {
+            "id": "where",
+            "title": "Add filter(s) here",
+            "enum": ["AND", "OR", "IS", "GT", "EQ", "LT", "NOT"],
+            "type": "object",
+        },
+        "OPTIONS": {
+            "title": "Options",
+            "id": "options",
+            "properties": {
+                "COLUMNS": {
+                    "id": "columns",
+                    "title": "Properties you want to display: e.g. courses_dept",
+                    "items": {
+                        "description": "Allows anything, and describes nothing.",
+                        "minItems": 1,
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "FORM": {
+                    "title": "Display Type: ",
+                    "enum": ["TABLE"]
+                },
+                "ORDER": {
+                    "id": "order",
+                    "properties": {
+                        "dir": {
+                            "id": "dir",
+                            "type": "string",
+                            "title": "Sort direction: ",
+                            "enum": ["UP", "DOWN"]
+                        },
+                        "keys": {
+                            "id": "keys",
+                            "title": "Sort with these key(s), at least 1",
+                            "items": {
+                                "description": "Allows anything, and describes nothing.",
+                                "minItems": 1,
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
                 }
+            },
+            "type": "object"
+        },
+        "TRANSFORMATIONS": {
+            "id": "transformations",
+            "title": "Advanced search:  default as empty",
+            "properties": {
+                "APPLY": {
+                    "id": "apply",
+                    "title": "Custom search terms:  e.g. maxSeats",
+                    "items": {
+                        "type": "object",
+                        "minItems": 0,
 
-                return (
-                    <span>
-                        <input type="checkbox"
-                               value={!!this.props.value}
-                               onChange={e => this.props.handleOnChange(e.target.checked)}/>
-                    </span>
-                );
-            }
-        };
-        return checkbox;
-    }
-    logQuery(query) {
-        this.setState({query});
-    }
+                    },
 
+                    "type": "array"
+                },
+                "GROUP": {
+                    "id": "group",
+                    "title": "Group results according to the following keys",
+                    "items": {
+                        "type": "string",
+                        "minItems": 1,
+                    },
+                    "type": "array"
+                }
+            },
+            "type": ["object", "null"]
+        }
+    },
+    "type": "object"
 }
-

@@ -4384,6 +4384,10 @@ react-dom@^15.4.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
+react-formzilla@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-formzilla/-/react-formzilla-0.0.1.tgz#dac6ed3fd6180590bc380ba335188e44b95cde56"
+
 react-hot-api@^0.4.5:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/react-hot-api/-/react-hot-api-0.4.7.tgz#a7e22a56d252e11abd9366b61264cf4492c58171"
