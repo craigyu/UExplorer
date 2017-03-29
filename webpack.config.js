@@ -25,7 +25,10 @@ module.exports = {
         rules: [
             { test: /\.json$/, loader: "json-loader" },
             { test: /\.ts$/, loader: 'ts' },
-            { test: /\.css$/, loader: 'style!css' },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
             { test: /\.html/, loader: 'html' },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
