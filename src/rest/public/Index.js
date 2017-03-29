@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom";
 import { title_image } from "./images";
 import { title, course } from "./lib";
 import { schema } from "./Querybuilder";
+import { room_schema } from "./Rqb";
 import TabPanel, { TabStrip } from 'react-tab-panel'
 import styles from './stylesheets/tab.css';
 import qStyles from './stylesheets/queryStyle.css';
@@ -33,7 +34,7 @@ render(
                 onSubmit={onSubmit} />
         </div>
         <div tabTitle="Rooms Explorer">
-            <Form schema={schema}
+            <Form schema={room_schema}
                 onSubmit={onSubmit} />
         </div>
     </TabPanel>

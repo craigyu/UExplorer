@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 
-export const schema = {
-    "title": "Courses",
+export const room_schema = {
+    "title": "Rooms",
     "id": "query",
     "properties": {
         "WHERE": {
@@ -29,9 +29,9 @@ export const schema = {
                             {
                                 "properties": {
                                     "IS": {
-                                        "enum": ["Department"]
+                                        "enum": ["Building Name"]
                                     },
-                                    "courses_dept": {
+                                    "rooms_name": {
                                         "type": "string"
                                     }
                                 }
@@ -39,10 +39,10 @@ export const schema = {
                             {
                                 "properties": {
                                     "IS": {
-                                        "enum": ["Instructor"],
+                                        "enum": ["Room Number"],
                                     },
-                                    "courses_instructor": {
-                                        "title": "search with partial name using * syntax",
+                                    "rooms_number": {
+
                                         "type": "string"
                                     }
                                 }
@@ -50,9 +50,9 @@ export const schema = {
                             {
                                 "properties": {
                                     "IS": {
-                                        "enum": ["Title"]
+                                        "enum": ["Furniture Type"]
                                     },
-                                    "courses_title": {
+                                    "rooms_furniture": {
                                         "type": "string"
                                     }
                                 }
@@ -60,9 +60,9 @@ export const schema = {
                             {
                                 "properties": {
                                     "IS": {
-                                        "enum": ["ID"],
+                                        "enum": ["Room Type"],
                                     },
-                                    "courses_id": {
+                                    "rooms_type": {
                                         "type": "string"
                                     }
                                 }
@@ -84,61 +84,10 @@ export const schema = {
                     "GT": {
                         "type": "object",
                         "title": "Number value only",
-                        "oneOf": [{},
-                        {
-                            "properties": {
-                                "GT": {
-                                    "enum": ["Average"]
-                                },
-                                "courses_avg": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "GT": {
-                                    "enum": ["Passed"],
-                                },
-                                "courses_pass": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "GT": {
-                                    "enum": ["Failed"]
-                                },
-                                "courses_fail": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "GT": {
-                                    "enum": ["Audited"],
-                                },
-                                "courses_audit": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "GT": {
-                                    "enum": ["Year"],
-                                },
-                                "courses_year": {
-                                    "type": "number"
-                                }
-                            }
-                        }
-                        ],
-                        "x-hints": {
-                            "form": {
-                                "selector": "GT",
+                        "properties": {
+                        
+                            "rooms_seats": {
+                                "type": "number"
                             }
                         }
                     }
@@ -152,61 +101,10 @@ export const schema = {
                     "EQ": {
                         "type": "object",
                         "title": "Number value only",
-                        "oneOf": [{},
-                        {
-                            "properties": {
-                                "EQ": {
-                                    "enum": ["Average"]
-                                },
-                                "courses_avg": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "EQ": {
-                                    "enum": ["Passed"],
-                                },
-                                "courses_pass": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "EQ": {
-                                    "enum": ["Failed"]
-                                },
-                                "courses_fail": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "EQ": {
-                                    "enum": ["Audited"],
-                                },
-                                "courses_audit": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "EQ": {
-                                    "enum": ["Year"],
-                                },
-                                "courses_year": {
-                                    "type": "number"
-                                }
-                            }
-                        }
-                        ],
-                        "x-hints": {
-                            "form": {
-                                "selector": "EQ",
+                        "properties": {
+                            
+                            "rooms_seats": {
+                                "type": "number"
                             }
                         }
                     }
@@ -220,61 +118,10 @@ export const schema = {
                     "LT": {
                         "type": "object",
                         "title": "Number value only",
-                        "oneOf": [{},
-                        {
-                            "properties": {
-                                "LT": {
-                                    "enum": ["Average"]
-                                },
-                                "courses_avg": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "LT": {
-                                    "enum": ["Passed"],
-                                },
-                                "courses_pass": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "LT": {
-                                    "enum": ["Failed"]
-                                },
-                                "courses_fail": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "LT": {
-                                    "enum": ["Audited"],
-                                },
-                                "courses_audit": {
-                                    "type": "number"
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "LT": {
-                                    "enum": ["Year"],
-                                },
-                                "courses_year": {
-                                    "type": "number"
-                                }
-                            }
-                        }
-                        ],
-                        "x-hints": {
-                            "form": {
-                                "selector": "LT",
+                        "properties": {
+                          
+                            "rooms_seats": {
+                                "type": "number"
                             }
                         }
                     }
@@ -307,7 +154,7 @@ export const schema = {
                                                             "type": "string"
                                                         }
                                                     }
-                                                    
+
                                                 },
                                                 {
                                                     "properties": {
