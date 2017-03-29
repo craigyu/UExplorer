@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 69);
+/******/ 	return __webpack_require__(__webpack_require__.s = 71);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -383,7 +383,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });exports.default = fu
     loadTime = new Date().getTime();
   }
 }).call(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ }),
 /* 8 */
@@ -397,7 +397,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Item = exports.Flex = undefined;
 
-var _Flex = __webpack_require__(39);
+var _Flex = __webpack_require__(41);
 
 Object.defineProperty(exports, 'Flex', {
   enumerable: true,
@@ -406,7 +406,7 @@ Object.defineProperty(exports, 'Flex', {
   }
 });
 
-var _Item = __webpack_require__(40);
+var _Item = __webpack_require__(42);
 
 Object.defineProperty(exports, 'Item', {
   enumerable: true,
@@ -1102,13 +1102,95 @@ module.exports = function (str) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var text = __webpack_require__(67);
+var text = __webpack_require__(70);
 exports.title = (React.createElement("h1", { id: "title", className: "header", style: { backgroundImage: "https://leahhanvey.files.wordpress.com/2015/07/ubc-header-official.png", color: "white", fontWeight: 'bold' } }, text.title));
 exports.course = (React.createElement("h1", { id: "course", className: "header", style: { backgroundColor: "#012144", color: "white", fontWeight: 200, font: "arial", allowFontScaling: false, fontFamily: "arial", display: "block", border: 0, margin: 0 } }, text.course));
 
 
 /***/ }),
 /* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function (useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if (item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function (modules, mediaQuery) {
+		if (typeof modules === "string") modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for (var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if (typeof id === "number") alreadyImportedModules[id] = true;
+		}
+		for (i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if (typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if (mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if (mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap) {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */';
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	var base64 = new Buffer(JSON.stringify(sourceMap)).toString('base64');
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(36).Buffer))
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1295,7 +1377,7 @@ process.umask = function () {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1324,7 +1406,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1338,11 +1420,11 @@ var _join = __webpack_require__(10);
 
 var _join2 = _interopRequireDefault(_join);
 
-var _props2flex = __webpack_require__(42);
+var _props2flex = __webpack_require__(44);
 
 var _props2flex2 = _interopRequireDefault(_props2flex);
 
-var _prefix = __webpack_require__(41);
+var _prefix = __webpack_require__(43);
 
 var _prefix2 = _interopRequireDefault(_prefix);
 
@@ -1374,7 +1456,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1390,7 +1472,7 @@ exports["default"] = {
 module.exports = exports["default"];
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1438,7 +1520,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1463,7 +1545,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _objectAssign = 
 };
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1471,7 +1553,303 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _objectAssign = 
 Object.defineProperty(exports, "__esModule", { value: !0 });exports.default = { top: 1, bottom: 1, left: 1, right: 1 };
 
 /***/ }),
-/* 27 */
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		// Test for IE <= 9 as proposed by Browserhacks
+		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+		// Tests for existence of standard globals is to allow style-loader 
+		// to operate correctly into non-standard environments
+		// @see https://github.com/webpack-contrib/style-loader/issues/177
+		return window && document && document.all && !window.atob;
+	}),
+	getElement = (function(fn) {
+		var memo = {};
+		return function(selector) {
+			if (typeof memo[selector] === "undefined") {
+				memo[selector] = fn.call(this, selector);
+			}
+			return memo[selector]
+		};
+	})(function (styleTarget) {
+		return document.querySelector(styleTarget)
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [],
+	fixUrls = __webpack_require__(66);
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (typeof options.insertInto === "undefined") options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var styleTarget = getElement(options.insertInto)
+	if (!styleTarget) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			styleTarget.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		styleTarget.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	options.attrs.type = "text/css";
+
+	attachTagAttrs(styleElement, options.attrs);
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	attachTagAttrs(linkElement, options.attrs);
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function attachTagAttrs(element, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		element.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove;
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement, options);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+	and there is no publicPath defined then lets turn convertToAbsoluteUrls
+	on by default.  Otherwise default to the convertToAbsoluteUrls option
+	directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls){
+		css = fixUrls(css);
+	}
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2743,10 +3121,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	);
 });
 ;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(65)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(67)(module)))
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2784,19 +3162,19 @@ Object.defineProperty(exports, '__esModule', { value: !0 });exports.TabBody = ex
     _reactFlex = __webpack_require__(8),
     _join = __webpack_require__(5),
     _join2 = _interopRequireDefault(_join),
-    _getTransitionEnd = __webpack_require__(63),
+    _getTransitionEnd = __webpack_require__(65),
     _getTransitionEnd2 = _interopRequireDefault(_getTransitionEnd),
-    _TabStrip = __webpack_require__(60),
+    _TabStrip = __webpack_require__(62),
     _TabStrip2 = _interopRequireDefault(_TabStrip),
-    _Body = __webpack_require__(58),
+    _Body = __webpack_require__(60),
     _Body2 = _interopRequireDefault(_Body),
-    _assignDefined = __webpack_require__(25),
+    _assignDefined = __webpack_require__(26),
     _assignDefined2 = _interopRequireDefault(_assignDefined),
-    _tabPositions = __webpack_require__(26),
+    _tabPositions = __webpack_require__(27),
     _tabPositions2 = _interopRequireDefault(_tabPositions),
     _bemFactory = __webpack_require__(6),
     _bemFactory2 = _interopRequireDefault(_bemFactory),
-    _reactStyleNormalizer = __webpack_require__(55),
+    _reactStyleNormalizer = __webpack_require__(57),
     _reactStyleNormalizer2 = _interopRequireDefault(_reactStyleNormalizer);function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }function _defineProperty(obj, key, value) {
@@ -2968,7 +3346,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });exports.TabBody = ex
 }(_reactClass2.default);exports.default = TabPanel;TabPanel.propTypes = { tabStripFactory: _react.PropTypes.func, tabFactory: _react.PropTypes.func, strategy: _react.PropTypes.oneOfType([_react.PropTypes.oneOf(['one', 'all']), _react.PropTypes.func]) }, TabPanel.defaultProps = { theme: 'default', tabAlign: 'start', onActivate: function onActivate() {}, strategy: 'one' };exports.Tab = Tab;exports.TabStrip = _TabStrip2.default;exports.TabBody = _Body2.default;
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3074,16 +3452,42 @@ var schema = exports.schema = {
 };
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(66);
+var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(68)(content, {});
+var update = __webpack_require__(28)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./queryStyle.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./queryStyle.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(69);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(28)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -3100,7 +3504,7 @@ if(false) {
 }
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3115,7 +3519,7 @@ exports.title_image = (React.createElement("div", null,
 
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3235,7 +3639,7 @@ function fromByteArray(uint8) {
 }
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3249,9 +3653,9 @@ function fromByteArray(uint8) {
 
 
 
-var base64 = __webpack_require__(32);
-var ieee754 = __webpack_require__(36);
-var isArray = __webpack_require__(37);
+var base64 = __webpack_require__(35);
+var ieee754 = __webpack_require__(38);
+var isArray = __webpack_require__(39);
 
 exports.Buffer = Buffer;
 exports.SlowBuffer = SlowBuffer;
@@ -4979,89 +5383,7 @@ function isnan(val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Buffer) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function (useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if (item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function (modules, mediaQuery) {
-		if (typeof modules === "string") modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for (var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if (typeof id === "number") alreadyImportedModules[id] = true;
-		}
-		for (i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if (typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if (mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if (mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap) {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */';
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	var base64 = new Buffer(JSON.stringify(sourceMap)).toString('base64');
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33).Buffer))
-
-/***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5071,7 +5393,7 @@ module.exports = 'ontouchstart' in global || global.DocumentTouch && document in
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5163,7 +5485,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 };
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5176,7 +5498,7 @@ module.exports = Array.isArray || function (arr) {
 };
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5560,7 +5882,7 @@ module.exports = debounce;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5598,11 +5920,11 @@ var _join = __webpack_require__(10);
 
 var _join2 = _interopRequireDefault(_join);
 
-var _props2className = __webpack_require__(22);
+var _props2className = __webpack_require__(23);
 
 var _props2className2 = _interopRequireDefault(_props2className);
 
-var _cleanup = __webpack_require__(21);
+var _cleanup = __webpack_require__(22);
 
 var _cleanup2 = _interopRequireDefault(_cleanup);
 
@@ -5689,7 +6011,7 @@ Flex.propTypes = {
 exports.default = Flex;
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5727,11 +6049,11 @@ var _join = __webpack_require__(10);
 
 var _join2 = _interopRequireDefault(_join);
 
-var _props2className = __webpack_require__(22);
+var _props2className = __webpack_require__(23);
 
 var _props2className2 = _interopRequireDefault(_props2className);
 
-var _cleanup = __webpack_require__(21);
+var _cleanup = __webpack_require__(22);
 
 var _cleanup2 = _interopRequireDefault(_cleanup);
 
@@ -5811,7 +6133,7 @@ FlexItem.propTypes = {
 exports.default = FlexItem;
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5823,7 +6145,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = 'react-flex-v2';
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5838,7 +6160,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6095,7 +6417,7 @@ exports['default'] = Motion;
 module.exports = exports['default'];
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6373,7 +6695,7 @@ exports['default'] = StaggeredMotion;
 module.exports = exports['default'];
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6407,7 +6729,7 @@ var _stepper3 = __webpack_require__(13);
 
 var _stepper4 = _interopRequireDefault(_stepper3);
 
-var _mergeDiff = __webpack_require__(46);
+var _mergeDiff = __webpack_require__(48);
 
 var _mergeDiff2 = _interopRequireDefault(_mergeDiff);
 
@@ -6875,7 +7197,7 @@ module.exports = exports['default'];
 // that you've unmounted but that's still animating. This is where it lives
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6989,7 +7311,7 @@ module.exports = exports['default'];
 // to loop through and find a key's index each time), but I no longer care
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7001,34 +7323,34 @@ function _interopRequire(obj) {
   return obj && obj.__esModule ? obj['default'] : obj;
 }
 
-var _Motion = __webpack_require__(43);
+var _Motion = __webpack_require__(45);
 
 exports.Motion = _interopRequire(_Motion);
 
-var _StaggeredMotion = __webpack_require__(44);
+var _StaggeredMotion = __webpack_require__(46);
 
 exports.StaggeredMotion = _interopRequire(_StaggeredMotion);
 
-var _TransitionMotion = __webpack_require__(45);
+var _TransitionMotion = __webpack_require__(47);
 
 exports.TransitionMotion = _interopRequire(_TransitionMotion);
 
-var _spring = __webpack_require__(49);
+var _spring = __webpack_require__(51);
 
 exports.spring = _interopRequire(_spring);
 
-var _presets = __webpack_require__(23);
+var _presets = __webpack_require__(24);
 
 exports.presets = _interopRequire(_presets);
 
 // deprecated, dummy warning function
 
-var _reorderKeys = __webpack_require__(48);
+var _reorderKeys = __webpack_require__(50);
 
 exports.reorderKeys = _interopRequire(_reorderKeys);
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7049,10 +7371,10 @@ function reorderKeys() {
 }
 
 module.exports = exports['default'];
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7076,7 +7398,7 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { 'default': obj };
 }
 
-var _presets = __webpack_require__(23);
+var _presets = __webpack_require__(24);
 
 var _presets2 = _interopRequireDefault(_presets);
 
@@ -7091,7 +7413,7 @@ function spring(val, config) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7099,7 +7421,7 @@ module.exports = exports['default'];
 
 var toUpperFirst = __webpack_require__(18);
 var getPrefix = __webpack_require__(17);
-var properties = __webpack_require__(24);
+var properties = __webpack_require__(25);
 
 /**
  * Returns the given key prefixed, if the property is found in the prefixProps map.
@@ -7119,14 +7441,14 @@ module.exports = function (key, value) {
 };
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var getPrefix = __webpack_require__(17);
-var forcePrefixed = __webpack_require__(50);
+var forcePrefixed = __webpack_require__(52);
 var el = __webpack_require__(16);
 
 var MEMORY = {};
@@ -7174,14 +7496,14 @@ module.exports = function (key, value, force) {
 };
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var getStylePrefixed = __webpack_require__(53);
-var properties = __webpack_require__(24);
+var getStylePrefixed = __webpack_require__(55);
+var properties = __webpack_require__(25);
 
 module.exports = function (key, value) {
 
@@ -7193,7 +7515,7 @@ module.exports = function (key, value) {
 };
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7251,7 +7573,7 @@ module.exports = function (key, value) {
 };
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7262,17 +7584,17 @@ module.exports = function (obj, prop) {
 };
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var hasOwn = __webpack_require__(54);
-var getPrefixed = __webpack_require__(52);
+var hasOwn = __webpack_require__(56);
+var getPrefixed = __webpack_require__(54);
 
-var map = __webpack_require__(56);
-var plugable = __webpack_require__(57);
+var map = __webpack_require__(58);
+var plugable = __webpack_require__(59);
 
 function plugins(key, value) {
 
@@ -7331,7 +7653,7 @@ var RESULT = function RESULT(style) {
 module.exports = plugable(RESULT);
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7353,13 +7675,13 @@ module.exports = function (fn, item) {
 };
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var getCssPrefixedValue = __webpack_require__(51);
+var getCssPrefixedValue = __webpack_require__(53);
 
 module.exports = function (target) {
 	target.plugins = target.plugins || [function () {
@@ -7388,7 +7710,7 @@ module.exports = function (target) {
 };
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7445,7 +7767,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   }, isTabBody: !0 };
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7476,13 +7798,13 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
-    _hasTouch = __webpack_require__(35),
+    _hasTouch = __webpack_require__(37),
     _hasTouch2 = _interopRequireDefault(_hasTouch),
     _reactNotifyResize = __webpack_require__(15),
-    _lodash = __webpack_require__(38),
+    _lodash = __webpack_require__(40),
     _lodash2 = _interopRequireDefault(_lodash),
     _reactFlex = __webpack_require__(8),
-    _reactMotion = __webpack_require__(47),
+    _reactMotion = __webpack_require__(49),
     _join = __webpack_require__(5),
     _join2 = _interopRequireDefault(_join),
     _bemFactory = __webpack_require__(6),
@@ -7620,7 +7942,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7652,15 +7974,15 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
     _reactFlex = __webpack_require__(8),
-    _tabPositions = __webpack_require__(26),
+    _tabPositions = __webpack_require__(27),
     _tabPositions2 = _interopRequireDefault(_tabPositions),
     _join = __webpack_require__(5),
     _join2 = _interopRequireDefault(_join),
-    _TabTitle = __webpack_require__(62),
+    _TabTitle = __webpack_require__(64),
     _TabTitle2 = _interopRequireDefault(_TabTitle),
     _bemFactory = __webpack_require__(6),
     _bemFactory2 = _interopRequireDefault(_bemFactory),
-    _Scroller = __webpack_require__(59),
+    _Scroller = __webpack_require__(61),
     _Scroller2 = _interopRequireDefault(_Scroller);function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }function _toConsumableArray(arr) {
@@ -7766,7 +8088,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   }, tabAlign: _react.PropTypes.oneOf(['start', 'center', 'end', 'space-around', 'space-between', 'stretch']) }, 'tabPosition', _react.PropTypes.oneOf(Object.keys(_tabPositions2.default))), TabStrip.defaultProps = { scroller: 'auto', scrollOnClick: !1, rotateNavigation: !0, tabIndex: !0, tabAlign: 'start', tabPosition: 'top', theme: 'default', onActivate: function onActivate() {}, onCloseTab: function onCloseTab() {}, onBlur: function onBlur() {}, onFocus: function onFocus() {}, isTabStrip: !0 };
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7824,7 +8146,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
 }(_reactClass2.default);exports.default = FlexiBox;FlexiBox.propTypes = { factory: _react.PropTypes.func, children: _react.PropTypes.func };
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7861,11 +8183,11 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _typeof = 'funct
     _reactNotifyResize = __webpack_require__(15),
     _join = __webpack_require__(5),
     _join2 = _interopRequireDefault(_join),
-    _assignDefined = __webpack_require__(25),
+    _assignDefined = __webpack_require__(26),
     _assignDefined2 = _interopRequireDefault(_assignDefined),
     _bemFactory = __webpack_require__(6),
     _bemFactory2 = _interopRequireDefault(_bemFactory),
-    _FlexiBox = __webpack_require__(61),
+    _FlexiBox = __webpack_require__(63),
     _FlexiBox2 = _interopRequireDefault(_FlexiBox);function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }function _defineProperty(obj, key, value) {
@@ -7963,7 +8285,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _typeof = 'funct
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7981,7 +8303,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 }); /**
 };
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8076,7 +8398,7 @@ module.exports = function (css) {
 };
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8106,10 +8428,24 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(34)(undefined);
+exports = module.exports = __webpack_require__(20)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "*, *:before, *:after {\n  -moz-box-sizing: border-box;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\nhtml {\n    font-size: 13px;\n    font-family: arial, sans-serif;\n}\n\n.flexContainer {\n  padding: 0;\n  margin: 0;\n  list-style: none;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: flex-start;\n}\n\n.flexItem {\n  margin-right: 20px;\n}\n\n.error, .error * {\n    color: red;\n}\n\n.form-section {\n    border: 2px solid gray;\n}\n\n.form-subsection {\n    border: none;\n    padding: 0;\n    margin: 0.5em 0;\n}\n\n.form-section-title {\n    font-weight: bold;\n}\n\n.form-subsection .form-section-title {\n    padding: 5px 0;\n}\n\n.form-element {\n    position: relative;\n}\n\n.form-element label {\n    width: 10em;\n    display: inline-block;\n}\n\n.form-section dt {\n    float: left;\n    width: 5em;\n}\n\n.form-section dd {\n    margin-left: 5em;\n}\n\n.form-help, .form-error {\n    display: inline-block;\n    border: thin solid;\n    border-radius: 50%;\n    margin: 0 2px;\n}\n\n.form-help {\n    padding: 0 4px;\n}\n\n.form-error {\n    padding: 0 6px;\n}\n\n.invisible {\n    visibility: hidden;\n}\n\n.hidden {\n    display: none;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(20)(undefined);
 // imports
 
 
@@ -8120,7 +8456,7 @@ exports.push([module.i, ".react-flex-v2 {\n  display: -webkit-box;\n  display: -
 
 
 /***/ }),
-/* 67 */
+/* 70 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -8129,303 +8465,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		// Test for IE <= 9 as proposed by Browserhacks
-		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-		// Tests for existence of standard globals is to allow style-loader 
-		// to operate correctly into non-standard environments
-		// @see https://github.com/webpack-contrib/style-loader/issues/177
-		return window && document && document.all && !window.atob;
-	}),
-	getElement = (function(fn) {
-		var memo = {};
-		return function(selector) {
-			if (typeof memo[selector] === "undefined") {
-				memo[selector] = fn.call(this, selector);
-			}
-			return memo[selector]
-		};
-	})(function (styleTarget) {
-		return document.querySelector(styleTarget)
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(64);
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (typeof options.insertInto === "undefined") options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var styleTarget = getElement(options.insertInto)
-	if (!styleTarget) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			styleTarget.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		styleTarget.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	options.attrs.type = "text/css";
-
-	attachTagAttrs(styleElement, options.attrs);
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	attachTagAttrs(linkElement, options.attrs);
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function attachTagAttrs(element, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		element.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement, options);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-	and there is no publicPath defined then lets turn convertToAbsoluteUrls
-	on by default.  Otherwise default to the convertToAbsoluteUrls option
-	directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls){
-		css = fixUrls(css);
-	}
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8439,21 +8479,25 @@ var _reactDom = __webpack_require__(3);
 
 var ReactDOM = _interopRequireWildcard(_reactDom);
 
-var _images = __webpack_require__(31);
+var _images = __webpack_require__(34);
 
 var _lib = __webpack_require__(19);
 
-var _Querybuilder = __webpack_require__(29);
+var _Querybuilder = __webpack_require__(31);
 
-var _reactTabPanel = __webpack_require__(28);
+var _reactTabPanel = __webpack_require__(30);
 
 var _reactTabPanel2 = _interopRequireDefault(_reactTabPanel);
 
-var _tab = __webpack_require__(30);
+var _tab = __webpack_require__(33);
 
 var _tab2 = _interopRequireDefault(_tab);
 
-var _reactFormzilla = __webpack_require__(27);
+var _queryStyle = __webpack_require__(32);
+
+var _queryStyle2 = _interopRequireDefault(_queryStyle);
+
+var _reactFormzilla = __webpack_require__(29);
 
 var _reactFormzilla2 = _interopRequireDefault(_reactFormzilla);
 
@@ -8471,7 +8515,6 @@ render(React.createElement(
 ), document.getElementById("react-container"));
 
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
-
 
 var onSubmit = function onSubmit(data, buttonValue, errors) {
     alert('Data  : ' + JSON.stringify(data) + '\n' + 'Button: ' + buttonValue + '\n' + 'Errors: ' + JSON.stringify(errors));

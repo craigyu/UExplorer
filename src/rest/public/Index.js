@@ -5,6 +5,7 @@ import { title, course } from "./lib";
 import { schema } from "./Querybuilder";
 import TabPanel, { TabStrip } from 'react-tab-panel'
 import styles from './stylesheets/tab.css';
+import qStyles from './stylesheets/queryStyle.css';
 import Form from "react-formzilla";
 
 const { render } = ReactDOM;
