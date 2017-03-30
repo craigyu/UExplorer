@@ -70,6 +70,87 @@ var onSubmit = function (data, buttonValue, errors) {
     }
 };
 
+
+
+function roomSchedule(courses,rooms) {
+    // filter out the duplicate sections and deal first
+    allCourses = [];
+    nonDuplicatedCourses = [];
+    duplicatedCourses = [];
+    finalProduct = [];
+    // naive approach for pushing duplicated items
+
+
+
+
+    // Proceed with Scheduling, MWF 1 hour block meaning 9 blocks
+    // T TH 1.5 hour blocks meaning 6 blocks
+
+    // associate each course to a room with a given time
+
+    // schedule all courses to rooms
+    let switching = 0; // max is 1, when two then need to schedule past boundary
+    let startTime = 800; // time in 100s
+    let hasSwapped = false; // only to keep track of when i switched past boundary
+    for(let i = 0; i < allCourses.length(); i++) {
+        let acc = 0;
+
+        if(switching % 2 == 0) { // if even #: treat as MWF
+             acc = 100;
+        } else if (switching % 2 == 1) { // if odd #: treat as T TH
+            acc = 130;
+        }
+        // two cases: before 1700 or after 1700
+        if(switching >= 2) {
+            startTime = 1700;
+            hasSwapped = true;
+        }
+
+
+        let scheduled = {
+            course: allCourses[i],
+            room: rooms[i],
+            time: startTime,
+            day: switching % 2 // 0 is mwf 1 is t th
+        };
+        finalProduct.push(scheduled);
+        startTime += acc;
+
+        if(startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
+            switching++;
+        } else if (startTime == 2300 && hasSwapped) { // this is for compensating scheduling
+            switching++
+        } else { // we cant schedule anymore, not enough time slots for the given courses
+            break;
+        }
+    }
+
+
+
+    // check for duplicates that have the same startTime
+
+    let toSearchDuplicatedScheduled = finalProduct.filter((value) => {
+        return duplicatedCourses.includes(value.course); // not sure if this works, checking to see if it includes my course object
+    });
+
+
+    for(let i = 0; i < toSearchDuplicatedScheduled; i++) {
+        for(let j = 0; j < toSearchDuplicatedScheduled; j++) {
+
+            if(toSearchDuplicatedScheduled[i].time == toSearchDuplicatedScheduled[j].time
+            && toSearchDuplicatedScheduled[i].day == toSearchDuplicatedScheduled[j].day) {
+
+
+
+            }
+        }
+    }
+
+
+
+
+}
+
 render(
     <TabPanel
         tabAlign="center"
@@ -82,6 +163,10 @@ render(
         <div tabTitle="Rooms Explorer">
             <Form schema={room_schema}
                 onSubmit={onSubmit} />
+        </div>
+        <div>
+            <div tabTitle="Rooms Scheduling">
+            </div>
         </div>
     </TabPanel>
     ,

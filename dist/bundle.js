@@ -13473,6 +13473,11 @@ render(React.createElement(
         { tabTitle: "Rooms Explorer" },
         React.createElement(_reactFormzilla2.default, { schema: _Rqb.room_schema,
             onSubmit: onSubmit })
+    ),
+    React.createElement(
+        "div",
+        null,
+        React.createElement("div", { tabTitle: "Rooms Scheduling" })
     )
 ), document.getElementById("query"));
 
