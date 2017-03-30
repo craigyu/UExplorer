@@ -65,7 +65,7 @@ var onSubmit = function (data, buttonValue, errors) {
                 }
             }
             Object.assign(query, { "WHERE": queryWhere });
-            alert('Data  : ' + JSON.stringify(query));
+            alert('Data  : ' + JSON.stringify(data));
         }
     }
 };
@@ -79,10 +79,6 @@ function roomSchedule(courses,rooms) {
     duplicatedCourses = [];
     finalProduct = [];
     // naive approach for pushing duplicated items
-
-
-
-
     // Proceed with Scheduling, MWF 1 hour block meaning 9 blocks
     // T TH 1.5 hour blocks meaning 6 blocks
 
@@ -164,9 +160,8 @@ render(
             <Form schema={room_schema}
                 onSubmit={onSubmit} />
         </div>
-        <div>
-            <div tabTitle="Rooms Scheduling">
-            </div>
+        <div tabTitle="Rooms Scheduling">
+            <h3> put your shit here </h3>
         </div>
     </TabPanel>
     ,
