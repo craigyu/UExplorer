@@ -9,11 +9,12 @@ export const title = (
         </h1>
 )
 
+
 export const course = (
     <h1 id = "course"
         className = "header"
         style ={{backgroundColor: "#012144", color: "white", fontWeight: 200, font: "arial", allowFontScaling: false, fontFamily: "arial", display: "block", border:0, margin: 0}}>
-        {text.course}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{text.course}
         </h1>
 )
 

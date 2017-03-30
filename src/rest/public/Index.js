@@ -10,7 +10,7 @@ import qStyles from './stylesheets/queryStyle.css';
 import Form from "react-formzilla";
 import JsonTable from "react-json-table";
 import "./stylesheets/table.css";
-
+import GoogleMapReact from 'google-map-react';
 
 const { render } = ReactDOM;
 
@@ -102,3 +102,13 @@ render(
     <JsonTable rows={result} />,
     document.getElementById("table")
 )
+
+render(
+      <GoogleMapReact
+        defaultCenter={{lat: 49.2606052, lng: -123.2459939}}
+        defaultZoom={13}
+      >
+      </GoogleMapReact>,
+      document.getElementById("map")
+)
+
