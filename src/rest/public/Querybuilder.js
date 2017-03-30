@@ -286,135 +286,568 @@ export const schema = {
                         "enum": ["And"],
                     },
                     "AND": {
+                        "title": "And = ",
                         "type": "array",
+                        "minItems": 2,
                         "items": {
                             "type": "object",
-                            "oneOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "IS": {
-                                            "type": "object",
-                                            "title": "String value only",
-                                            "oneOf": [
-                                                {},
-                                                {
-                                                    "properties": {
-                                                        "IS": {
-                                                            "enum": ["Department"]
-                                                        },
-                                                        "courses_dept": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                    
-                                                },
-                                                {
-                                                    "properties": {
-                                                        "IS": {
-                                                            "enum": ["Instructor"],
-                                                        },
-                                                        "courses_instructor": {
-                                                            "title": "search with partial name using * syntax",
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                },
-                                                {
-                                                    "properties": {
-                                                        "IS": {
-                                                            "enum": ["Title"]
-                                                        },
-                                                        "courses_title": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                },
-                                                {
-                                                    "properties": {
-                                                        "IS": {
-                                                            "enum": ["ID"],
-                                                        },
-                                                        "courses_id": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                }
-                                            ],
-                                            "x-hints": {
-                                                "form": {
-                                                    "selector": "IS",
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "object", "properties": {
-                                        "GT": {
-                                            "type": "object",
-                                            "title": "Number value only",
-                                            "oneOf": [{},
+                            "oneOf": [{},
+                            {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Is"]
+                                    },
+                                    "IS": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [
+                                            {},
                                             {
                                                 "properties": {
-                                                    "GT": {
-                                                        "enum": ["Average"]
+                                                    "IS": {
+                                                        "enum": ["Department"]
                                                     },
-                                                    "courses_avg": {
-                                                        "type": "number"
+                                                    "courses_dept": {
+                                                        "type": "string"
                                                     }
                                                 }
                                             },
                                             {
                                                 "properties": {
-                                                    "GT": {
-                                                        "enum": ["Passed"],
+                                                    "IS": {
+                                                        "enum": ["Instructor"],
                                                     },
-                                                    "courses_pass": {
-                                                        "type": "number"
+                                                    "courses_instructor": {
+                                                        "title": "search with partial name using * syntax",
+                                                        "type": "string"
                                                     }
                                                 }
                                             },
                                             {
                                                 "properties": {
-                                                    "GT": {
-                                                        "enum": ["Failed"]
+                                                    "IS": {
+                                                        "enum": ["Title"]
                                                     },
-                                                    "courses_fail": {
-                                                        "type": "number"
+                                                    "courses_title": {
+                                                        "type": "string"
                                                     }
                                                 }
                                             },
                                             {
                                                 "properties": {
-                                                    "GT": {
-                                                        "enum": ["Audited"],
+                                                    "IS": {
+                                                        "enum": ["ID"],
                                                     },
-                                                    "courses_audit": {
-                                                        "type": "number"
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "properties": {
-                                                    "GT": {
-                                                        "enum": ["Year"],
-                                                    },
-                                                    "courses_year": {
-                                                        "type": "number"
+                                                    "courses_id": {
+                                                        "type": "string"
                                                     }
                                                 }
                                             }
-                                            ],
-                                            "x-hints": {
-                                                "form": {
-                                                    "selector": "GT",
-                                                }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "IS",
                                             }
                                         }
                                     }
                                 }
-                            ]
+                            },
+                            {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Greater than: a number"]
+                                    },
+                                    "GT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{},
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Average"]
+                                                },
+                                                "courses_avg": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Passed"],
+                                                },
+                                                "courses_pass": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Failed"]
+                                                },
+                                                "courses_fail": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Audited"],
+                                                },
+                                                "courses_audit": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Year"],
+                                                },
+                                                "courses_year": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "GT",
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Equal to: a number"]
+                                    },
+                                    "EQ": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{},
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Average"]
+                                                },
+                                                "courses_avg": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Passed"],
+                                                },
+                                                "courses_pass": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Failed"]
+                                                },
+                                                "courses_fail": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Audited"],
+                                                },
+                                                "courses_audit": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Year"],
+                                                },
+                                                "courses_year": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "EQ",
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Lower than: a number"]
+                                    },
+                                    "LT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{},
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Average"]
+                                                },
+                                                "courses_avg": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Passed"],
+                                                },
+                                                "courses_pass": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Failed"]
+                                                },
+                                                "courses_fail": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Audited"],
+                                                },
+                                                "courses_audit": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Year"],
+                                                },
+                                                "courses_year": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "LT",
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            ],
+                            "x-hints": {
+                                "form": {
+                                    "selector": "AND",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "properties": {
+                    "WHERE": {
+                        "enum": ["Or"],
+                    },
+                    "OR": {
+                        "title": "Or = ",
+                        "type": "array",
+                        "minItems": 2,
+                        "items": {
+                            "type": "object",
+                            "oneOf": [{},
+                            {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Is"]
+                                    },
+                                    "IS": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [
+                                            {},
+                                            {
+                                                "properties": {
+                                                    "IS": {
+                                                        "enum": ["Department"]
+                                                    },
+                                                    "courses_dept": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "properties": {
+                                                    "IS": {
+                                                        "enum": ["Instructor"],
+                                                    },
+                                                    "courses_instructor": {
+                                                        "title": "search with partial name using * syntax",
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "properties": {
+                                                    "IS": {
+                                                        "enum": ["Title"]
+                                                    },
+                                                    "courses_title": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "properties": {
+                                                    "IS": {
+                                                        "enum": ["ID"],
+                                                    },
+                                                    "courses_id": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "IS",
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Greater than: a number"]
+                                    },
+                                    "GT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{},
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Average"]
+                                                },
+                                                "courses_avg": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Passed"],
+                                                },
+                                                "courses_pass": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Failed"]
+                                                },
+                                                "courses_fail": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Audited"],
+                                                },
+                                                "courses_audit": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Year"],
+                                                },
+                                                "courses_year": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "GT",
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Equal to: a number"]
+                                    },
+                                    "EQ": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{},
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Average"]
+                                                },
+                                                "courses_avg": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Passed"],
+                                                },
+                                                "courses_pass": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Failed"]
+                                                },
+                                                "courses_fail": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Audited"],
+                                                },
+                                                "courses_audit": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Year"],
+                                                },
+                                                "courses_year": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "EQ",
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Lower than: a number"]
+                                    },
+                                    "LT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{},
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Average"]
+                                                },
+                                                "courses_avg": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Passed"],
+                                                },
+                                                "courses_pass": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Failed"]
+                                                },
+                                                "courses_fail": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Audited"],
+                                                },
+                                                "courses_audit": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "LT": {
+                                                    "enum": ["Year"],
+                                                },
+                                                "courses_year": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                        ],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "LT",
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            ],
+                            "x-hints": {
+                                "form": {
+                                    "selector": "OR",
+                                }
+                            }
                         }
                     }
                 }
@@ -429,14 +862,17 @@ export const schema = {
         "OPTIONS": {
             "title": "Options",
             "id": "options",
+            "required": ["COLUMNS"],
             "properties": {
                 "COLUMNS": {
                     "id": "columns",
-                    "title": "Properties you want to display: e.g. courses_dept",
+                    "title": "Properties you want to display: ",
+                    "minItems": 1,
                     "items": {
-                        "description": "Allows anything, and describes nothing.",
-                        "minItems": 1,
-                        "type": "string"
+
+                        "type": "string",
+                        "enum": ["", "courses_dept", "courses_instructor", "courses_title", "courses_id", "courses_avg", "courses_pass", "courses_fail", "courses_audit", "courses_year"],
+                        "enumNames": ["Empty", "Department", "Instructor", "Title", "ID", "Average", "Passed", "Failed", "Audited", "Year"]
                     },
                     "type": "array"
                 },
@@ -451,15 +887,15 @@ export const schema = {
                             "id": "dir",
                             "type": "string",
                             "title": "Sort direction: ",
-                            "enum": ["UP", "DOWN"]
+                            "enum": ["", "UP", "DOWN"]
                         },
                         "keys": {
                             "id": "keys",
-                            "title": "Sort with these key(s), at least 1",
+                            "title": "Sort with key(s) from columns",
                             "items": {
-                                "description": "Allows anything, and describes nothing.",
-                                "minItems": 1,
-                                "type": "string"
+                                "type": "string",
+                                "enum": ["", "courses_dept", "courses_instructor", "courses_title", "courses_id", "courses_avg", "courses_pass", "courses_fail", "courses_audit", "courses_year"],
+                                "enumNames": ["Empty", "Department", "Instructor", "Title", "ID", "Average", "Passed", "Failed", "Audited", "Year"]
                             },
                             "type": "array"
                         }
@@ -471,30 +907,53 @@ export const schema = {
         },
         "TRANSFORMATIONS": {
             "id": "transformations",
-            "title": "Advanced search:  default as empty",
-            "properties": {
-                "APPLY": {
-                    "id": "apply",
-                    "title": "Custom search terms:  e.g. maxSeats",
-                    "items": {
-                        "type": "object",
-                        "minItems": 0,
+            "title": "Advanced search term:  ",
 
-                    },
-
-                    "type": "array"
+            "oneOf": [
+                {},
+                {
+                    "properties": {
+                        "TRANSFORMATIONS": {
+                            "enum": ["Highest Average"],
+                        },
+                    }
                 },
-                "GROUP": {
-                    "id": "group",
-                    "title": "Group results according to the following keys",
-                    "items": {
-                        "type": "string",
-                        "minItems": 1,
-                    },
-                    "type": "array"
+                {
+                    "properties": {
+                        "TRANSFORMATIONS": {
+                            "enum": ["Lowest Average"],
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "TRANSFORMATIONS": {
+                            "enum": ["Most Sections"],
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "TRANSFORMATIONS": {
+                            "enum": ["Most Passes"],
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "TRANSFORMATIONS": {
+                            "enum": ["Most Fails"],
+                        }
+                    }
+                }
+
+            ],
+            "x-hints": {
+                "form": {
+                    "selector": "TRANSFORMATIONS",
                 }
             },
-            "type": ["object", "null"]
+            "type": "object"
         }
     },
     "type": "object"
