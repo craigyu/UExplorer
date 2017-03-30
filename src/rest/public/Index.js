@@ -65,14 +65,67 @@ var onSubmit = function (data, buttonValue, errors) {
                 }
             }
             Object.assign(query, { "WHERE": queryWhere });
+            let queryOption = data.OPTIONS;
+            if ("TRANSFORMATIONS" in data) {
+                let queryTrans = data.TRANSFORMATIONS;
+                let trans = {};
+                switch (queryTrans) {
+                    case "Highest Average":
+                        trans = {
+                            "GROUP": ["courses_dept", "courses_id"],
+                            "APPLY": [{
+                                "maxAverage": {
+                                    "MAX": "courses_avg"
+                                }
+                            }]
+                        };
+                        queryOption.COLUMNS.unshift("maxAverage");
+                        if ("ORDER" in queryOption) {
+                            queryOption.ORDER.keys.unshift("maxAverage");
+                        }
+                        break;
+
+                    case "Lowest Average":
+                        trans = {
+                            "GROUP": ["courses_dept", "courses_id"],
+                            "APPLY": [{
+                                "minAverage": {
+                                    "MIN": "courses_avg"
+                                }
+                            }]
+                        };
+                        queryOption.COLUMNS.unshift("minAverage");
+                        if ("ORDER" in queryOption) {
+                            queryOption.ORDER.keys.unshift("minAverage");
+                        }
+                        break;
+
+                    case "Most Sections":
+                        trans = {
+                            "GROUP": ["courses_dept", "courses_id"],
+                            "APPLY": [{
+                                "minAverage": {
+                                    "MAX": "courses_"
+                                }
+                            }]
+                        };
+                        queryOption.COLUMNS.unshift("minAverage");
+                        if ("ORDER" in queryOption) {
+                            queryOption.ORDER.keys.unshift("minAverage");
+                        }
+                        break;
+                }
+            }
+            Object.assign(query, { "OPTIONS": queryOption });
             alert('Data  : ' + JSON.stringify(data));
+
         }
     }
 };
 
 
 
-function roomSchedule(courses,rooms) {
+function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
     allCourses = [];
     nonDuplicatedCourses = [];
@@ -88,16 +141,16 @@ function roomSchedule(courses,rooms) {
     let switching = 0; // max is 1, when two then need to schedule past boundary
     let startTime = 800; // time in 100s
     let hasSwapped = false; // only to keep track of when i switched past boundary
-    for(let i = 0; i < allCourses.length(); i++) {
+    for (let i = 0; i < allCourses.length(); i++) {
         let acc = 0;
 
-        if(switching % 2 == 0) { // if even #: treat as MWF
-             acc = 100;
+        if (switching % 2 == 0) { // if even #: treat as MWF
+            acc = 100;
         } else if (switching % 2 == 1) { // if odd #: treat as T TH
             acc = 130;
         }
         // two cases: before 1700 or after 1700
-        if(switching >= 2) {
+        if (switching >= 2) {
             startTime = 1700;
             hasSwapped = true;
         }
@@ -112,7 +165,7 @@ function roomSchedule(courses,rooms) {
         finalProduct.push(scheduled);
         startTime += acc;
 
-        if(startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
+        if (startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
             switching++;
         } else if (startTime == 2300 && hasSwapped) { // this is for compensating scheduling
             switching++
@@ -130,11 +183,11 @@ function roomSchedule(courses,rooms) {
     });
 
 
-    for(let i = 0; i < toSearchDuplicatedScheduled; i++) {
-        for(let j = 0; j < toSearchDuplicatedScheduled; j++) {
+    for (let i = 0; i < toSearchDuplicatedScheduled; i++) {
+        for (let j = 0; j < toSearchDuplicatedScheduled; j++) {
 
-            if(toSearchDuplicatedScheduled[i].time == toSearchDuplicatedScheduled[j].time
-            && toSearchDuplicatedScheduled[i].day == toSearchDuplicatedScheduled[j].day) {
+            if (toSearchDuplicatedScheduled[i].time == toSearchDuplicatedScheduled[j].time
+                && toSearchDuplicatedScheduled[i].day == toSearchDuplicatedScheduled[j].day) {
 
 
 
@@ -184,11 +237,11 @@ render(
 )
 
 render(
-      <GoogleMapReact
-        defaultCenter={{lat: 49.2606052, lng: -123.2459939}}
+    <GoogleMapReact
+        defaultCenter={{ lat: 49.2606052, lng: -123.2459939 }}
         defaultZoom={13}
-      >
-      </GoogleMapReact>,
-      document.getElementById("map")
+    >
+    </GoogleMapReact>,
+    document.getElementById("map")
 )
 

@@ -4338,7 +4338,8 @@ var schema = exports.schema = {
                                     "enum": ["Department"]
                                 },
                                 "courses_dept": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "enum": ["aanb", "adhe", "anat", "anth", "apbi", "appp", "apsc", "arbc", "arch", "arcl", "arst", "arth", "asia", "asic", "astr", "astu", "atsc", "audi", "ba", "baac", "babs", "baen", "bafi", "bahr", "bait", "bala", "bama", "bams", "bapa", "basc", "basm", "baul", "bioc", "biof", "biol", "bmeg", "bota", "busi", "caps", "ccst", "ceen", "cell", "cens", "chbe", "chem", "chil", "chin", "cics", "civl", "clch", "clst", "cnps", "cnrs", "cnto", "coec", "cogs", "cohr", "comm", "cons", "cpen", "cpsc", "crwr", "dani", "dent", "dhyg", "eced", "econ", "edcp", "edst", "educ", "eece", "elec", "ends", "engl", "enph", "envr", "eosc", "epse", "etec", "fhis", "fipr", "fish", "fist", "fmst", "fnel", "fnh", "fnis", "food", "fopr", "fre", "fren", "frst", "gbpr", "geob", "geog", "germ", "gpp", "grek", "grsj", "gsat", "hebr", "hgse", "hinu", "hist", "hunu", "iar", "igen", "info", "isci", "ital", "itst", "iwme", "japn", "jrnl", "kin", "korn", "lais", "larc", "laso", "last", "latn", "law", "lfs", "libe", "libr", "ling", "lled", "math", "mdvl", "mech", "medg", "medi", "micb", "midw", "mine", "mrne", "mtrl", "musc", "name", "nest", "nrsc", "nurs", "obst", "onco", "path", "pcth", "pers", "phar", "phil", "phrm", "phth", "phys", "plan", "poli", "pols", "port", "psyc", "punj", "relg", "rgla", "rhsc", "rmes", "rmst", "rsot", "russ", "sans", "scan", "scie", "soci", "soil", "sowk", "span", "spha", "spph", "stat", "sts", "surg", "swed", "test", "thtr", "udes", "ufor", "urst", "ursy", "vant", "visa", "wood", "wrds", "zool"]
                                 }
                             }
                         }, {
@@ -4585,7 +4586,8 @@ var schema = exports.schema = {
                                                     "enum": ["Department"]
                                                 },
                                                 "courses_dept": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "enum": ["aanb", "adhe", "anat", "anth", "apbi", "appp", "apsc", "arbc", "arch", "arcl", "arst", "arth", "asia", "asic", "astr", "astu", "atsc", "audi", "ba", "baac", "babs", "baen", "bafi", "bahr", "bait", "bala", "bama", "bams", "bapa", "basc", "basm", "baul", "bioc", "biof", "biol", "bmeg", "bota", "busi", "caps", "ccst", "ceen", "cell", "cens", "chbe", "chem", "chil", "chin", "cics", "civl", "clch", "clst", "cnps", "cnrs", "cnto", "coec", "cogs", "cohr", "comm", "cons", "cpen", "cpsc", "crwr", "dani", "dent", "dhyg", "eced", "econ", "edcp", "edst", "educ", "eece", "elec", "ends", "engl", "enph", "envr", "eosc", "epse", "etec", "fhis", "fipr", "fish", "fist", "fmst", "fnel", "fnh", "fnis", "food", "fopr", "fre", "fren", "frst", "gbpr", "geob", "geog", "germ", "gpp", "grek", "grsj", "gsat", "hebr", "hgse", "hinu", "hist", "hunu", "iar", "igen", "info", "isci", "ital", "itst", "iwme", "japn", "jrnl", "kin", "korn", "lais", "larc", "laso", "last", "latn", "law", "lfs", "libe", "libr", "ling", "lled", "math", "mdvl", "mech", "medg", "medi", "micb", "midw", "mine", "mrne", "mtrl", "musc", "name", "nest", "nrsc", "nurs", "obst", "onco", "path", "pcth", "pers", "phar", "phil", "phrm", "phth", "phys", "plan", "poli", "pols", "port", "psyc", "punj", "relg", "rgla", "rhsc", "rmes", "rmst", "rsot", "russ", "sans", "scan", "scie", "soci", "soil", "sowk", "span", "spha", "spph", "stat", "sts", "surg", "swed", "test", "thtr", "udes", "ufor", "urst", "ursy", "vant", "visa", "wood", "wrds", "zool"]
                                                 }
                                             }
                                         }, {
@@ -4841,7 +4843,8 @@ var schema = exports.schema = {
                                                     "enum": ["Department"]
                                                 },
                                                 "courses_dept": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "enum": ["aanb", "adhe", "anat", "anth", "apbi", "appp", "apsc", "arbc", "arch", "arcl", "arst", "arth", "asia", "asic", "astr", "astu", "atsc", "audi", "ba", "baac", "babs", "baen", "bafi", "bahr", "bait", "bala", "bama", "bams", "bapa", "basc", "basm", "baul", "bioc", "biof", "biol", "bmeg", "bota", "busi", "caps", "ccst", "ceen", "cell", "cens", "chbe", "chem", "chil", "chin", "cics", "civl", "clch", "clst", "cnps", "cnrs", "cnto", "coec", "cogs", "cohr", "comm", "cons", "cpen", "cpsc", "crwr", "dani", "dent", "dhyg", "eced", "econ", "edcp", "edst", "educ", "eece", "elec", "ends", "engl", "enph", "envr", "eosc", "epse", "etec", "fhis", "fipr", "fish", "fist", "fmst", "fnel", "fnh", "fnis", "food", "fopr", "fre", "fren", "frst", "gbpr", "geob", "geog", "germ", "gpp", "grek", "grsj", "gsat", "hebr", "hgse", "hinu", "hist", "hunu", "iar", "igen", "info", "isci", "ital", "itst", "iwme", "japn", "jrnl", "kin", "korn", "lais", "larc", "laso", "last", "latn", "law", "lfs", "libe", "libr", "ling", "lled", "math", "mdvl", "mech", "medg", "medi", "micb", "midw", "mine", "mrne", "mtrl", "musc", "name", "nest", "nrsc", "nurs", "obst", "onco", "path", "pcth", "pers", "phar", "phil", "phrm", "phth", "phys", "plan", "poli", "pols", "port", "psyc", "punj", "relg", "rgla", "rhsc", "rmes", "rmst", "rsot", "russ", "sans", "scan", "scie", "soci", "soil", "sowk", "span", "spha", "spph", "stat", "sts", "surg", "swed", "test", "thtr", "udes", "ufor", "urst", "ursy", "vant", "visa", "wood", "wrds", "zool"]
                                                 }
                                             }
                                         }, {
@@ -13451,6 +13454,8 @@ var onSubmit = function onSubmit(data, buttonValue, errors) {
                 }
             }
             Object.assign(query, { "WHERE": queryWhere });
+            var queryOption = data.OPTIONS;
+            Object.assign(query, { "OPTIONS": queryOption });
             alert('Data  : ' + JSON.stringify(data));
         }
     }
