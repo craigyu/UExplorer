@@ -163,12 +163,6 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -287,6 +281,12 @@ var ReactClass = function (_React$Component) {
 }(React.Component);
 
 module.exports = ReactClass;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
 
 /***/ }),
 /* 4 */
@@ -977,7 +977,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactClass = __webpack_require__(3);
+var _reactClass = __webpack_require__(2);
 
 var _reactClass2 = _interopRequireDefault(_reactClass);
 
@@ -4098,8 +4098,8 @@ Object.defineProperty(exports, '__esModule', { value: !0 });exports.TabBody = ex
 }(),
     _react = __webpack_require__(0),
     _react2 = _interopRequireDefault(_react),
-    _reactDom = __webpack_require__(2),
-    _reactClass = __webpack_require__(3),
+    _reactDom = __webpack_require__(3),
+    _reactClass = __webpack_require__(2),
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
@@ -4305,7 +4305,7 @@ var _react = __webpack_require__(0);
 
 var React = _interopRequireWildcard(_react);
 
-var _reactDom = __webpack_require__(2);
+var _reactDom = __webpack_require__(3);
 
 var ReactDOM = _interopRequireWildcard(_reactDom);
 
@@ -5180,18 +5180,6 @@ var schema = exports.schema = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.room_schema = undefined;
-
-var _react = __webpack_require__(0);
-
-var React = _interopRequireWildcard(_react);
-
-var _reactDom = __webpack_require__(2);
-
-var ReactDOM = _interopRequireWildcard(_reactDom);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 var room_schema = exports.room_schema = {
     "title": "Rooms",
     "id": "query",
@@ -5218,8 +5206,9 @@ var room_schema = exports.room_schema = {
                                 "IS": {
                                     "enum": ["Building Name"]
                                 },
-                                "rooms_name": {
-                                    "type": "string"
+                                "rooms_shortname": {
+                                    "type": "string",
+                                    "enum": ["AERL", "ALRD", "ANGU", "ANSO", "AUDX", "BIOL", "BRKX", "BUCH", "CEME", "CHBE", "CHEM", "CIRS", "DMP", "EOSM", "ESB", "FNH", "FORW", "FRDM", "FSC", "GEOG", "HEBB", "HENN", "IBLC", "IONA", "LASR", "LSC", "LSK", "MATH", "MATX", "MCLD", "MCML", "MGYM", "ORCH", "OSBO", "PCOH", "PHRM", "SCRF", "SOWK", "SPPH", "SRC", "SWNG", "UCLL", "WESB", "WOOD"]
                                 }
                             }
                         }, {
@@ -5228,7 +5217,6 @@ var room_schema = exports.room_schema = {
                                     "enum": ["Room Number"]
                                 },
                                 "rooms_number": {
-
                                     "type": "string"
                                 }
                             }
@@ -5238,7 +5226,8 @@ var room_schema = exports.room_schema = {
                                     "enum": ["Furniture Type"]
                                 },
                                 "rooms_furniture": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "enum": ["Classroom-Fixed Tables/Fixed Chairs", "Classroom-Fixed Tables/Movable Chairs", "Classroom-Fixed Tables/Moveable Chairs", "Classroom-Fixed Tablets", "Classroom-Hybrid Furniture", "Classroom-Learn Lab", "Classroom-Movable Tables & Chairs", "Classroom-Movable Tablets", "Classroom-Moveable Tables & Chairs", "Classroom-Moveable Tablets"]
                                 }
                             }
                         }, {
@@ -5247,7 +5236,8 @@ var room_schema = exports.room_schema = {
                                     "enum": ["Room Type"]
                                 },
                                 "rooms_type": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "enum": ["Active Learning", "Case Style", "Open Design General Purpose", "Small Group", "Studio Lab", "TBD", "Tiered Large Group"]
                                 }
                             }
                         }],
@@ -5266,10 +5256,19 @@ var room_schema = exports.room_schema = {
                     "GT": {
                         "type": "object",
                         "title": "Number value only",
-                        "properties": {
-
-                            "rooms_seats": {
-                                "type": "number"
+                        "oneOf": [{}, {
+                            "properties": {
+                                "GT": {
+                                    "enum": ["Room size"]
+                                },
+                                "rooms_seats": {
+                                    "type": "number"
+                                }
+                            }
+                        }],
+                        "x-hints": {
+                            "form": {
+                                "selector": "GT"
                             }
                         }
                     }
@@ -5282,10 +5281,19 @@ var room_schema = exports.room_schema = {
                     "EQ": {
                         "type": "object",
                         "title": "Number value only",
-                        "properties": {
-
-                            "rooms_seats": {
-                                "type": "number"
+                        "oneOf": [{}, {
+                            "properties": {
+                                "EQ": {
+                                    "enum": ["Room size"]
+                                },
+                                "rooms_seats": {
+                                    "type": "number"
+                                }
+                            }
+                        }],
+                        "x-hints": {
+                            "form": {
+                                "selector": "EQ"
                             }
                         }
                     }
@@ -5298,10 +5306,19 @@ var room_schema = exports.room_schema = {
                     "LT": {
                         "type": "object",
                         "title": "Number value only",
-                        "properties": {
-
-                            "rooms_seats": {
-                                "type": "number"
+                        "oneOf": [{}, {
+                            "properties": {
+                                "LT": {
+                                    "enum": ["Room size"]
+                                },
+                                "rooms_seats": {
+                                    "type": "number"
+                                }
+                            }
+                        }],
+                        "x-hints": {
+                            "form": {
+                                "selector": "LT"
                             }
                         }
                     }
@@ -5312,51 +5329,56 @@ var room_schema = exports.room_schema = {
                         "enum": ["And"]
                     },
                     "AND": {
+                        "title": "And = ",
                         "type": "array",
+                        "minItems": 2,
                         "items": {
                             "type": "object",
-                            "oneOf": [{
-                                "type": "object",
+                            "oneOf": [{}, {
                                 "properties": {
+                                    "AND": {
+                                        "enum": ["Is"]
+                                    },
                                     "IS": {
                                         "type": "object",
-                                        "title": "String value only",
+                                        "title": "+",
                                         "oneOf": [{}, {
                                             "properties": {
                                                 "IS": {
-                                                    "enum": ["Department"]
+                                                    "enum": ["Building Name"]
                                                 },
-                                                "courses_dept": {
-                                                    "type": "string"
-                                                }
-                                            }
-
-                                        }, {
-                                            "properties": {
-                                                "IS": {
-                                                    "enum": ["Instructor"]
-                                                },
-                                                "courses_instructor": {
-                                                    "title": "search with partial name using * syntax",
-                                                    "type": "string"
+                                                "rooms_shortname": {
+                                                    "type": "string",
+                                                    "enum": ["AERL", "ALRD", "ANGU", "ANSO", "AUDX", "BIOL", "BRKX", "BUCH", "CEME", "CHBE", "CHEM", "CIRS", "DMP", "EOSM", "ESB", "FNH", "FORW", "FRDM", "FSC", "GEOG", "HEBB", "HENN", "IBLC", "IONA", "LASR", "LSC", "LSK", "MATH", "MATX", "MCLD", "MCML", "MGYM", "ORCH", "OSBO", "PCOH", "PHRM", "SCRF", "SOWK", "SPPH", "SRC", "SWNG", "UCLL", "WESB", "WOOD"]
                                                 }
                                             }
                                         }, {
                                             "properties": {
                                                 "IS": {
-                                                    "enum": ["Title"]
+                                                    "enum": ["Room Number"]
                                                 },
-                                                "courses_title": {
+                                                "rooms_number": {
                                                     "type": "string"
                                                 }
                                             }
                                         }, {
                                             "properties": {
                                                 "IS": {
-                                                    "enum": ["ID"]
+                                                    "enum": ["Furniture Type"]
                                                 },
-                                                "courses_id": {
-                                                    "type": "string"
+                                                "rooms_furniture": {
+                                                    "type": "string",
+                                                    "enum": ["Classroom-Fixed Tables/Fixed Chairs", "Classroom-Fixed Tables/Movable Chairs", "Classroom-Fixed Tables/Moveable Chairs", "Classroom-Fixed Tablets", "Classroom-Hybrid Furniture", "Classroom-Learn Lab", "Classroom-Movable Tables & Chairs", "Classroom-Movable Tablets", "Classroom-Moveable Tables & Chairs", "Classroom-Moveable Tablets"]
+                                                }
+                                            }
+                                        }, {
+                                            "properties": {
+                                                "IS": {
+                                                    "enum": ["Room Type"]
+                                                },
+                                                "rooms_type": {
+                                                    "type": "string",
+                                                    "enum": ["Active Learning", "Case Style", "Open Design General Purpose", "Small Group", "Studio Lab", "TBD", "Tiered Large Group"]
                                                 }
                                             }
                                         }],
@@ -5368,52 +5390,19 @@ var room_schema = exports.room_schema = {
                                     }
                                 }
                             }, {
-                                "type": "object", "properties": {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Greater than: a number"]
+                                    },
                                     "GT": {
                                         "type": "object",
-                                        "title": "Number value only",
+                                        "title": "+",
                                         "oneOf": [{}, {
                                             "properties": {
                                                 "GT": {
-                                                    "enum": ["Average"]
+                                                    "enum": ["Room size"]
                                                 },
-                                                "courses_avg": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }, {
-                                            "properties": {
-                                                "GT": {
-                                                    "enum": ["Passed"]
-                                                },
-                                                "courses_pass": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }, {
-                                            "properties": {
-                                                "GT": {
-                                                    "enum": ["Failed"]
-                                                },
-                                                "courses_fail": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }, {
-                                            "properties": {
-                                                "GT": {
-                                                    "enum": ["Audited"]
-                                                },
-                                                "courses_audit": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }, {
-                                            "properties": {
-                                                "GT": {
-                                                    "enum": ["Year"]
-                                                },
-                                                "courses_year": {
+                                                "rooms_seats": {
                                                     "type": "number"
                                                 }
                                             }
@@ -5425,7 +5414,212 @@ var room_schema = exports.room_schema = {
                                         }
                                     }
                                 }
-                            }]
+                            }, {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Equal to: a number"]
+                                    },
+                                    "EQ": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{}, {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Room size"]
+                                                },
+                                                "rooms_seats": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "EQ"
+                                            }
+                                        }
+                                    }
+                                }
+                            }, {
+                                "properties": {
+                                    "AND": {
+                                        "enum": ["Lower than: a number"]
+                                    },
+                                    "LT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{}, {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Room size"]
+                                                },
+                                                "rooms_seats": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "LT"
+                                            }
+                                        }
+                                    }
+                                }
+                            }],
+                            "x-hints": {
+                                "form": {
+                                    "selector": "AND"
+                                }
+                            }
+                        }
+                    }
+                }
+            }, {
+                "properties": {
+                    "WHERE": {
+                        "enum": ["Or"]
+                    },
+                    "OR": {
+                        "title": "Or = ",
+                        "type": "array",
+                        "minItems": 2,
+                        "items": {
+                            "type": "object",
+                            "oneOf": [{}, {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Is"]
+                                    },
+                                    "IS": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{}, {
+                                            "properties": {
+                                                "IS": {
+                                                    "enum": ["Building Name"]
+                                                },
+                                                "rooms_shortname": {
+                                                    "type": "string",
+                                                    "enum": ["AERL", "ALRD", "ANGU", "ANSO", "AUDX", "BIOL", "BRKX", "BUCH", "CEME", "CHBE", "CHEM", "CIRS", "DMP", "EOSM", "ESB", "FNH", "FORW", "FRDM", "FSC", "GEOG", "HEBB", "HENN", "IBLC", "IONA", "LASR", "LSC", "LSK", "MATH", "MATX", "MCLD", "MCML", "MGYM", "ORCH", "OSBO", "PCOH", "PHRM", "SCRF", "SOWK", "SPPH", "SRC", "SWNG", "UCLL", "WESB", "WOOD"]
+                                                }
+                                            }
+                                        }, {
+                                            "properties": {
+                                                "IS": {
+                                                    "enum": ["Room Number"]
+                                                },
+                                                "rooms_number": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }, {
+                                            "properties": {
+                                                "IS": {
+                                                    "enum": ["Furniture Type"]
+                                                },
+                                                "rooms_furniture": {
+                                                    "type": "string",
+                                                    "enum": ["Classroom-Fixed Tables/Fixed Chairs", "Classroom-Fixed Tables/Movable Chairs", "Classroom-Fixed Tables/Moveable Chairs", "Classroom-Fixed Tablets", "Classroom-Hybrid Furniture", "Classroom-Learn Lab", "Classroom-Movable Tables & Chairs", "Classroom-Movable Tablets", "Classroom-Moveable Tables & Chairs", "Classroom-Moveable Tablets"]
+                                                }
+                                            }
+                                        }, {
+                                            "properties": {
+                                                "IS": {
+                                                    "enum": ["Room Type"]
+                                                },
+                                                "rooms_type": {
+                                                    "type": "string",
+                                                    "enum": ["Active Learning", "Case Style", "Open Design General Purpose", "Small Group", "Studio Lab", "TBD", "Tiered Large Group"]
+                                                }
+                                            }
+                                        }],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "IS"
+                                            }
+                                        }
+                                    }
+                                }
+                            }, {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Greater than: a number"]
+                                    },
+                                    "GT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{}, {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Room size"]
+                                                },
+                                                "rooms_seats": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "GT"
+                                            }
+                                        }
+                                    }
+                                }
+                            }, {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Equal to: a number"]
+                                    },
+                                    "EQ": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{}, {
+                                            "properties": {
+                                                "EQ": {
+                                                    "enum": ["Room size"]
+                                                },
+                                                "rooms_seats": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "EQ"
+                                            }
+                                        }
+                                    }
+                                }
+                            }, {
+                                "properties": {
+                                    "OR": {
+                                        "enum": ["Lower than: a number"]
+                                    },
+                                    "LT": {
+                                        "type": "object",
+                                        "title": "+",
+                                        "oneOf": [{}, {
+                                            "properties": {
+                                                "GT": {
+                                                    "enum": ["Room size"]
+                                                },
+                                                "rooms_seats": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }],
+                                        "x-hints": {
+                                            "form": {
+                                                "selector": "LT"
+                                            }
+                                        }
+                                    }
+                                }
+                            }],
+                            "x-hints": {
+                                "form": {
+                                    "selector": "OR"
+                                }
+                            }
                         }
                     }
                 }
@@ -5439,14 +5633,16 @@ var room_schema = exports.room_schema = {
         "OPTIONS": {
             "title": "Options",
             "id": "options",
+            "required": ["COLUMNS"],
             "properties": {
                 "COLUMNS": {
                     "id": "columns",
-                    "title": "Properties you want to display: e.g. courses_dept",
+                    "title": "Properties you want to display: min 1",
+                    "minItems": 1,
                     "items": {
-                        "description": "Allows anything, and describes nothing.",
-                        "minItems": 1,
-                        "type": "string"
+                        "type": "string",
+                        "enum": ["", "rooms_shortname", "rooms_number", "rooms_seats", "rooms_type", "rooms_furniture"],
+                        "enumNames": ["Empty", "Building name", "Room number", "Room size", "Room type", "Furniture type"]
                     },
                     "type": "array"
                 },
@@ -5461,15 +5657,15 @@ var room_schema = exports.room_schema = {
                             "id": "dir",
                             "type": "string",
                             "title": "Sort direction: ",
-                            "enum": ["UP", "DOWN"]
+                            "enum": ["", "UP", "DOWN"]
                         },
                         "keys": {
                             "id": "keys",
-                            "title": "Sort with these key(s), at least 1",
+                            "title": "Sort with key(s) from columns",
                             "items": {
-                                "description": "Allows anything, and describes nothing.",
-                                "minItems": 1,
-                                "type": "string"
+                                "type": "string",
+                                "enum": ["", "rooms_shortname", "rooms_number", "rooms_seats", "rooms_type", "rooms_furniture"],
+                                "enumNames": ["Empty", "Building name", "Room number", "Room size", "Room type", "Furniture type"]
                             },
                             "type": "array"
                         }
@@ -5479,32 +5675,35 @@ var room_schema = exports.room_schema = {
             },
             "type": "object"
         },
-        "TRANSFORMATIONS": {
-            "id": "transformations",
-            "title": "Advanced search:  default as empty",
-            "properties": {
-                "APPLY": {
-                    "id": "apply",
-                    "title": "Custom search terms:  e.g. maxSeats",
-                    "items": {
-                        "type": "object",
-                        "minItems": 0
+        "SPECIAL": {
+            "id": "special",
+            "title": "Advanced search term:  ",
 
-                    },
-
-                    "type": "array"
-                },
-                "GROUP": {
-                    "id": "group",
-                    "title": "Group results according to the following keys",
-                    "items": {
-                        "type": "string",
-                        "minItems": 1
-                    },
-                    "type": "array"
+            "oneOf": [{}, {
+                "properties": {
+                    "SPECIAL": {
+                        "enum": ["Show all rooms over size X within Y meters of building Z"]
+                    }
+                }
+            }, {
+                "properties": {
+                    "SPECIAL": {
+                        "enum": ["Show all rooms with type X within Y meters of building Z"]
+                    }
+                }
+            }, {
+                "properties": {
+                    "SPECIAL": {
+                        "enum": ["Show all rooms with furniture X within Y meters of building Z"]
+                    }
+                }
+            }],
+            "x-hints": {
+                "form": {
+                    "selector": "SPECIAL"
                 }
             },
-            "type": ["object", "null"]
+            "type": "object"
         }
     },
     "type": "object"
@@ -7791,7 +7990,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(2);
+var _reactDom = __webpack_require__(3);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -10441,7 +10640,7 @@ var _objectAssign = __webpack_require__(1);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _reactClass = __webpack_require__(3);
+var _reactClass = __webpack_require__(2);
 
 var _reactClass2 = _interopRequireDefault(_reactClass);
 
@@ -10570,7 +10769,7 @@ var _objectAssign = __webpack_require__(1);
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-var _reactClass = __webpack_require__(3);
+var _reactClass = __webpack_require__(2);
 
 var _reactClass2 = _interopRequireDefault(_reactClass);
 
@@ -12263,7 +12462,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   };
 }();var _react = __webpack_require__(0),
     _react2 = _interopRequireDefault(_react),
-    _reactClass = __webpack_require__(3),
+    _reactClass = __webpack_require__(2),
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
@@ -12322,8 +12521,8 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
    };
 }();var _react = __webpack_require__(0),
     _react2 = _interopRequireDefault(_react),
-    _reactDom = __webpack_require__(2),
-    _reactClass = __webpack_require__(3),
+    _reactDom = __webpack_require__(3),
+    _reactClass = __webpack_require__(2),
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
@@ -12497,8 +12696,8 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   };
 }();var _react = __webpack_require__(0),
     _react2 = _interopRequireDefault(_react),
-    _reactDom = __webpack_require__(2),
-    _reactClass = __webpack_require__(3),
+    _reactDom = __webpack_require__(3),
+    _reactClass = __webpack_require__(2),
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
@@ -12641,8 +12840,8 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   };
 }();var _react = __webpack_require__(0),
     _react2 = _interopRequireDefault(_react),
-    _reactDom = __webpack_require__(2),
-    _reactClass = __webpack_require__(3),
+    _reactDom = __webpack_require__(3),
+    _reactClass = __webpack_require__(2),
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
@@ -12704,8 +12903,8 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _typeof = 'funct
   };
 }();var _react = __webpack_require__(0),
     _react2 = _interopRequireDefault(_react),
-    _reactDom = __webpack_require__(2),
-    _reactClass = __webpack_require__(3),
+    _reactDom = __webpack_require__(3),
+    _reactClass = __webpack_require__(2),
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
@@ -13156,7 +13355,7 @@ var _react = __webpack_require__(0);
 
 var React = _interopRequireWildcard(_react);
 
-var _reactDom = __webpack_require__(2);
+var _reactDom = __webpack_require__(3);
 
 var ReactDOM = _interopRequireWildcard(_reactDom);
 
