@@ -3378,7 +3378,7 @@ var schema = exports.schema = {
             // "enum": ["AND", "OR", "IS", "GT", "EQ", "LT", "NOT"],
             "oneOf": [{
                 "properties": {
-                    "WHERE": { "enum": "" }
+                    "WHERE": { "enum": ["Empty"] }
                 }
             }, {
                 "properties": {
@@ -4142,10 +4142,9 @@ var schema = exports.schema = {
             "properties": {
                 "COLUMNS": {
                     "id": "columns",
-                    "title": "Properties you want to display: ",
+                    "title": "Properties you want to display: min 1",
                     "minItems": 1,
                     "items": {
-
                         "type": "string",
                         "enum": ["", "courses_dept", "courses_instructor", "courses_title", "courses_id", "courses_avg", "courses_pass", "courses_fail", "courses_audit", "courses_year"],
                         "enumNames": ["Empty", "Department", "Instructor", "Title", "ID", "Average", "Passed", "Failed", "Audited", "Year"]
@@ -9623,6 +9622,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var render = ReactDOM.render;
 
 
@@ -9634,8 +9635,55 @@ render(React.createElement(
 
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
 
+
 var onSubmit = function onSubmit(data, buttonValue, errors) {
-    alert('Data  : ' + JSON.stringify(data) + '\n' + 'Button: ' + buttonValue + '\n' + 'Errors: ' + JSON.stringify(errors));
+    if (buttonValue == "Submit") {
+        var query = {};
+        if (Object.keys(errors).length != 0) {
+            alert('Errors: ' + JSON.stringify(errors));
+        } else {
+            var queryWhere = data.WHERE;
+            var filter, second;
+            if (queryWhere.WHERE == "Empty") {
+                queryWhere = {};
+            } else {
+                var wKeys = Object.keys(queryWhere);
+                queryWhere = queryWhere[wKeys[1]];
+                if (Array.isArray(queryWhere)) {
+                    var fistItem = queryWhere[0];
+                    var filters = Object.keys(fistItem);
+                    var len = filters.length;
+                    filter = filters[0];
+                    var arr = new Array();
+                    for (var i = 0; i < len; i++) {
+                        var obj = queryWhere[i];
+                        var objKeys = Object.keys(obj);
+                        var tempFilter = objKeys[1];
+                        var val = obj[tempFilter];
+                        var valKeys = Object.keys(val);
+                        var filterKey = valKeys[1];
+                        var filterVal = val[filterKey];
+                        var filterObj = _defineProperty({}, filterKey, filterVal);
+                        var realFilter = _defineProperty({}, tempFilter, filterObj);
+                        arr.push(realFilter);
+                    }
+                    queryWhere = _defineProperty({}, filter, arr);
+                    alert(JSON.stringify(queryWhere));
+                } else {
+                    var _filters = Object.keys(queryWhere);
+                    filter = _filters[0];
+                    second = _defineProperty({}, _filters[1], queryWhere[_filters[1]]);
+                    queryWhere = _defineProperty({}, filter, second);
+                }
+            }
+            Object.assign(query, { "WHERE": queryWhere });
+            alert('Data  : ' + JSON.stringify(query));
+        }
+    }
+
+    // alert('Data  : ' + JSON.stringify(data) + '\n' +
+    //     'Button: ' + buttonValue + '\n' +
+    //     'Errors: ' + JSON.stringify(errors));
 };
 
 render(React.createElement(
