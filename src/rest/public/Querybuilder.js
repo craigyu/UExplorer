@@ -13,7 +13,7 @@ export const schema = {
             // "enum": ["AND", "OR", "IS", "GT", "EQ", "LT", "NOT"],
             "oneOf": [{
                 "properties": {
-                    "WHERE": { "enum": "" }
+                    "WHERE": { "enum": ["Empty"] }
                 }
             },
             {
@@ -866,10 +866,9 @@ export const schema = {
             "properties": {
                 "COLUMNS": {
                     "id": "columns",
-                    "title": "Properties you want to display: ",
+                    "title": "Properties you want to display: min 1",
                     "minItems": 1,
                     "items": {
-
                         "type": "string",
                         "enum": ["", "courses_dept", "courses_instructor", "courses_title", "courses_id", "courses_avg", "courses_pass", "courses_fail", "courses_audit", "courses_year"],
                         "enumNames": ["Empty", "Department", "Instructor", "Title", "ID", "Average", "Passed", "Failed", "Audited", "Year"]

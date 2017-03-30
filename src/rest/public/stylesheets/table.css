@@ -1,0 +1,11 @@
+table {
+  border-spacing: 10;
+}
+
+td {
+  padding: 2px 5px;
+}
+
+.jsonOdd {
+  background: #d0d1d0;
+}
