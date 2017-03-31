@@ -56,16 +56,17 @@ export default class Server {
 
                 that.rest.use(restify.bodyParser({ mapParams: true, mapFiles: true }));
 
-                that.rest.get('/', function (req: restify.Request, res: restify.Response, next: restify.Next) {
-                    res.send(200);
-                    return next();
-                });
                 // provides the echo service
                 // curl -is  http://localhost:4321/echo/myMessage
                 /**
                  *          GET
                  */
+                //that.rest.get('/', Server.main);
                 that.rest.get('/echo/:msg', Server.echo);
+                that.rest.get(/.*/, restify.serveStatic({
+                    'directory': './src/rest/views/',
+                    'default': 'index.html'
+                }));
                 // that.rest.get('/square/:num', Server.square);
                 /**
                  *          PUT
@@ -78,7 +79,7 @@ export default class Server {
                 /**
                  *          POST
                  */
-                that.rest.post('/query',  Server.query);
+                that.rest.post('/query', Server.query);
 
                 // Other endpoints will go here
                 that.rest.listen(that.port, function () {
@@ -139,13 +140,13 @@ export default class Server {
         let id = req.params.id;
         Log.trace('Server::Add - params: ' + id);
         try {
-                let hello = req.params.body.toString('base64');
-                let insF = new InsightFacade();
-                insF.addDataset(id, hello).then(function (result) {
-                    res.json(result.code, result.body);
-                }).catch(function (error) {
-                    res.json(error.code, error.body);
-                })
+            let hello = req.params.body.toString('base64');
+            let insF = new InsightFacade();
+            insF.addDataset(id, hello).then(function (result) {
+                res.json(result.code, result.body);
+            }).catch(function (error) {
+                res.json(error.code, error.body);
+            })
         }
         catch (err) {
             res.send(400, { error: err.message });

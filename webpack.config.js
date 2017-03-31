@@ -2,7 +2,7 @@ module.exports = {
     entry: "./src/rest/public/Index.js",
     output: {
         filename: "bundle.js",
-        path: __dirname + "/dist"
+        path: __dirname + "/src/rest/views"
     },
 
     // Enable sourcemaps for debugging webpack's output.

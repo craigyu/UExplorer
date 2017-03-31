@@ -909,8 +909,7 @@ export const schema = {
         },
         "TRANSFORMATIONS": {
             "id": "transformations",
-            "title": "Advanced search term:  ",
-
+            "title": "Advanced search term:  \n (Columns and sort key(s) can only be Department and/or ID)",
             "oneOf": [
                 {},
                 {

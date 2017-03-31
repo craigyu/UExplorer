@@ -11,8 +11,9 @@ import Form from "react-formzilla";
 import JsonTable from "react-json-table";
 import "./stylesheets/table.css";
 import GoogleMapReact from 'google-map-react';
-
 const { render } = ReactDOM;
+
+
 
 render(
     <div>{title_image}</div>,
@@ -44,15 +45,7 @@ var onSubmit = function (data, buttonValue, errors) {
                     filter = filters[0];
                     let arr = new Array();
                     for (let i = 0; i < len; i++) {
-                        let obj = queryWhere[i];
-                        let objKeys = Object.keys(obj);
-                        let tempFilter = objKeys[1];
-                        let val = obj[tempFilter];
-                        let valKeys = Object.keys(val);
-                        let filterKey = valKeys[1];
-                        let filterVal = val[filterKey];
-                        let filterObj = { [filterKey]: filterVal };
-                        let realFilter = { [tempFilter]: filterObj };
+                        let obj = queryWhere[i]; let objKeys = Object.keys(obj); let tempFilter = objKeys[1]; let val = obj[tempFilter]; let valKeys = Object.keys(val); let filterKey = valKeys[1]; let filterVal = val[filterKey]; let filterObj = { [filterKey]: filterVal }; let realFilter = { [tempFilter]: filterObj };
                         arr.push(realFilter);
                     }
                     queryWhere = { [filter]: arr };
@@ -67,7 +60,7 @@ var onSubmit = function (data, buttonValue, errors) {
             Object.assign(query, { "WHERE": queryWhere });
             let queryOption = data.OPTIONS;
             if ("TRANSFORMATIONS" in data) {
-                let queryTrans = data.TRANSFORMATIONS;
+                let queryTrans = data.TRANSFORMATIONS.TRANSFORMATIONS;
                 let trans = {};
                 switch (queryTrans) {
                     case "Highest Average":
@@ -104,27 +97,116 @@ var onSubmit = function (data, buttonValue, errors) {
                         trans = {
                             "GROUP": ["courses_dept", "courses_id"],
                             "APPLY": [{
-                                "minAverage": {
-                                    "MAX": "courses_"
+                                "maxSections": {
+                                    "COUNT": "courses_uuid"
                                 }
                             }]
                         };
-                        queryOption.COLUMNS.unshift("minAverage");
+                        queryOption.COLUMNS.unshift("maxSections");
                         if ("ORDER" in queryOption) {
-                            queryOption.ORDER.keys.unshift("minAverage");
+                            queryOption.ORDER.keys.unshift("maxSections");
+                        }
+                        if (query.WHERE == {}) {
+                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
+                        }
+                        else {
+                            let filters = Object.keys(query.WHERE);
+                            let filter = filters[0];
+                            if (filter == "AND" || filter == "OR") {
+                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
+                            }
+                            else {
+                                let temp = query.WHERE;
+                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
+                            }
                         }
                         break;
+
+                    case "Most Passes":
+                        trans = {
+                            "GROUP": ["courses_dept", "courses_id"],
+                            "APPLY": [{
+                                "mostPasses": {
+                                    "MAX": "courses_pass"
+                                }
+                            }]
+                        };
+                        queryOption.COLUMNS.unshift("mostPasses");
+                        if ("ORDER" in queryOption) {
+                            queryOption.ORDER.keys.unshift("mostPasses");
+                        }
+                        if (query.WHERE == {}) {
+                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
+                        }
+                        else {
+                            let filters = Object.keys(query.WHERE);
+                            let filter = filters[0];
+                            if (filter == "AND" || filter == "OR") {
+                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
+                            }
+                            else {
+                                let temp = query.WHERE;
+                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
+                            }
+                        }
+                        break;
+
+                    case "Most Fails":
+                        trans = {
+                            "GROUP": ["courses_dept", "courses_id"],
+                            "APPLY": [{
+                                "mostFails": {
+                                    "MAX": "courses_fail"
+                                }
+                            }]
+                        };
+                        queryOption.COLUMNS.unshift("mostFails");
+                        if ("ORDER" in queryOption) {
+                            queryOption.ORDER.keys.unshift("mostFails");
+                        }
+                        if (query.WHERE == {}) {
+                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
+                        }
+                        else {
+                            let filters = Object.keys(query.WHERE);
+                            let filter = filters[0];
+                            if (filter == "AND" || filter == "OR") {
+                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
+                            }
+                            else {
+                                let temp = query.WHERE;
+                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
+                            }
+                        }
+                        break;
+
+                    default:
+                        alert("Something's wrong, please refresh the page");
+
                 }
+                Object.assign(query, { "TRANSFORMATIONS": trans });
             }
             Object.assign(query, { "OPTIONS": queryOption });
-            alert('Data  : ' + JSON.stringify(data));
+           // alert('Data  : ' + JSON.stringify(query));
+           var response;
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "localhost:4321/query", false)
+            .send(query)
+            .then(function (res) {
+                response = JSON.parse(xhttp.responseText);
+            })
+            .catch(function (err) {
+                alert(err);
+            });
+
+            alert(response);
         }
     }
 };
 
 
 
-function roomSchedule(courses,rooms) {
+function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
     allCourses = [];
     nonDuplicatedCourses = [];
@@ -140,16 +222,16 @@ function roomSchedule(courses,rooms) {
     let switching = 0; // max is 1, when two then need to schedule past boundary
     let startTime = 800; // time in 100s
     let hasSwapped = false; // only to keep track of when i switched past boundary
-    for(let i = 0; i < allCourses.length(); i++) {
+    for (let i = 0; i < allCourses.length(); i++) {
         let acc = 0;
 
-        if(switching % 2 == 0) { // if even #: treat as MWF
-             acc = 100;
+        if (switching % 2 == 0) { // if even #: treat as MWF
+            acc = 100;
         } else if (switching % 2 == 1) { // if odd #: treat as T TH
             acc = 130;
         }
         // two cases: before 1700 or after 1700
-        if(switching >= 2) {
+        if (switching >= 2) {
             startTime = 1700;
             hasSwapped = true;
         }
@@ -164,7 +246,7 @@ function roomSchedule(courses,rooms) {
         finalProduct.push(scheduled);
         startTime += acc;
 
-        if(startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
+        if (startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
             switching++;
         } else if (startTime == 2300 && hasSwapped) { // this is for compensating scheduling
             switching++
@@ -179,12 +261,12 @@ function roomSchedule(courses,rooms) {
 
     let toSearchDuplicatedScheduled = finalProduct.filter((value) => {
         // not sure if this works, checking to see if it includes my course object
-        return duplicatedCourses.includes(value.course);   
+        return duplicatedCourses.includes(value.course);
     });
 
 
-    for(let i = 0; i < toSearchDuplicatedScheduled; i++) {
-        for(let j = 0; j < toSearchDuplicatedScheduled; j++) {
+    for (let i = 0; i < toSearchDuplicatedScheduled; i++) {
+        for (let j = 0; j < toSearchDuplicatedScheduled; j++) {
             duplicationSearchRecursion(toSearchDuplicatedScheduled[i], toSearchDuplicatedScheduled[j]);
 
 
@@ -210,7 +292,7 @@ function roomSchedule(courses,rooms) {
                     theRemedy.time = theCulpritTime
 
 
-                    finalProduct[theRemedyIndex-1] = theCulprit;
+                    finalProduct[theRemedyIndex - 1] = theCulprit;
                     finalProduct[theRemedyIndex] = theRemedy;
 
                     // successfully swapped and put back into the array but could be possible the swapped are duplicates
@@ -224,8 +306,8 @@ function roomSchedule(courses,rooms) {
 
                     });
 
-                    if(theNextCulprit != undefined) {
-                        duplicationSearchRecursion(theRemedy,theNextCulprit)
+                    if (theNextCulprit != undefined) {
+                        duplicationSearchRecursion(theRemedy, theNextCulprit)
                     }
                 }
 
@@ -279,11 +361,11 @@ render(
 )
 
 render(
-      <GoogleMapReact
-        defaultCenter={{lat: 49.2606052, lng: -123.2459939}}
+    <GoogleMapReact
+        defaultCenter={{ lat: 49.2606052, lng: -123.2459939 }}
         defaultZoom={13}
-      >
-      </GoogleMapReact>,
-      document.getElementById("map")
+    >
+    </GoogleMapReact>,
+    document.getElementById("map")
 )
 
