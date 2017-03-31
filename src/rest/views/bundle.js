@@ -16544,7 +16544,7 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
                     allrooms.push(_name);
                 }
                 var sched = roomSchedule(group, allrooms);
-                render(React.createElement(SelectTable, { rows: sched }), document.getElementById("time"));
+                render(React.createElement(_reactJsonTable2.default, { rows: sched }), document.getElementById("time"));
             }
             //alert(JSON.stringify(data));
         }).catch(function (err) {

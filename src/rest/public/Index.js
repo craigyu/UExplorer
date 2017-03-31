@@ -593,7 +593,7 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                     var sched = roomSchedule(group, allrooms);
                     render(
                         <JsonTable rows={sched} />,
-                        document.getElementById("time")
+                        document.getElementById("table")
                     );
                 }
                 //alert(JSON.stringify(data));
