@@ -16411,6 +16411,8 @@ function roomSchedule(courses, rooms) {
     //         }
     //     }
     // }
+
+    return finalProduct;
 }
 
 var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
@@ -16544,6 +16546,8 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
                     allrooms.push(_name);
                 }
                 var sched = roomSchedule(group, allrooms);
+
+                alert("hi");
             }
             //alert(JSON.stringify(data));
         }).catch(function (err) {
