@@ -42,8 +42,6 @@ class SelectTable extends React.Component {
             onClickCell={() => this.onClickCell(items)} />);
     }
 
-
-
     onClickCell(items) {
         var hello = latlon[items[0].rooms_shortname]
         var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
@@ -617,10 +615,11 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                     }
                     var sched = roomSchedule(group, allrooms);
                     var groupSched = groupParser(["Room"], sched);
-                    render(
-                        <SelectTable rows={sched} />,
-                        document.getElementById("table")
-                    );
+                    displayMulti(groupSched);
+                    // render(
+                    //     <SelectTable rows={sched} />,
+                    //     document.getElementById("table")
+                    // );
                 }
                 //alert(JSON.stringify(data));
             })
@@ -630,6 +629,25 @@ var schedOnSubmit = function (data, buttonValue, errors) {
 
     }
 };
+
+
+function displayMulti(arr) {
+    var MultiTables = React.createClass({
+        render: function () {
+
+            var multiArr = arr.map(function (table) {
+                return (
+                    <div tabTitle="Table #">
+                        <JsonTable  rows={table} />
+                    </div>
+                )
+
+            })
+            return (<TabPanel tabAlign="center">{multiArr}</TabPanel>);
+        }
+    });
+    render(<MultiTables />, document.getElementById("multi"));
+}
 
 function groupParser(group, data) {
     let gLen = group.length;

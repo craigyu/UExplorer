@@ -16556,7 +16556,12 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
                     allrooms.push(_name);
                 }
                 var sched = roomSchedule(group, allrooms);
-                render(React.createElement(SelectTable, { rows: sched }), document.getElementById("table"));
+                var groupSched = groupParser(["Room"], sched);
+                displayMulti(groupSched);
+                // render(
+                //     <SelectTable rows={sched} />,
+                //     document.getElementById("table")
+                // );
             }
             //alert(JSON.stringify(data));
         }).catch(function (err) {
@@ -16564,6 +16569,29 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
         });
     }
 };
+
+function displayMulti(arr) {
+    var MultiTables = React.createClass({
+        displayName: "MultiTables",
+
+        render: function render() {
+
+            var multiArr = arr.map(function (table) {
+                return React.createElement(
+                    "div",
+                    { tabTitle: "Table #" },
+                    React.createElement(_reactJsonTable2.default, { rows: table })
+                );
+            });
+            return React.createElement(
+                _reactTabPanel2.default,
+                { tabAlign: "center" },
+                multiArr
+            );
+        }
+    });
+    render(React.createElement(MultiTables, null), document.getElementById("multi"));
+}
 
 function groupParser(group, data) {
     var gLen = group.length;
