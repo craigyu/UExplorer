@@ -28,7 +28,7 @@ render(
 class SelectTable extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {row: false, cell: false, sort: false};
+        this.state = { row: false, cell: false, sort: false };
         this.onClickCell = this.onClickCell.bind(this);
     }
 
@@ -38,17 +38,17 @@ class SelectTable extends React.Component {
 
         return (<JsonTable
             rows={items}
-            onClickCell={ () => this.onClickCell(items) }/>);
+            onClickCell={() => this.onClickCell(items)} />);
     }
 
 
 
     onClickCell(items) {
         var hello = latlon[items[0].rooms_shortname]
-        var hello2 = hello.rooms_lat + " " +  hello.rooms_lon;
+        var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
 
         alert(hello2);
-        this.setState({cell: true});
+        this.setState({ cell: true });
     }
 }
 
@@ -322,11 +322,11 @@ var crOnSubmit = function (data, buttonValue, errors) {
 
         queryAsyncRequest(query)
             .then((data) => {
-            render(
-                <SelectTable rows={data} />,
-                document.getElementById("table")
-            )
-        })
+                render(
+                    <SelectTable rows={data} />,
+                    document.getElementById("table")
+                )
+            })
             .catch((err) => {
                 alert(err);
             })
@@ -585,12 +585,16 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                         }
                     }
                     let allrooms = [];
-                    for(let i = 0; i < data2.length; i++){
+                    for (let i = 0; i < data2.length; i++) {
                         let temp = data2[i];
                         let name = temp["rooms_name"];
                         allrooms.push(name);
                     }
                     var sched = roomSchedule(group, allrooms);
+                    render(
+                        <SelectTable rows={sched} />,
+                        document.getElementById("time")
+                    );
                 }
                 //alert(JSON.stringify(data));
             })
@@ -654,6 +658,11 @@ var emptyArr = [];
 render(
     <SelectTable rows={emptyArr} />,
     document.getElementById("table")
+);
+
+render(
+    <SelectTable rows={emptyArr} />,
+    document.getElementById("time")
 );
 
 render(
