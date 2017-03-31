@@ -24,6 +24,20 @@ render(
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
 
 
+
+function queryAsyncRequest(query) {
+    let request = require("superagent");
+    request.post("http://localhost:4321/query")
+        .send(query)
+        .end((err,res) => {
+            if(err) {
+                alert(err)
+            }
+            alert(res.text);
+        });
+
+}
+
 var onSubmit = function (data, buttonValue, errors) {
     if (buttonValue == "Submit") {
         var query = {};
@@ -268,6 +282,9 @@ var onSubmit = function (data, buttonValue, errors) {
         }
     }
 
+
+
+    queryAsyncRequest(query);
 };
 
 function deg2rad(deg) {
