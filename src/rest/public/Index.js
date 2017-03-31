@@ -343,8 +343,6 @@ function deg2rad(deg) {
 function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
     allCourses = [];
-    nonDuplicatedCourses = [];
-    duplicatedCourses = [];
     finalProduct = [];
     // naive approach for pushing duplicated items
     // Proceed with Scheduling, MWF 1 hour block meaning 9 blocks
@@ -596,11 +594,7 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                         let name = temp["rooms_name"];
                         allrooms.push(name);
                     }
-
-                    for (let i = 0; i < group.length; i++) {
-
-                    }
-
+                    roomSchedule(group, allrooms);
                 }
                 //alert(JSON.stringify(data));
             })
