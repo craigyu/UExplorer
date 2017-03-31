@@ -343,10 +343,8 @@ function deg2rad(deg) {
 
 function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
-    allCourses = [];
-    nonDuplicatedCourses = [];
-    duplicatedCourses = [];
-    finalProduct = [];
+    let allCourses = courses;
+    let finalProduct = [];
     // naive approach for pushing duplicated items
     // Proceed with Scheduling, MWF 1 hour block meaning 9 blocks
     // T TH 1.5 hour blocks meaning 6 blocks
@@ -357,97 +355,92 @@ function roomSchedule(courses, rooms) {
     let switching = 0; // max is 1, when two then need to schedule past boundary
     let startTime = 800; // time in 100s
     let hasSwapped = false; // only to keep track of when i switched past boundary
-    for (let i = 0; i < allCourses.length(); i++) {
-        let acc = 0;
+    for (let i = 0; i < allCourses.length; i++) {
+        for (let j = 0; j < allCourses[i].length; j++) {
+            let acc = 0;
 
-        if (switching % 2 == 0) { // if even #: treat as MWF
-            acc = 100;
-        } else if (switching % 2 == 1) { // if odd #: treat as T TH
-            acc = 130;
-        }
-        // two cases: before 1700 or after 1700
-        if (switching >= 2) {
-            startTime = 1700;
-            hasSwapped = true;
-        }
-
-
-        let scheduled = {
-            course: allCourses[i],
-            room: rooms[i],
-            time: startTime,
-            day: switching % 2 // 0 is mwf 1 is t th
-        };
-        finalProduct.push(scheduled);
-        startTime += acc;
-
-        if (startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
-            switching++;
-        } else if (startTime == 2300 && hasSwapped) { // this is for compensating scheduling
-            switching++
-        } else { // we cant schedule anymore, not enough time slots for the given courses
-            break;
-        }
-    }
+            if (switching % 2 == 0) { // if even #: treat as MWF
+                acc = 100;
+            } else if (switching % 2 == 1) { // if odd #: treat as T TH
+                acc = 130;
+            }
+            // two cases: before 1700 or after 1700
+            if (switching >= 2) {
+                startTime = 1700;
+                hasSwapped = true;
+            }
 
 
+            let scheduled = {
+                course: courses[i][j],
+                room: rooms[j],
+                time: startTime,
+                day: switching % 2 // 0 is mwf 1 is t th
+            };
+            finalProduct.push(scheduled);
+            startTime += acc;
 
-    // check for duplicates that have the same startTime
-
-    let toSearchDuplicatedScheduled = finalProduct.filter((value) => {
-        // not sure if this works, checking to see if it includes my course object
-        return duplicatedCourses.includes(value.course);
-    });
-
-
-    for (let i = 0; i < toSearchDuplicatedScheduled; i++) {
-        for (let j = 0; j < toSearchDuplicatedScheduled; j++) {
-            duplicationSearchRecursion(toSearchDuplicatedScheduled[i], toSearchDuplicatedScheduled[j]);
-
-
-            function duplicationSearchRecursion(toSearch1, toSearch2) {
-                if (toSearch1.time == toSearch2[j].time
-                    && toSearch1.day == toSearch2.day) {
-                    // found a duplicate schedule
-
-
-                    let theCulprit = toSearch1;
-                    let theCulpritTime = toSearch1.time // grabbing the time of duplication
-                    let theRemedyIndex = finaProduct.indexOf(theCulprit) + 1;
-                    let theRemedy = finalProduct[theRemedyIndex];
-                    let theRemedyTime = theRemedy.time // grabbing the time for the +1
-
-                    // captured both values: theCulprit is the one coinciding with toSearch2
-                    // theRemedy is and should be the next time down (ie 9:00 should be 10:00 course)
-
-
-
-                    // swapping times
-                    theCulprit.time = theRemedyTime;
-                    theRemedy.time = theCulpritTime
-
-
-                    finalProduct[theRemedyIndex - 1] = theCulprit;
-                    finalProduct[theRemedyIndex] = theRemedy;
-
-                    // successfully swapped and put back into the array but could be possible the swapped are duplicates
-
-
-
-                    // finding the next culprit
-                    theNextCulprit = finalProduct.find((value) => {
-                        return value.course.courses_id == theRemedy.course.courses_id
-                            && value.course.courses_dept == theRemedy.course.courses_dept
-
-                    });
-
-                    if (theNextCulprit != undefined) {
-                        duplicationSearchRecursion(theRemedy, theNextCulprit)
-                    }
-                }
+            if (startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
+                switching++;
+            } else if (startTime == 2300 && hasSwapped) { // this is for compensating scheduling
+                switching++
+            } else { // we cant schedule anymore, not enough time slots for the given courses
+                break;
             }
         }
     }
+
+
+
+
+    // for (let i = 0; i < toSearchDuplicatedScheduled; i++) {
+    //     for (let j = 0; j < toSearchDuplicatedScheduled; j++) {
+    //         duplicationSearchRecursion(toSearchDuplicatedScheduled[i], toSearchDuplicatedScheduled[j]);
+    //
+    //
+    //         function duplicationSearchRecursion(toSearch1, toSearch2) {
+    //             if (toSearch1.time == toSearch2[j].time
+    //                 && toSearch1.day == toSearch2.day) {
+    //                 // found a duplicate schedule
+    //
+    //
+    //                 let theCulprit = toSearch1;
+    //                 let theCulpritTime = toSearch1.time // grabbing the time of duplication
+    //                 let theRemedyIndex = finaProduct.indexOf(theCulprit) + 1;
+    //                 let theRemedy = finalProduct[theRemedyIndex];
+    //                 let theRemedyTime = theRemedy.time // grabbing the time for the +1
+    //
+    //                 // captured both values: theCulprit is the one coinciding with toSearch2
+    //                 // theRemedy is and should be the next time down (ie 9:00 should be 10:00 course)
+    //
+    //
+    //
+    //                 // swapping times
+    //                 theCulprit.time = theRemedyTime;
+    //                 theRemedy.time = theCulpritTime
+    //
+    //
+    //                 finalProduct[theRemedyIndex - 1] = theCulprit;
+    //                 finalProduct[theRemedyIndex] = theRemedy;
+    //
+    //                 // successfully swapped and put back into the array but could be possible the swapped are duplicates
+    //
+    //
+    //
+    //                 // finding the next culprit
+    //                 theNextCulprit = finalProduct.find((value) => {
+    //                     return value.course.courses_id == theRemedy.course.courses_id
+    //                         && value.course.courses_dept == theRemedy.course.courses_dept
+    //
+    //                 });
+    //
+    //                 if (theNextCulprit != undefined) {
+    //                     duplicationSearchRecursion(theRemedy, theNextCulprit)
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 var schedOnSubmit = function (data, buttonValue, errors) {
@@ -597,7 +590,7 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                         let name = temp["rooms_name"];
                         allrooms.push(name);
                     }
-                    roomSchedule(group, allrooms);
+                    var sched = roomSchedule(group, allrooms);
                 }
                 //alert(JSON.stringify(data));
             })
