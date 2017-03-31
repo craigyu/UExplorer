@@ -29,13 +29,12 @@ function queryAsyncRequest(query) {
     let request = require("superagent");
     request.post("http://localhost:4321/query")
         .send(query)
-        .end((err,res) => {
-            if(err) {
+        .end((err, res) => {
+            if (err) {
                 alert(err)
             }
-            alert(res.text);
+            return (res.text.result);
         });
-
 }
 
 var onSubmit = function (data, buttonValue, errors) {
@@ -208,7 +207,8 @@ var onSubmit = function (data, buttonValue, errors) {
             // alert(JSON.stringify(data));
             // special search for rooms
             if (dataKeys.includes("SPECIAL")) {
-                if (!"AND" in query.WHERE) {
+                let wKeys = Object.keys(query.WHERE);
+                if (!wKeys.includes("AND")) {
                     alert("Please follow the rules, refresh and retry")
                 }
                 let qSpecial = data.SPECIAL.SPECIAL;
@@ -278,13 +278,17 @@ var onSubmit = function (data, buttonValue, errors) {
                     query.WHERE.AND = and;
                 }
             }
-            alert(JSON.stringify(query));
+            //alert(JSON.stringify(query));
         }
+        queryAsyncRequest(query).then((data) => {
+            render(
+                <JsonTable rows={data} />,
+                document.getElementById("table")
+            )
+        })
     }
 
 
-
-    queryAsyncRequest(query);
 };
 
 function deg2rad(deg) {
@@ -429,21 +433,18 @@ render(
     ,
     document.getElementById("query"));
 
-var result = [
-    { courses_dept: 'elec', courses_avg: 76.48 },
-    { courses_dept: 'elec', courses_avg: 76.48 },
-    { courses_dept: 'dent', courses_avg: 82.5 },
-    { courses_dept: 'dent', courses_avg: 82.5 },
-    { courses_dept: 'dent', courses_avg: 85.4 },
-    { courses_dept: 'dent', courses_avg: 85.4 }
-];
+// var result = [
+//     { courses_dept: 'elec', courses_avg: 76.48 },
+//     { courses_dept: 'elec', courses_avg: 76.48 },
+//     { courses_dept: 'dent', courses_avg: 82.5 },
+//     { courses_dept: 'dent', courses_avg: 82.5 },
+//     { courses_dept: 'dent', courses_avg: 85.4 },
+//     { courses_dept: 'dent', courses_avg: 85.4 }
+// ];
 
 
 
-render(
-    <JsonTable rows={result} />,
-    document.getElementById("table")
-)
+
 
 render(
     <GoogleMapReact
