@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 115);
+/******/ 	return __webpack_require__(__webpack_require__.s = 116);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -796,7 +796,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Item = exports.Flex = undefined;
 
-var _Flex = __webpack_require__(81);
+var _Flex = __webpack_require__(82);
 
 Object.defineProperty(exports, 'Flex', {
   enumerable: true,
@@ -805,7 +805,7 @@ Object.defineProperty(exports, 'Flex', {
   }
 });
 
-var _Item = __webpack_require__(82);
+var _Item = __webpack_require__(83);
 
 Object.defineProperty(exports, 'Item', {
   enumerable: true,
@@ -907,7 +907,7 @@ function toComment(sourceMap) {
 
 	return '/*# ' + data + ' */';
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(53).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(54).Buffer))
 
 /***/ }),
 /* 12 */
@@ -1613,7 +1613,7 @@ var stylesInDom = {},
 	singletonElement = null,
 	singletonCounter = 0,
 	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(107);
+	fixUrls = __webpack_require__(108);
 
 module.exports = function(list, options) {
 	if(typeof DEBUG !== "undefined" && DEBUG) {
@@ -1879,7 +1879,7 @@ function updateLink(linkElement, options, obj) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var text = __webpack_require__(114);
+var text = __webpack_require__(115);
 exports.title = (React.createElement("h1", { id: "title", className: "header", style: { backgroundImage: "https://leahhanvey.files.wordpress.com/2015/07/ubc-header-official.png", color: "white", fontWeight: 'bold' } }, text.title));
 exports.course = (React.createElement("h1", { id: "course", className: "header", style: { backgroundColor: "#012144", color: "white", fontWeight: 200, font: "arial", allowFontScaling: false, fontFamily: "arial", display: "block", border: 0, margin: 0 } },
     "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
@@ -2864,11 +2864,11 @@ var _join = __webpack_require__(13);
 
 var _join2 = _interopRequireDefault(_join);
 
-var _props2flex = __webpack_require__(84);
+var _props2flex = __webpack_require__(85);
 
 var _props2flex2 = _interopRequireDefault(_props2flex);
 
-var _prefix = __webpack_require__(83);
+var _prefix = __webpack_require__(84);
 
 var _prefix2 = _interopRequireDefault(_prefix);
 
@@ -3031,7 +3031,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _google_map = __webpack_require__(56);
+var _google_map = __webpack_require__(57);
 
 var _google_map2 = _interopRequireDefault(_google_map);
 
@@ -3048,7 +3048,7 @@ exports.default = _google_map2.default;
 "use strict";
 
 
-module.exports = __webpack_require__(78);
+module.exports = __webpack_require__(79);
 
 /***/ }),
 /* 40 */
@@ -4323,7 +4323,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	);
 });
 ;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(110)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(111)(module)))
 
 /***/ }),
 /* 41 */
@@ -4581,11 +4581,11 @@ Object.defineProperty(exports, '__esModule', { value: !0 });exports.TabBody = ex
     _reactFlex = __webpack_require__(10),
     _join = __webpack_require__(6),
     _join2 = _interopRequireDefault(_join),
-    _getTransitionEnd = __webpack_require__(105),
+    _getTransitionEnd = __webpack_require__(106),
     _getTransitionEnd2 = _interopRequireDefault(_getTransitionEnd),
-    _TabStrip = __webpack_require__(102),
+    _TabStrip = __webpack_require__(103),
     _TabStrip2 = _interopRequireDefault(_TabStrip),
-    _Body = __webpack_require__(100),
+    _Body = __webpack_require__(101),
     _Body2 = _interopRequireDefault(_Body),
     _assignDefined = __webpack_require__(35),
     _assignDefined2 = _interopRequireDefault(_assignDefined),
@@ -4593,7 +4593,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });exports.TabBody = ex
     _tabPositions2 = _interopRequireDefault(_tabPositions),
     _bemFactory = __webpack_require__(7),
     _bemFactory2 = _interopRequireDefault(_bemFactory),
-    _reactStyleNormalizer = __webpack_require__(97),
+    _reactStyleNormalizer = __webpack_require__(98),
     _reactStyleNormalizer2 = _interopRequireDefault(_reactStyleNormalizer);function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }function _defineProperty(obj, key, value) {
@@ -4788,8 +4788,8 @@ if (typeof window !== 'undefined') {
   root = undefined;
 }
 
-var Emitter = __webpack_require__(54);
-var requestBase = __webpack_require__(108);
+var Emitter = __webpack_require__(55);
+var requestBase = __webpack_require__(109);
 var isObject = __webpack_require__(37);
 
 /**
@@ -4802,7 +4802,7 @@ function noop() {};
  * Expose `request`.
  */
 
-var request = module.exports = __webpack_require__(109).bind(null, Request);
+var request = module.exports = __webpack_require__(110).bind(null, Request);
 
 /**
  * Determine XHR.
@@ -7247,27 +7247,76 @@ var room_schema = exports.room_schema = {
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+"use strict";
 
-// load the styles
-var content = __webpack_require__(111);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(22)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./queryStyle.css", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!./queryStyle.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var sched_schema = exports.sched_schema = {
+    "title": "Scheduler",
+    "id": "sched",
+    "type": "object",
+    "properties": {
+        "courses": {
+            "title": "Select your courses properties: ",
+            "type": "object",
+            "properties": {
+                "dept": {
+                    "title": "Add courses department here: ",
+                    "type": "string",
+                    "enum": ["", "aanb", "adhe", "anat", "anth", "apbi", "appp", "apsc", "arbc", "arch", "arcl", "arst", "arth", "asia", "asic", "astr", "astu", "atsc", "audi", "ba", "baac", "babs", "baen", "bafi", "bahr", "bait", "bala", "bama", "bams", "bapa", "basc", "basm", "baul", "bioc", "biof", "biol", "bmeg", "bota", "busi", "caps", "ccst", "ceen", "cell", "cens", "chbe", "chem", "chil", "chin", "cics", "civl", "clch", "clst", "cnps", "cnrs", "cnto", "coec", "cogs", "cohr", "comm", "cons", "cpen", "cpsc", "crwr", "dani", "dent", "dhyg", "eced", "econ", "edcp", "edst", "educ", "eece", "elec", "ends", "engl", "enph", "envr", "eosc", "epse", "etec", "fhis", "fipr", "fish", "fist", "fmst", "fnel", "fnh", "fnis", "food", "fopr", "fre", "fren", "frst", "gbpr", "geob", "geog", "germ", "gpp", "grek", "grsj", "gsat", "hebr", "hgse", "hinu", "hist", "hunu", "iar", "igen", "info", "isci", "ital", "itst", "iwme", "japn", "jrnl", "kin", "korn", "lais", "larc", "laso", "last", "latn", "law", "lfs", "libe", "libr", "ling", "lled", "math", "mdvl", "mech", "medg", "medi", "micb", "midw", "mine", "mrne", "mtrl", "musc", "name", "nest", "nrsc", "nurs", "obst", "onco", "path", "pcth", "pers", "phar", "phil", "phrm", "phth", "phys", "plan", "poli", "pols", "port", "psyc", "punj", "relg", "rgla", "rhsc", "rmes", "rmst", "rsot", "russ", "sans", "scan", "scie", "soci", "soil", "sowk", "span", "spha", "spph", "stat", "sts", "surg", "swed", "test", "thtr", "udes", "ufor", "urst", "ursy", "vant", "visa", "wood", "wrds", "zool"]
+                },
+                "number": {
+                    "title": "Add a courses number here: ",
+                    "type": "string",
+                    "enum": ["", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "125", "126", "127", "130", "131", "135", "140", "141", "148", "149", "150", "151", "152", "153", "154", "155", "157", "158", "159", "160", "161", "163", "164", "167", "170", "171", "172", "173", "178", "180", "182", "183", "184", "190", "191", "200", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "225", "226", "227", "228", "229", "230", "231", "232", "233", "234", "235", "236", "238", "239", "240", "241", "243", "244", "245", "249", "250", "251", "252", "253", "254", "255", "256", "257", "259", "260", "261", "262", "263", "264", "265", "270", "271", "272", "273", "274", "275", "276", "278", "279", "280", "281", "282", "284", "285", "290", "291", "292", "293", "294", "295", "296", "298", "300", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311", "312", "313", "314", "315", "316", "317", "318", "319", "320", "321", "322", "323", "324", "325", "326", "327", "328", "329", "330", "331", "332", "333", "334", "335", "336", "337", "338", "339", "340", "341", "342", "343", "344", "345", "346", "347", "348", "349", "350", "351", "352", "353", "354", "355", "356", "357", "358", "359", "360", "361", "362", "363", "364", "365", "366", "367", "368", "369", "370", "371", "372", "373", "374", "375", "376", "377", "378", "379", "380", "381", "382", "383", "384", "385", "386", "387", "388", "389", "390", "391", "392", "393", "394", "395", "396", "397", "398", "399", "400", "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "419", "420", "421", "422", "423", "424", "425", "426", "427", "428", "429", "430", "431", "432", "433", "434", "435", "436", "437", "438", "439", "440", "441", "442", "443", "444", "445", "446", "447", "448", "449", "450", "451", "452", "453", "454", "455", "456", "457", "458", "459", "460", "461", "462", "463", "464", "465", "466", "467", "468", "469", "470", "471", "472", "473", "474", "475", "476", "477", "478", "479", "480", "481", "482", "483", "484", "485", "486", "487", "488", "489", "490", "491", "492", "493", "494", "495", "496", "497", "498", "499", "500", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520", "521", "522", "523", "524", "525", "526", "527", "528", "529", "530", "531", "532", "533", "534", "535", "536", "537", "538", "539", "540", "541", "542", "543", "544", "545", "546", "547", "548", "549", "550", "551", "552", "553", "554", "555", "556", "557", "558", "559", "560", "561", "562", "563", "564", "565", "566", "567", "568", "569", "570", "571", "572", "573", "574", "575", "576", "577", "578", "579", "580", "581", "582", "583", "584", "585", "586", "587", "588", "589", "590", "591", "592", "593", "594", "595", "596", "597", "598", "599", "600", "601", "602", "603", "606", "607", "620", "621", "626", "627", "628", "632", "634", "635", "640", "654", "657", "660", "662", "671", "672", "682", "683", "684", "693", "695", "698", "699", "721", "722", "724"]
+                }
+            }
+        },
+        "rooms": {
+            "title": "Select your rooms properties: ",
+            "type": "object",
+            "properties": {
+                "build": {
+                    "type": "object",
+                    "title": "Search by: ",
+                    "oneOf": [{}, {
+                        "properties": {
+                            "build": {
+                                "enum": ["One building"]
+                            },
+                            "buildarr": {
+                                "type": "string",
+                                "enum": ["", "AERL", "ALRD", "ANGU", "ANSO", "AUDX", "BIOL", "BRKX", "BUCH", "CEME", "CHBE", "CHEM", "CIRS", "DMP", "EOSM", "ESB", "FNH", "FORW", "FRDM", "FSC", "GEOG", "HEBB", "HENN", "IBLC", "IONA", "LASR", "LSC", "LSK", "MATH", "MATX", "MCLD", "MCML", "MGYM", "ORCH", "OSBO", "PCOH", "PHRM", "SCRF", "SOWK", "SPPH", "SRC", "SWNG", "UCLL", "WESB", "WOOD"]
+                            }
+
+                        }
+                    }, {
+                        "properties": {
+                            "build": {
+                                "enum": ["Around ONE building"]
+                            },
+                            "thebuild": {
+                                "type": "string",
+                                "enum": ["", "AERL", "ALRD", "ANGU", "ANSO", "AUDX", "BIOL", "BRKX", "BUCH", "CEME", "CHBE", "CHEM", "CIRS", "DMP", "EOSM", "ESB", "FNH", "FORW", "FRDM", "FSC", "GEOG", "HEBB", "HENN", "IBLC", "IONA", "LASR", "LSC", "LSK", "MATH", "MATX", "MCLD", "MCML", "MGYM", "ORCH", "OSBO", "PCOH", "PHRM", "SCRF", "SOWK", "SPPH", "SRC", "SWNG", "UCLL", "WESB", "WOOD"]
+                            },
+                            "dist": {
+                                "type": "number",
+                                "title": "Within => number of meters"
+                            }
+                        }
+                    }],
+                    "x-hints": {
+                        "form": {
+                            "selector": "build"
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
 
 /***/ }),
 /* 48 */
@@ -7285,8 +7334,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./tab.css", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!./tab.css");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./queryStyle.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./queryStyle.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -7311,6 +7360,32 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./tab.css", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!./tab.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(114);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(22)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
 		module.hot.accept("!!../../../../node_modules/css-loader/index.js!./table.css", function() {
 			var newContent = require("!!../../../../node_modules/css-loader/index.js!./table.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
@@ -7322,7 +7397,7 @@ if(false) {
 }
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7337,7 +7412,7 @@ exports.title_image = (React.createElement("div", null,
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7410,7 +7485,7 @@ RawTask.prototype.call = function () {
 };
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7530,7 +7605,7 @@ function fromByteArray(uint8) {
 }
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7544,9 +7619,9 @@ function fromByteArray(uint8) {
 
 
 
-var base64 = __webpack_require__(52);
-var ieee754 = __webpack_require__(72);
-var isArray = __webpack_require__(73);
+var base64 = __webpack_require__(53);
+var ieee754 = __webpack_require__(73);
+var isArray = __webpack_require__(74);
 
 exports.Buffer = Buffer;
 exports.SlowBuffer = SlowBuffer;
@@ -9274,7 +9349,7 @@ function isnan(val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9439,7 +9514,7 @@ Emitter.prototype.hasListeners = function (event) {
 };
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9726,7 +9801,7 @@ if (true) {
 }
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9770,11 +9845,11 @@ var _shallowEqual = __webpack_require__(25);
 
 var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-var _marker_dispatcher = __webpack_require__(59);
+var _marker_dispatcher = __webpack_require__(60);
 
 var _marker_dispatcher2 = _interopRequireDefault(_marker_dispatcher);
 
-var _google_map_map = __webpack_require__(57);
+var _google_map_map = __webpack_require__(58);
 
 var _google_map_map2 = _interopRequireDefault(_google_map_map);
 
@@ -9782,43 +9857,43 @@ var _google_map_markers = __webpack_require__(26);
 
 var _google_map_markers2 = _interopRequireDefault(_google_map_markers);
 
-var _google_map_markers_prerender = __webpack_require__(58);
+var _google_map_markers_prerender = __webpack_require__(59);
 
 var _google_map_markers_prerender2 = _interopRequireDefault(_google_map_markers_prerender);
 
-var _google_map_loader = __webpack_require__(67);
+var _google_map_loader = __webpack_require__(68);
 
 var _google_map_loader2 = _interopRequireDefault(_google_map_loader);
 
-var _detect = __webpack_require__(61);
+var _detect = __webpack_require__(62);
 
 var _detect2 = _interopRequireDefault(_detect);
 
-var _geo = __webpack_require__(63);
+var _geo = __webpack_require__(64);
 
 var _geo2 = _interopRequireDefault(_geo);
 
-var _array_helper = __webpack_require__(60);
+var _array_helper = __webpack_require__(61);
 
 var _array_helper2 = _interopRequireDefault(_array_helper);
 
-var _is_plain_object = __webpack_require__(65);
+var _is_plain_object = __webpack_require__(66);
 
 var _is_plain_object2 = _interopRequireDefault(_is_plain_object);
 
-var _pick = __webpack_require__(69);
+var _pick = __webpack_require__(70);
 
 var _pick2 = _interopRequireDefault(_pick);
 
-var _raf = __webpack_require__(70);
+var _raf = __webpack_require__(71);
 
 var _raf2 = _interopRequireDefault(_raf);
 
-var _log = __webpack_require__(68);
+var _log = __webpack_require__(69);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _isNumber = __webpack_require__(64);
+var _isNumber = __webpack_require__(65);
 
 var _isNumber2 = _interopRequireDefault(_isNumber);
 
@@ -9826,7 +9901,7 @@ var _omit = __webpack_require__(29);
 
 var _omit2 = _interopRequireDefault(_omit);
 
-var _detectElementResize = __webpack_require__(62);
+var _detectElementResize = __webpack_require__(63);
 
 var _detectElementResize2 = _interopRequireDefault(_detectElementResize);
 
@@ -10816,7 +10891,7 @@ exports.default = GoogleMap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10901,7 +10976,7 @@ var GoogleMapMap = function (_Component) {
 exports.default = GoogleMapMap;
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10949,7 +11024,7 @@ var style = {
 };
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10971,7 +11046,7 @@ var _createClass = function () {
   };
 }();
 
-var _eventemitter = __webpack_require__(55);
+var _eventemitter = __webpack_require__(56);
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
@@ -11038,7 +11113,7 @@ var MarkerDispatcher = function (_EventEmitter) {
 exports.default = MarkerDispatcher;
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11061,7 +11136,7 @@ function isArraysEqualEps(arrayA, arrayB, eps) {
 }
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11111,7 +11186,7 @@ function detectBrowser() {
 }
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11291,7 +11366,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11329,7 +11404,7 @@ var _pointGeometry = __webpack_require__(30);
 
 var _pointGeometry2 = _interopRequireDefault(_pointGeometry);
 
-var _transform = __webpack_require__(66);
+var _transform = __webpack_require__(67);
 
 var _transform2 = _interopRequireDefault(_transform);
 
@@ -11473,7 +11548,7 @@ var Geo = function () {
 exports.default = Geo;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11505,7 +11580,7 @@ function isNumber(value) {
 }
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11550,7 +11625,7 @@ function isPlainObject(obj) {
 }
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11744,7 +11819,7 @@ var Transform = function () {
 exports.default = Transform;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11766,7 +11841,7 @@ var _customPromise = new Promise(function (resolve) {
 // TODO add libraries language and other map options
 function googleMapLoader(bootstrapURLKeys) {
   if (!$script_) {
-    $script_ = __webpack_require__(106); // eslint-disable-line
+    $script_ = __webpack_require__(107); // eslint-disable-line
   }
 
   // call from outside google-map-react
@@ -11823,7 +11898,7 @@ function googleMapLoader(bootstrapURLKeys) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11840,7 +11915,7 @@ var log2 = Math.log2 ? Math.log2 : function (x) {
 exports.default = log2;
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11862,7 +11937,7 @@ function pick(obj, fn) {
 }
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11883,7 +11958,7 @@ function raf(callback) {
 }
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11893,7 +11968,7 @@ module.exports = 'ontouchstart' in global || global.DocumentTouch && document in
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11985,7 +12060,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 };
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11998,7 +12073,7 @@ module.exports = Array.isArray || function (arr) {
 };
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12382,7 +12457,7 @@ module.exports = debounce;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12401,7 +12476,7 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 };
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12516,7 +12591,7 @@ Promise.prototype['catch'] = function (onRejected) {
 };
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12538,21 +12613,21 @@ Promise.prototype['finally'] = function (f) {
 };
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 module.exports = __webpack_require__(5);
-__webpack_require__(75);
-__webpack_require__(77);
 __webpack_require__(76);
-__webpack_require__(79);
+__webpack_require__(78);
+__webpack_require__(77);
 __webpack_require__(80);
+__webpack_require__(81);
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12562,7 +12637,7 @@ __webpack_require__(80);
 // for node.js interop
 
 var Promise = __webpack_require__(5);
-var asap = __webpack_require__(51);
+var asap = __webpack_require__(52);
 
 module.exports = Promise;
 
@@ -12634,7 +12709,7 @@ Promise.prototype.nodeify = function (callback, ctx) {
 };
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12702,7 +12777,7 @@ Promise.disableSynchronous = function () {
 };
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12831,7 +12906,7 @@ Flex.propTypes = {
 exports.default = Flex;
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12953,7 +13028,7 @@ FlexItem.propTypes = {
 exports.default = FlexItem;
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12965,7 +13040,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = 'react-flex-v2';
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12980,7 +13055,7 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13237,7 +13312,7 @@ exports['default'] = Motion;
 module.exports = exports['default'];
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13515,7 +13590,7 @@ exports['default'] = StaggeredMotion;
 module.exports = exports['default'];
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13549,7 +13624,7 @@ var _stepper3 = __webpack_require__(16);
 
 var _stepper4 = _interopRequireDefault(_stepper3);
 
-var _mergeDiff = __webpack_require__(88);
+var _mergeDiff = __webpack_require__(89);
 
 var _mergeDiff2 = _interopRequireDefault(_mergeDiff);
 
@@ -14017,7 +14092,7 @@ module.exports = exports['default'];
 // that you've unmounted but that's still animating. This is where it lives
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14131,7 +14206,7 @@ module.exports = exports['default'];
 // to loop through and find a key's index each time), but I no longer care
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14143,19 +14218,19 @@ function _interopRequire(obj) {
   return obj && obj.__esModule ? obj['default'] : obj;
 }
 
-var _Motion = __webpack_require__(85);
+var _Motion = __webpack_require__(86);
 
 exports.Motion = _interopRequire(_Motion);
 
-var _StaggeredMotion = __webpack_require__(86);
+var _StaggeredMotion = __webpack_require__(87);
 
 exports.StaggeredMotion = _interopRequire(_StaggeredMotion);
 
-var _TransitionMotion = __webpack_require__(87);
+var _TransitionMotion = __webpack_require__(88);
 
 exports.TransitionMotion = _interopRequire(_TransitionMotion);
 
-var _spring = __webpack_require__(91);
+var _spring = __webpack_require__(92);
 
 exports.spring = _interopRequire(_spring);
 
@@ -14165,12 +14240,12 @@ exports.presets = _interopRequire(_presets);
 
 // deprecated, dummy warning function
 
-var _reorderKeys = __webpack_require__(90);
+var _reorderKeys = __webpack_require__(91);
 
 exports.reorderKeys = _interopRequire(_reorderKeys);
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14194,7 +14269,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14233,7 +14308,7 @@ function spring(val, config) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14261,14 +14336,14 @@ module.exports = function (key, value) {
 };
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var getPrefix = __webpack_require__(20);
-var forcePrefixed = __webpack_require__(92);
+var forcePrefixed = __webpack_require__(93);
 var el = __webpack_require__(19);
 
 var MEMORY = {};
@@ -14316,13 +14391,13 @@ module.exports = function (key, value, force) {
 };
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var getStylePrefixed = __webpack_require__(95);
+var getStylePrefixed = __webpack_require__(96);
 var properties = __webpack_require__(34);
 
 module.exports = function (key, value) {
@@ -14335,7 +14410,7 @@ module.exports = function (key, value) {
 };
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14393,7 +14468,7 @@ module.exports = function (key, value) {
 };
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14404,17 +14479,17 @@ module.exports = function (obj, prop) {
 };
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var hasOwn = __webpack_require__(96);
-var getPrefixed = __webpack_require__(94);
+var hasOwn = __webpack_require__(97);
+var getPrefixed = __webpack_require__(95);
 
-var map = __webpack_require__(98);
-var plugable = __webpack_require__(99);
+var map = __webpack_require__(99);
+var plugable = __webpack_require__(100);
 
 function plugins(key, value) {
 
@@ -14473,7 +14548,7 @@ var RESULT = function RESULT(style) {
 module.exports = plugable(RESULT);
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14495,13 +14570,13 @@ module.exports = function (fn, item) {
 };
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var getCssPrefixedValue = __webpack_require__(93);
+var getCssPrefixedValue = __webpack_require__(94);
 
 module.exports = function (target) {
 	target.plugins = target.plugins || [function () {
@@ -14530,7 +14605,7 @@ module.exports = function (target) {
 };
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14587,7 +14662,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   }, isTabBody: !0 };
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14618,13 +14693,13 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
     _reactClass2 = _interopRequireDefault(_reactClass),
     _objectAssign = __webpack_require__(1),
     _objectAssign2 = _interopRequireDefault(_objectAssign),
-    _hasTouch = __webpack_require__(71),
+    _hasTouch = __webpack_require__(72),
     _hasTouch2 = _interopRequireDefault(_hasTouch),
     _reactNotifyResize = __webpack_require__(18),
-    _lodash = __webpack_require__(74),
+    _lodash = __webpack_require__(75),
     _lodash2 = _interopRequireDefault(_lodash),
     _reactFlex = __webpack_require__(10),
-    _reactMotion = __webpack_require__(89),
+    _reactMotion = __webpack_require__(90),
     _join = __webpack_require__(6),
     _join2 = _interopRequireDefault(_join),
     _bemFactory = __webpack_require__(7),
@@ -14762,7 +14837,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14798,11 +14873,11 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
     _tabPositions2 = _interopRequireDefault(_tabPositions),
     _join = __webpack_require__(6),
     _join2 = _interopRequireDefault(_join),
-    _TabTitle = __webpack_require__(104),
+    _TabTitle = __webpack_require__(105),
     _TabTitle2 = _interopRequireDefault(_TabTitle),
     _bemFactory = __webpack_require__(7),
     _bemFactory2 = _interopRequireDefault(_bemFactory),
-    _Scroller = __webpack_require__(101),
+    _Scroller = __webpack_require__(102),
     _Scroller2 = _interopRequireDefault(_Scroller);function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }function _toConsumableArray(arr) {
@@ -14908,7 +14983,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
   }, tabAlign: _react.PropTypes.oneOf(['start', 'center', 'end', 'space-around', 'space-between', 'stretch']) }, 'tabPosition', _react.PropTypes.oneOf(Object.keys(_tabPositions2.default))), TabStrip.defaultProps = { scroller: 'auto', scrollOnClick: !1, rotateNavigation: !0, tabIndex: !0, tabAlign: 'start', tabPosition: 'top', theme: 'default', onActivate: function onActivate() {}, onCloseTab: function onCloseTab() {}, onBlur: function onBlur() {}, onFocus: function onFocus() {}, isTabStrip: !0 };
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14966,7 +15041,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _extends = Objec
 }(_reactClass2.default);exports.default = FlexiBox;FlexiBox.propTypes = { factory: _react.PropTypes.func, children: _react.PropTypes.func };
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15007,7 +15082,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _typeof = 'funct
     _assignDefined2 = _interopRequireDefault(_assignDefined),
     _bemFactory = __webpack_require__(7),
     _bemFactory2 = _interopRequireDefault(_bemFactory),
-    _FlexiBox = __webpack_require__(103),
+    _FlexiBox = __webpack_require__(104),
     _FlexiBox2 = _interopRequireDefault(_FlexiBox);function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }function _defineProperty(obj, key, value) {
@@ -15105,7 +15180,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 });var _typeof = 'funct
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15123,7 +15198,7 @@ Object.defineProperty(exports, '__esModule', { value: !0 }); /**
 };
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15261,7 +15336,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
 });
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15356,7 +15431,7 @@ module.exports = function (css) {
 };
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15733,7 +15808,7 @@ exports.send = function (data) {
 };
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15773,7 +15848,7 @@ function request(RequestConstructor, method, url) {
 module.exports = request;
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15803,7 +15878,7 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)(undefined);
@@ -15817,7 +15892,7 @@ exports.push([module.i, "*, *:before, *:after {\n  -moz-box-sizing: border-box;\
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)(undefined);
@@ -15831,7 +15906,7 @@ exports.push([module.i, ".react-flex-v2 {\n  display: -webkit-box;\n  display: -
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(11)(undefined);
@@ -15845,7 +15920,7 @@ exports.push([module.i, "table {\n  border-spacing: 10;\n}\n\ntd {\n  padding: 2
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -15854,7 +15929,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15868,7 +15943,7 @@ var _reactDom = __webpack_require__(3);
 
 var ReactDOM = _interopRequireWildcard(_reactDom);
 
-var _images = __webpack_require__(50);
+var _images = __webpack_require__(51);
 
 var _lib = __webpack_require__(23);
 
@@ -15876,15 +15951,17 @@ var _Querybuilder = __webpack_require__(45);
 
 var _Rqb = __webpack_require__(46);
 
+var _Sched = __webpack_require__(47);
+
 var _reactTabPanel = __webpack_require__(42);
 
 var _reactTabPanel2 = _interopRequireDefault(_reactTabPanel);
 
-var _tab = __webpack_require__(48);
+var _tab = __webpack_require__(49);
 
 var _tab2 = _interopRequireDefault(_tab);
 
-var _queryStyle = __webpack_require__(47);
+var _queryStyle = __webpack_require__(48);
 
 var _queryStyle2 = _interopRequireDefault(_queryStyle);
 
@@ -15896,7 +15973,7 @@ var _reactJsonTable = __webpack_require__(41);
 
 var _reactJsonTable2 = _interopRequireDefault(_reactJsonTable);
 
-__webpack_require__(49);
+__webpack_require__(50);
 
 var _googleMapReact = __webpack_require__(38);
 
@@ -15935,8 +16012,11 @@ function queryAsyncRequest(query) {
     });
 }
 
-var onSubmit = function onSubmit(data, buttonValue, errors) {
+var crOnSubmit = function crOnSubmit(data, buttonValue, errors) {
     if (buttonValue == "Submit") {
+        if (typeof data == "undefined") {
+            alert("stop trolling");
+        }
         var query = {};
         if (Object.keys(errors).length != 0) {
             alert('Errors: ' + JSON.stringify(errors));
@@ -16173,6 +16253,8 @@ var onSubmit = function onSubmit(data, buttonValue, errors) {
         }).catch(function (err) {
             alert(err);
         });
+        data = {};
+        query = {};
     }
 };
 
@@ -16287,6 +16369,124 @@ function roomSchedule(courses, rooms) {
     }
 }
 
+var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
+    if (buttonValue == "Submit") {
+        var courseQuery = void 0;
+        var roomQuery = void 0;
+        if (Object.keys(errors).length != 0) {
+            alert('Errors: ' + JSON.stringify(errors));
+        }
+        var cKeys = Object.keys(data.courses);
+
+        if (cKeys.includes("dept") && cKeys.includes("number")) {
+            var dept = data.courses.dept;
+            var number = data.courses.number;
+            courseQuery = {
+                "WHERE": {
+                    "AND": [{ "IS": { "courses_dept": dept } }, { "IS": { "courses_id": number } }, { "EQ": { "courses_year": 2014 } }]
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["courses_dept", "courses_id"]
+                }
+            };
+        } else if (cKeys.includes("dept") && !cKeys.includes("number")) {
+            var _dept = data.courses.dept;
+            courseQuery = {
+                "WHERE": {
+                    "AND": [{ "IS": { "courses_dept": _dept } }, { "EQ": { "courses_year": 2014 } }]
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["courses_dept", "courses_id"]
+                }
+            };
+        } else if (cKeys.includes("number") && !cKeys.includes("dept")) {
+            var _number = data.courses.number;
+            courseQuery = {
+                "WHERE": {
+                    "AND": [{ "IS": { "courses_id": _number } }, { "EQ": { "courses_year": 2014 } }]
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["courses_dept", "courses_id"]
+                }
+            };
+        }
+
+        var type = data.rooms.build.build;
+
+        if (type == "One building") {
+            var building = data.rooms.build.buildarr;
+            roomQuery = {
+                "WHERE": {
+                    "IS": { "rooms_shortname": building }
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["rooms_name"]
+                }
+            };
+        } else {
+            var _building = data.rooms.build.thebuild;
+            var dist = data.rooms.build.dist;
+            var bLatLon = _Latlon.latlon[_building];
+            var bLat = bLatLon["rooms_lat"];
+            var bLon = bLatLon["rooms_lon"];
+            var latlonKeys = Object.keys(_Latlon.latlon);
+            var R = 6378137;
+            var selected = [];
+            for (var i = 0; i < latlonKeys.length; i++) {
+                var leName = latlonKeys[i];
+                var obj = _Latlon.latlon[leName];
+                var objLat = obj["rooms_lat"];
+                var objLon = obj["rooms_lon"];
+                if (leName == _building) {
+                    continue;
+                } else {
+                    var dLat = deg2rad(objLat - bLat); // deg2rad below
+                    var dLon = deg2rad(objLon - bLon);
+                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(bLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    var d = R * c; // Distance in meters
+                    if (d < dist) {
+                        selected.push(leName);
+                    }
+                }
+            }
+            if (selected == []) alert("Range too small, no result found");else {
+                var orArr = [];
+                orArr.push({ "IS": { "rooms_shortname": _building } });
+                for (var _i5 = 0; _i5 < selected.length; _i5++) {
+                    var name = selected[_i5];
+                    var temp = { "IS": { "rooms_shortname": name } };
+                    orArr.push(temp);
+                }
+                roomQuery = {
+                    "WHERE": {
+                        "OR": orArr
+                    },
+                    "OPTIONS": {
+                        "FORM": "TABLE",
+                        "COLUMNS": ["rooms_name"]
+                    }
+                };
+            }
+        }
+        var promises = [];
+        promises.push(queryAsyncRequest(courseQuery));
+        promises.push(queryAsyncRequest(roomQuery));
+
+        Promise.all(promises).then(function (data) {
+            var data1 = data[0];
+            var data2 = data[1];
+            //alert(JSON.stringify(data));
+        }).catch(function (err) {
+            alert(err);
+        });
+    }
+};
+
 render(React.createElement(
     _reactTabPanel2.default,
     {
@@ -16297,33 +16497,21 @@ render(React.createElement(
         "div",
         { tabTitle: "Courses Explorer" },
         React.createElement(_reactFormzilla2.default, { schema: _Querybuilder.schema,
-            onSubmit: onSubmit })
+            onSubmit: crOnSubmit })
     ),
     React.createElement(
         "div",
         { tabTitle: "Rooms Explorer" },
         React.createElement(_reactFormzilla2.default, { schema: _Rqb.room_schema,
-            onSubmit: onSubmit })
+            onSubmit: crOnSubmit })
     ),
     React.createElement(
         "div",
         { tabTitle: "Rooms Scheduling" },
-        React.createElement(
-            "h3",
-            null,
-            " put your shit here "
-        )
+        React.createElement(_reactFormzilla2.default, { schema: _Sched.sched_schema,
+            onSubmit: schedOnSubmit })
     )
 ), document.getElementById("query"));
-
-// var result = [
-//     { courses_dept: 'elec', courses_avg: 76.48 },
-//     { courses_dept: 'elec', courses_avg: 76.48 },
-//     { courses_dept: 'dent', courses_avg: 82.5 },
-//     { courses_dept: 'dent', courses_avg: 82.5 },
-//     { courses_dept: 'dent', courses_avg: 85.4 },
-//     { courses_dept: 'dent', courses_avg: 85.4 }
-// ];
 
 var emptyArr = [];
 
