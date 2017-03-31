@@ -40,6 +40,9 @@ function queryAsyncRequest(query) {
 
 var onSubmit = function (data, buttonValue, errors) {
     if (buttonValue == "Submit") {
+        if(typeof data == "undefined"){
+            alert("stop trolling")
+        }
         var query = {};
         if (Object.keys(errors).length != 0) {
             alert('Errors: ' + JSON.stringify(errors))
@@ -292,7 +295,9 @@ var onSubmit = function (data, buttonValue, errors) {
         })
             .catch((err) => {
             alert(err);
-            })
+        })
+        data = {};
+        query = {};
     }
 
 
