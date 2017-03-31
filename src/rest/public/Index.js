@@ -4,6 +4,7 @@ import { title_image } from "./images";
 import { title, course } from "./lib";
 import { schema } from "./Querybuilder";
 import { room_schema } from "./Rqb";
+import { sched_schema } from "./Sched";
 import TabPanel, { TabStrip } from 'react-tab-panel'
 import styles from './stylesheets/tab.css';
 import qStyles from './stylesheets/queryStyle.css';
@@ -12,6 +13,7 @@ import JsonTable from "react-json-table";
 import "./stylesheets/table.css";
 import GoogleMapReact from 'google-map-react';
 import { latlon } from "./Latlon"
+
 const { render } = ReactDOM;
 var Promise = require("promise");
 
@@ -56,7 +58,7 @@ class SimpleMap extends Component {
         center: {lat: 59.95, lng: 30.33},
         zoom: 11
     };
-    
+
 
     render() {
         return (
@@ -86,9 +88,9 @@ function queryAsyncRequest(query) {
     })
 }
 
-var onSubmit = function (data, buttonValue, errors) {
+var crOnSubmit = function (data, buttonValue, errors) {
     if (buttonValue == "Submit") {
-        if(typeof data == "undefined"){
+        if (typeof data == "undefined") {
             alert("stop trolling")
         }
         var query = {};
@@ -342,8 +344,8 @@ var onSubmit = function (data, buttonValue, errors) {
             )
         })
             .catch((err) => {
-            alert(err);
-        })
+                alert(err);
+            })
         data = {};
         query = {};
     }
@@ -459,19 +461,146 @@ function roomSchedule(courses, rooms) {
                         duplicationSearchRecursion(theRemedy, theNextCulprit)
                     }
                 }
+            }
+        }
+    }
+}
 
+var schedOnSubmit = function (data, buttonValue, errors) {
+    if (buttonValue == "Submit") {
+        let courseQuery;
+        let roomQuery;
+        if (Object.keys(errors).length != 0) {
+            alert('Errors: ' + JSON.stringify(errors))
+        }
+        let cKeys = Object.keys(data.courses);
 
+        if (cKeys.includes("dept") && cKeys.includes("number")) {
+            let dept = data.courses.dept;
+            let number = data.courses.number;
+            courseQuery = {
+                "WHERE": {
+                    "AND": [
+                        { "IS": { "courses_dept": dept } },
+                        { "IS": { "courses_id": number } },
+                        { "EQ": { "courses_year": 2014 } }
+                    ]
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["courses_dept", "courses_id"]
+                }
+            }
+        }
+        else if (cKeys.includes("dept") && (!cKeys.includes("number"))) {
+            let dept = data.courses.dept;
+            courseQuery = {
+                "WHERE": {
+                    "AND": [
+                        { "IS": { "courses_dept": dept } },
+                        { "EQ": { "courses_year": 2014 } }
+                    ]
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["courses_dept", "courses_id"]
+                }
+            }
+        }
+        else if (cKeys.includes("number") && (!cKeys.includes("dept"))) {
+            let number = data.courses.number;
+            courseQuery = {
+                "WHERE": {
+                    "AND": [
+                        { "IS": { "courses_id": number } },
+                        { "EQ": { "courses_year": 2014 } }
+                    ]
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["courses_dept", "courses_id"]
+                }
             }
         }
 
+        let type = data.rooms.build.build;
 
+        if (type == "One building") {
+            let building = data.rooms.build.buildarr;
+            roomQuery = {
+                "WHERE": {
+                    "IS": { "rooms_shortname": building }
+                },
+                "OPTIONS": {
+                    "FORM": "TABLE",
+                    "COLUMNS": ["rooms_name"]
+                }
+            }
+        }
+        else {
+            let building = data.rooms.build.thebuild;
+            let dist = data.rooms.build.dist;
+            let bLatLon = latlon[building];
+            let bLat = bLatLon["rooms_lat"];
+            let bLon = bLatLon["rooms_lon"];
+            let latlonKeys = Object.keys(latlon);
+            let R = 6378137;
+            let selected = [];
+            for (let i = 0; i < latlonKeys.length; i++) {
+                let leName = latlonKeys[i];
+                let obj = latlon[leName];
+                let objLat = obj["rooms_lat"];
+                let objLon = obj["rooms_lon"];
+                if (leName == building) {
+                    continue;
+                }
+                else {
+                    var dLat = deg2rad(objLat - bLat);  // deg2rad below
+                    var dLon = deg2rad(objLon - bLon);
+                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(bLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    var d = (R * c)  // Distance in meters
+                    if (d < dist) {
+                        selected.push(leName);
+                    }
+                }
+            }
+            if (selected == []) alert("Range too small, no result found");
+            else {
+                let orArr = [];
+                orArr.push({ "IS": { "rooms_shortname": building } })
+                for (let i = 0; i < selected.length; i++) {
+                    let name = selected[i];
+                    let temp = { "IS": { "rooms_shortname": name } };
+                    orArr.push(temp);
+                }
+                roomQuery = {
+                    "WHERE": {
+                        "OR": orArr
+                    },
+                    "OPTIONS": {
+                        "FORM": "TABLE",
+                        "COLUMNS": ["rooms_name"]
+                    }
+                }
+            }
+        }
+        var promises = []
+        promises.push(queryAsyncRequest(courseQuery))
+        promises.push(queryAsyncRequest(roomQuery))
+
+        Promise.all(promises)
+        .then((data) => {
+            let data1 = data[0];
+            let data2 = data[1];
+            //alert(JSON.stringify(data));
+        })
+        .catch((err) =>{
+            alert(err);
+        })
 
     }
-
-
-
-
-}
+};
 
 render(
     <TabPanel
@@ -480,29 +609,21 @@ render(
     >
         <div tabTitle="Courses Explorer">
             <Form schema={schema}
-                onSubmit={onSubmit}
-                  submitOnChange={true}/>
+                onSubmit={crOnSubmit} />
         </div>
         <div tabTitle="Rooms Explorer">
             <Form schema={room_schema}
-                onSubmit={onSubmit}
-                  submitOnChange={true}/>
+                onSubmit={crOnSubmit} />
         </div>
         <div tabTitle="Rooms Scheduling">
-            <h3> put your shit here </h3>
+            <Form schema={sched_schema}
+                onSubmit={schedOnSubmit} />
         </div>
     </TabPanel>
     ,
     document.getElementById("query"));
 
-// var result = [
-//     { courses_dept: 'elec', courses_avg: 76.48 },
-//     { courses_dept: 'elec', courses_avg: 76.48 },
-//     { courses_dept: 'dent', courses_avg: 82.5 },
-//     { courses_dept: 'dent', courses_avg: 82.5 },
-//     { courses_dept: 'dent', courses_avg: 85.4 },
-//     { courses_dept: 'dent', courses_avg: 85.4 }
-// ];
+
 
 var emptyArr = [];
 
