@@ -28,7 +28,7 @@ render(
 class SelectTable extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { row: false, cell: false, sort: false };
+        this.state = {row: false, cell: false, sort: false};
         this.onClickCell = this.onClickCell.bind(this);
     }
 
@@ -38,19 +38,20 @@ class SelectTable extends React.Component {
 
         return (<JsonTable
             rows={items}
-            onClickCell={() => this.onClickCell(items)} />);
+            onClickCell={ () => this.onClickCell(items) }/>);
     }
 
 
 
     onClickCell(items) {
         var hello = latlon[items[0].rooms_shortname]
-        var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
+        var hello2 = hello.rooms_lat + " " +  hello.rooms_lon;
 
         alert(hello2);
-        this.setState({ cell: true });
+        this.setState({cell: true});
     }
 }
+
 
 
 
@@ -321,11 +322,11 @@ var crOnSubmit = function (data, buttonValue, errors) {
 
         queryAsyncRequest(query)
             .then((data) => {
-                render(
-                    <SelectTable rows={data} />,
-                    document.getElementById("table")
-                )
-            })
+            render(
+                <SelectTable rows={data} />,
+                document.getElementById("table")
+            )
+        })
             .catch((err) => {
                 alert(err);
             })
@@ -343,6 +344,8 @@ function deg2rad(deg) {
 function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
     allCourses = [];
+    nonDuplicatedCourses = [];
+    duplicatedCourses = [];
     finalProduct = [];
     // naive approach for pushing duplicated items
     // Proceed with Scheduling, MWF 1 hour block meaning 9 blocks
@@ -607,6 +610,7 @@ var schedOnSubmit = function (data, buttonValue, errors) {
 
 function groupParser(group, data) {
     let gLen = group.length;
+    let groups = {};
     function groupBy(array, f) {
         array.forEach(function (o) {
             var group = f(o);

@@ -15935,6 +15935,8 @@ module.exports = {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(0);
 
 var React = _interopRequireWildcard(_react);
@@ -15987,6 +15989,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var render = ReactDOM.render;
 
 var Promise = __webpack_require__(39);
@@ -15999,6 +16007,46 @@ render(React.createElement(
 
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
 
+
+var SelectTable = function (_React$Component) {
+    _inherits(SelectTable, _React$Component);
+
+    function SelectTable(props) {
+        _classCallCheck(this, SelectTable);
+
+        var _this = _possibleConstructorReturn(this, (SelectTable.__proto__ || Object.getPrototypeOf(SelectTable)).call(this, props));
+
+        _this.state = { row: false, cell: false, sort: false };
+        _this.onClickCell = _this.onClickCell.bind(_this);
+        return _this;
+    }
+
+    _createClass(SelectTable, [{
+        key: "render",
+        value: function render() {
+            var _this2 = this;
+
+            var items = this.props.rows.slice();
+
+            return React.createElement(_reactJsonTable2.default, {
+                rows: items,
+                onClickCell: function onClickCell() {
+                    return _this2.onClickCell(items);
+                } });
+        }
+    }, {
+        key: "onClickCell",
+        value: function onClickCell(items) {
+            var hello = _Latlon.latlon[items[0].rooms_shortname];
+            var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
+
+            alert(hello2);
+            this.setState({ cell: true });
+        }
+    }]);
+
+    return SelectTable;
+}(React.Component);
 
 function queryAsyncRequest(query) {
     return new Promise(function (fulfill, reject) {
@@ -16249,7 +16297,7 @@ var crOnSubmit = function crOnSubmit(data, buttonValue, errors) {
         }
 
         queryAsyncRequest(query).then(function (data) {
-            render(React.createElement(_reactJsonTable2.default, { rows: data }), document.getElementById("table"));
+            render(React.createElement(SelectTable, { rows: data }), document.getElementById("table"));
         }).catch(function (err) {
             alert(err);
         });
@@ -16480,6 +16528,27 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
         Promise.all(promises).then(function (data) {
             var data1 = data[0];
             var data2 = data[1];
+            if (data1.length == 0 || data2.length == 0) {
+                alert("Nothing found");
+            } else {
+                var group = groupParser(["courses_id"], data1);
+                for (var _i6 = 0; _i6 < group.length; _i6++) {
+                    var arr = group[_i6];
+                    var len = arr.length;
+                    var num = Math.ceil(len / 3);
+                    var dif = len - num;
+                    for (var j = 0; j < dif; j++) {
+                        group[_i6].shift();
+                    }
+                }
+                var allrooms = [];
+                for (var _i7 = 0; _i7 < data2.length; _i7++) {
+                    var _temp4 = data2[_i7];
+                    var _name = _temp4["rooms_name"];
+                    allrooms.push(_name);
+                }
+                roomSchedule(group, allrooms);
+            }
             //alert(JSON.stringify(data));
         }).catch(function (err) {
             alert(err);
@@ -16487,6 +16556,31 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
     }
 };
 
+function groupParser(group, data) {
+    var gLen = group.length;
+    var groups = {};
+    function groupBy(array, f) {
+        array.forEach(function (o) {
+            var group = f(o);
+            groups[group] = groups[group] || [];
+            groups[group].push(o);
+        });
+        return Object.keys(groups).map(function (group) {
+            return groups[group];
+        });
+    }
+
+    var result = groupBy(data, function (item) {
+        var arr = new Array();
+        for (var i = 0; i < gLen; i++) {
+            if (typeof item[group[i]] != 'undefined') {
+                arr.push(item[group[i]]);
+            }
+        }
+        return arr;
+    });
+    return result;
+}
 render(React.createElement(
     _reactTabPanel2.default,
     {
@@ -16515,7 +16609,7 @@ render(React.createElement(
 
 var emptyArr = [];
 
-render(React.createElement(_reactJsonTable2.default, { rows: emptyArr }), document.getElementById("table"));
+render(React.createElement(SelectTable, { rows: emptyArr }), document.getElementById("table"));
 
 render(React.createElement(_googleMapReact2.default, {
     defaultCenter: { lat: 49.2606052, lng: -123.2459939 },
