@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+
 import { title_image } from "./images";
 import { title, course } from "./lib";
 import { schema } from "./Querybuilder";
@@ -14,13 +15,26 @@ import GoogleMapReact from 'google-map-react';
 const { render } = ReactDOM;
 
 
-
 render(
     <div>{title_image}</div>,
     document.getElementById("react-container"),
 );
 
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
+
+
+function queryAsyncRequest(query) {
+    let request = require("superagent");
+    request.post("http://localhost:4321/query")
+        .send(query)
+        .end((err,res) => {
+            if(err) {
+                alert(err)
+            }
+            alert(res.text);
+        });
+
+}
 
 
 var onSubmit = function (data, buttonValue, errors) {
@@ -45,19 +59,27 @@ var onSubmit = function (data, buttonValue, errors) {
                     filter = filters[0];
                     let arr = new Array();
                     for (let i = 0; i < len; i++) {
-                        let obj = queryWhere[i]; let objKeys = Object.keys(obj); let tempFilter = objKeys[1]; let val = obj[tempFilter]; let valKeys = Object.keys(val); let filterKey = valKeys[1]; let filterVal = val[filterKey]; let filterObj = { [filterKey]: filterVal }; let realFilter = { [tempFilter]: filterObj };
+                        let obj = queryWhere[i];
+                        let objKeys = Object.keys(obj);
+                        let tempFilter = objKeys[1];
+                        let val = obj[tempFilter];
+                        let valKeys = Object.keys(val);
+                        let filterKey = valKeys[1];
+                        let filterVal = val[filterKey];
+                        let filterObj = {[filterKey]: filterVal};
+                        let realFilter = {[tempFilter]: filterObj};
                         arr.push(realFilter);
                     }
-                    queryWhere = { [filter]: arr };
+                    queryWhere = {[filter]: arr};
                 }
                 else {
                     let filters = Object.keys(queryWhere);
                     filter = filters[0];
-                    second = { [filters[1]]: queryWhere[filters[1]] };
-                    queryWhere = { [filter]: second };
+                    second = {[filters[1]]: queryWhere[filters[1]]};
+                    queryWhere = {[filter]: second};
                 }
             }
-            Object.assign(query, { "WHERE": queryWhere });
+            Object.assign(query, {"WHERE": queryWhere});
             let queryOption = data.OPTIONS;
             if ("TRANSFORMATIONS" in data) {
                 let queryTrans = data.TRANSFORMATIONS.TRANSFORMATIONS;
@@ -107,17 +129,17 @@ var onSubmit = function (data, buttonValue, errors) {
                             queryOption.ORDER.keys.unshift("maxSections");
                         }
                         if (query.WHERE == {}) {
-                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
+                            query.WHERE = {"NOT": {"EQ": {"courses_year": 1900}}}
                         }
                         else {
                             let filters = Object.keys(query.WHERE);
                             let filter = filters[0];
                             if (filter == "AND" || filter == "OR") {
-                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
+                                query.WHERE.filter.push({"NOT": {"EQ": {"courses_year": 1900}}})
                             }
                             else {
                                 let temp = query.WHERE;
-                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
+                                query.WHERE = {"AND": [temp, {"NOT": {"EQ": {"courses_year": 1900}}}]}
                             }
                         }
                         break;
@@ -136,17 +158,17 @@ var onSubmit = function (data, buttonValue, errors) {
                             queryOption.ORDER.keys.unshift("mostPasses");
                         }
                         if (query.WHERE == {}) {
-                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
+                            query.WHERE = {"NOT": {"EQ": {"courses_year": 1900}}}
                         }
                         else {
                             let filters = Object.keys(query.WHERE);
                             let filter = filters[0];
                             if (filter == "AND" || filter == "OR") {
-                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
+                                query.WHERE.filter.push({"NOT": {"EQ": {"courses_year": 1900}}})
                             }
                             else {
                                 let temp = query.WHERE;
-                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
+                                query.WHERE = {"AND": [temp, {"NOT": {"EQ": {"courses_year": 1900}}}]}
                             }
                         }
                         break;
@@ -165,17 +187,17 @@ var onSubmit = function (data, buttonValue, errors) {
                             queryOption.ORDER.keys.unshift("mostFails");
                         }
                         if (query.WHERE == {}) {
-                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
+                            query.WHERE = {"NOT": {"EQ": {"courses_year": 1900}}}
                         }
                         else {
                             let filters = Object.keys(query.WHERE);
                             let filter = filters[0];
                             if (filter == "AND" || filter == "OR") {
-                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
+                                query.WHERE.filter.push({"NOT": {"EQ": {"courses_year": 1900}}})
                             }
                             else {
                                 let temp = query.WHERE;
-                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
+                                query.WHERE = {"AND": [temp, {"NOT": {"EQ": {"courses_year": 1900}}}]}
                             }
                         }
                         break;
@@ -184,22 +206,13 @@ var onSubmit = function (data, buttonValue, errors) {
                         alert("Something's wrong, please refresh the page");
 
                 }
-                Object.assign(query, { "TRANSFORMATIONS": trans });
+                Object.assign(query, {"TRANSFORMATIONS": trans});
             }
-            Object.assign(query, { "OPTIONS": queryOption });
-           // alert('Data  : ' + JSON.stringify(query));
-           var response;
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "localhost:4321/query", false)
-            .send(query)
-            .then(function (res) {
-                response = JSON.parse(xhttp.responseText);
-            })
-            .catch(function (err) {
-                alert(err);
-            });
+            Object.assign(query, {"OPTIONS": queryOption});
+            // alert('Data  : ' + JSON.stringify(query));
+            queryAsyncRequest(query);
 
-            alert(response);
+
         }
     }
 };
@@ -344,19 +357,13 @@ render(
     ,
     document.getElementById("query"));
 
-var result = [
-    { courses_dept: 'elec', courses_avg: 76.48 },
-    { courses_dept: 'elec', courses_avg: 76.48 },
-    { courses_dept: 'dent', courses_avg: 82.5 },
-    { courses_dept: 'dent', courses_avg: 82.5 },
-    { courses_dept: 'dent', courses_avg: 85.4 },
-    { courses_dept: 'dent', courses_avg: 85.4 }
-];
+var resultQuery = [];
+
 
 
 
 render(
-    <JsonTable rows={result} />,
+    <JsonTable rows={resultQuery} />,
     document.getElementById("table")
 )
 

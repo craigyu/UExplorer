@@ -19,7 +19,7 @@ module.exports = {
         port: 3000
     },
     node: {
-        fs: "empty"
+        fs: "empty",
     },
     module: {
         rules: [
