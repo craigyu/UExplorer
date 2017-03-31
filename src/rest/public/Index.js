@@ -13,7 +13,6 @@ import "./stylesheets/table.css";
 import GoogleMapReact from 'google-map-react';
 import { latlon } from "./Latlon"
 const { render } = ReactDOM;
-var rest = require('rest');
 
 
 
@@ -224,8 +223,8 @@ var onSubmit = function (data, buttonValue, errors) {
                     alert("Please follow the rules")
                 }
                 let zLatlon = latlon[Z];
-                let zlat = zLatlon["rooms_lat"];
-                let zlon = zLatlon["rooms_lon"];
+                let zLat = zLatlon["rooms_lat"];
+                let zLon = zLatlon["rooms_lon"];
                 let selected = [];
                 let latlonKeys = Object.keys(latlon);
                 //alert(latlonKeys.toString());
@@ -242,14 +241,12 @@ var onSubmit = function (data, buttonValue, errors) {
                         var dLon = deg2rad(objLon - zLon);
                         var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
                         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                        var d = (R * c) / 1000; // Distance in meters
-                        alert(d);
+                        var d = (R * c)  // Distance in meters
                         if (d < dist) {
                             selected.push(leName);
                         }
                     }
                 }
-                alert("it gets here after 2nd");
                 if (selected == []) alert("Range too small, no result found");
                 else {
                     let orArr = [];
