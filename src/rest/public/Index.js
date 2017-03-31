@@ -284,19 +284,15 @@ var crOnSubmit = function (data, buttonValue, errors) {
                     let obj = latlon[leName];
                     let objLat = obj["rooms_lat"];
                     let objLon = obj["rooms_lon"];
-                    if (leName == Z) {
-                        continue;
+                    var dLat = deg2rad(objLat - zLat);  // deg2rad below
+                    var dLon = deg2rad(objLon - zLon);
+                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    var d = (R * c)  // Distance in meters
+                    if (d < dist) {
+                        selected.push(leName);
                     }
-                    else {
-                        var dLat = deg2rad(objLat - zLat);  // deg2rad below
-                        var dLon = deg2rad(objLon - zLon);
-                        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                        var d = (R * c)  // Distance in meters
-                        if (d < dist) {
-                            selected.push(leName);
-                        }
-                    }
+
                 }
                 if (selected == []) alert("Range too small, no result found");
                 else {
@@ -551,19 +547,16 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                 let obj = latlon[leName];
                 let objLat = obj["rooms_lat"];
                 let objLon = obj["rooms_lon"];
-                if (leName == building) {
-                    continue;
+
+                var dLat = deg2rad(objLat - bLat);  // deg2rad below
+                var dLon = deg2rad(objLon - bLon);
+                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(bLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = (R * c)  // Distance in meters
+                if (d < dist) {
+                    selected.push(leName);
                 }
-                else {
-                    var dLat = deg2rad(objLat - bLat);  // deg2rad below
-                    var dLon = deg2rad(objLon - bLon);
-                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(bLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                    var d = (R * c)  // Distance in meters
-                    if (d < dist) {
-                        selected.push(leName);
-                    }
-                }
+
             }
             if (selected == []) alert("Range too small, no result found");
             else {
@@ -638,12 +631,12 @@ function displayMulti(arr) {
             var multiArr = arr.map(function (table) {
                 return (
                     <div tabTitle="Table #">
-                        <JsonTable  rows={table} />
+                        <JsonTable rows={table} />
                     </div>
                 )
 
             })
-            return (<TabPanel tabAlign="center">{multiArr}</TabPanel>);
+            return (<TabPanel tabAlign="stretch">{multiArr}</TabPanel>);
         }
     });
     render(<MultiTables />, document.getElementById("multi"));

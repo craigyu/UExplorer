@@ -16264,17 +16264,13 @@ var crOnSubmit = function crOnSubmit(data, buttonValue, errors) {
                     var _obj = _Latlon.latlon[leName];
                     var objLat = _obj["rooms_lat"];
                     var objLon = _obj["rooms_lon"];
-                    if (leName == Z) {
-                        continue;
-                    } else {
-                        var dLat = deg2rad(objLat - zLat); // deg2rad below
-                        var dLon = deg2rad(objLon - zLon);
-                        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                        var d = R * c; // Distance in meters
-                        if (d < dist) {
-                            selected.push(leName);
-                        }
+                    var dLat = deg2rad(objLat - zLat); // deg2rad below
+                    var dLon = deg2rad(objLon - zLon);
+                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    var d = R * c; // Distance in meters
+                    if (d < dist) {
+                        selected.push(leName);
                     }
                 }
                 if (selected == []) alert("Range too small, no result found");else {
@@ -16497,17 +16493,14 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
                 var obj = _Latlon.latlon[leName];
                 var objLat = obj["rooms_lat"];
                 var objLon = obj["rooms_lon"];
-                if (leName == _building) {
-                    continue;
-                } else {
-                    var dLat = deg2rad(objLat - bLat); // deg2rad below
-                    var dLon = deg2rad(objLon - bLon);
-                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(bLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                    var d = R * c; // Distance in meters
-                    if (d < dist) {
-                        selected.push(leName);
-                    }
+
+                var dLat = deg2rad(objLat - bLat); // deg2rad below
+                var dLon = deg2rad(objLon - bLon);
+                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(bLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                var d = R * c; // Distance in meters
+                if (d < dist) {
+                    selected.push(leName);
                 }
             }
             if (selected == []) alert("Range too small, no result found");else {
@@ -16585,7 +16578,7 @@ function displayMulti(arr) {
             });
             return React.createElement(
                 _reactTabPanel2.default,
-                { tabAlign: "center" },
+                { tabAlign: "stretch" },
                 multiArr
             );
         }
