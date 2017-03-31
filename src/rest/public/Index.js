@@ -28,7 +28,7 @@ render(
 class SelectTable extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {row: false, cell: false, sort: false};
+        this.state = { row: false, cell: false, sort: false };
         this.onClickCell = this.onClickCell.bind(this);
     }
 
@@ -38,38 +38,21 @@ class SelectTable extends React.Component {
 
         return (<JsonTable
             rows={items}
-            onClickCell={ () => this.onClickCell(items) }/>);
+            onClickCell={() => this.onClickCell(items)} />);
     }
 
 
 
     onClickCell(items) {
         var hello = latlon[items[0].rooms_shortname]
-        var hello2 = hello.rooms_lat + " " +  hello.rooms_lon;
+        var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
 
         alert(hello2);
-        this.setState({cell: true});
+        this.setState({ cell: true });
     }
 }
 
 
-class SimpleMap extends Component {
-    static defaultProps = {
-        center: {lat: 59.95, lng: 30.33},
-        zoom: 11
-    };
-
-
-    render() {
-        return (
-            <GoogleMapReact
-                defaultCenter={this.props.center}
-                defaultZoom={this.props.zoom}
-            >
-            </GoogleMapReact>
-        );
-    }
-}
 
 
 
@@ -338,11 +321,11 @@ var crOnSubmit = function (data, buttonValue, errors) {
 
         queryAsyncRequest(query)
             .then((data) => {
-            render(
-                <SelectTable rows={data} />,
-                document.getElementById("table")
-            )
-        })
+                render(
+                    <SelectTable rows={data} />,
+                    document.getElementById("table")
+                )
+            })
             .catch((err) => {
                 alert(err);
             })
@@ -590,18 +573,68 @@ var schedOnSubmit = function (data, buttonValue, errors) {
         promises.push(queryAsyncRequest(roomQuery))
 
         Promise.all(promises)
-        .then((data) => {
-            let data1 = data[0];
-            let data2 = data[1];
-            //alert(JSON.stringify(data));
-        })
-        .catch((err) =>{
-            alert(err);
-        })
+            .then((data) => {
+                let data1 = data[0];
+                let data2 = data[1];
+                if (data1.length == 0 || data2.length == 0) {
+                    alert("Nothing found");
+                }
+                else {
+                    let group = groupParser(["courses_id"], data1);
+                    for (let i = 0; i < group.length; i++) {
+                        let arr = group[i];
+                        let len = arr.length;
+                        let num = Math.ceil(len / 3);
+                        let dif = len - num;
+                        for (let j = 0; j < dif; j++) {
+                            group[i].shift();
+                        }
+                    }
+                    let allrooms = [];
+                    for(let i = 0; i < data2.length; i++){
+                        let temp = data2[i];
+                        let name = temp["rooms_name"];
+                        allrooms.push(name);
+                    }
+
+                    for (let i = 0; i < group.length; i++) {
+
+                    }
+
+                }
+                //alert(JSON.stringify(data));
+            })
+            .catch((err) => {
+                alert(err);
+            })
 
     }
 };
 
+function groupParser(group, data) {
+    let gLen = group.length;
+    function groupBy(array, f) {
+        array.forEach(function (o) {
+            var group = f(o);
+            groups[group] = groups[group] || [];
+            groups[group].push(o);
+        });
+        return Object.keys(groups).map(function (group) {
+            return groups[group];
+        })
+    }
+
+    var result = groupBy(data, function (item) {
+        let arr = new Array();
+        for (let i = 0; i < gLen; i++) {
+            if (typeof item[group[i]] != 'undefined') {
+                arr.push(item[group[i]])
+            }
+        }
+        return arr;
+    });
+    return result;
+}
 render(
     <TabPanel
         tabAlign="center"
