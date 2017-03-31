@@ -13,8 +13,7 @@ import "./stylesheets/table.css";
 import GoogleMapReact from 'google-map-react';
 import { latlon } from "./Latlon"
 const { render } = ReactDOM;
-
-
+var Promise = require("promise");
 
 render(
     <div>{title_image}</div>,
@@ -26,15 +25,17 @@ render(
 
 
 function queryAsyncRequest(query) {
-    let request = require("superagent");
-    request.post("http://localhost:4321/query")
-        .send(query)
-        .end((err, res) => {
-            if (err) {
-                alert(err)
-            }
-            return (res.text.result);
-        });
+    return new Promise((fulfill, reject) => {
+        let request = require("superagent");
+        request.post("http://localhost:4321/query")
+            .send(query)
+            .end((err, res) => {
+                if (err) {
+                    reject(err);
+                }
+                fulfill(res.body.result);
+            });
+    })
 }
 
 var onSubmit = function (data, buttonValue, errors) {
@@ -280,12 +281,18 @@ var onSubmit = function (data, buttonValue, errors) {
             }
             //alert(JSON.stringify(query));
         }
-        queryAsyncRequest(query).then((data) => {
+
+
+        queryAsyncRequest(query)
+            .then((data) => {
             render(
                 <JsonTable rows={data} />,
                 document.getElementById("table")
             )
         })
+            .catch((err) => {
+            alert(err);
+            })
     }
 
 
@@ -442,9 +449,12 @@ render(
 //     { courses_dept: 'dent', courses_avg: 85.4 }
 // ];
 
+var emptyArr = [];
 
-
-
+render(
+    <JsonTable rows={emptyArr} />,
+    document.getElementById("table")
+);
 
 render(
     <GoogleMapReact
