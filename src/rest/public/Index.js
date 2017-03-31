@@ -372,7 +372,7 @@ function roomSchedule(courses, rooms) {
 
 
             let scheduled = {
-                course: courses[i][j],
+                course: courses[i][j].courses_dept + " " + courses[i][j].courses_id,
                 room: rooms[j],
                 time: startTime,
                 day: switching % 2 // 0 is mwf 1 is t th
@@ -441,6 +441,7 @@ function roomSchedule(courses, rooms) {
     //         }
     //     }
     // }
+    return finalProduct;
 }
 
 var schedOnSubmit = function (data, buttonValue, errors) {
@@ -592,7 +593,7 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                     }
                     var sched = roomSchedule(group, allrooms);
                     render(
-                        <JsonTable rows={sched} />,
+                        <SelectTable rows={sched} />,
                         document.getElementById("table")
                     );
                 }

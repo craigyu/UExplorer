@@ -16342,7 +16342,7 @@ function roomSchedule(courses, rooms) {
             }
 
             var scheduled = {
-                course: courses[i][j],
+                course: courses[i][j].courses_dept + " " + courses[i][j].courses_id,
                 room: rooms[j],
                 time: startTime,
                 day: switching % 2 // 0 is mwf 1 is t th
@@ -16411,6 +16411,7 @@ function roomSchedule(courses, rooms) {
     //         }
     //     }
     // }
+    return finalProduct;
 }
 
 var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
@@ -16544,7 +16545,7 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
                     allrooms.push(_name);
                 }
                 var sched = roomSchedule(group, allrooms);
-                render(React.createElement(_reactJsonTable2.default, { rows: sched }), document.getElementById("time"));
+                render(React.createElement(SelectTable, { rows: sched }), document.getElementById("table"));
             }
             //alert(JSON.stringify(data));
         }).catch(function (err) {
