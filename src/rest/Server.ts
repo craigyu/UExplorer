@@ -64,9 +64,13 @@ export default class Server {
                 //that.rest.get('/', Server.main);
                 that.rest.get('/echo/:msg', Server.echo);
                 that.rest.get(/.*/, restify.serveStatic({
-                    'directory': './src/rest/views/',
+                    'directory': './src/rest/views',
                     'default': 'index.html'
                 }));
+                // that.rest.get(/.*/, restify.serveStatic({
+                //     'directory': './src/rest/views'
+                // }));
+             
                 // that.rest.get('/square/:num', Server.square);
                 /**
                  *          PUT

@@ -28,8 +28,11 @@ var Server = (function () {
                 that.rest.use(restify.bodyParser({ mapParams: true, mapFiles: true }));
                 that.rest.get('/echo/:msg', Server.echo);
                 that.rest.get(/.*/, restify.serveStatic({
-                    'directory': './src/rest/views/',
+                    'directory': './src/rest/views',
                     'default': 'index.html'
+                }));
+                that.rest.get(/.*/, restify.serveStatic({
+                    'directory': './src/rest/views'
                 }));
                 that.rest.put('/dataset/:id', Server.add);
                 that.rest.del('/dataset/:id', Server.del);
