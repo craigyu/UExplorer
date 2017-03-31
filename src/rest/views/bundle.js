@@ -15860,6 +15860,8 @@ module.exports = {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(0);
 
 var React = _interopRequireWildcard(_react);
@@ -15910,6 +15912,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var render = ReactDOM.render;
 
 var Promise = __webpack_require__(39);
@@ -15922,6 +15930,68 @@ render(React.createElement(
 
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
 
+
+var SelectTable = function (_React$Component) {
+    _inherits(SelectTable, _React$Component);
+
+    function SelectTable(props) {
+        _classCallCheck(this, SelectTable);
+
+        var _this = _possibleConstructorReturn(this, (SelectTable.__proto__ || Object.getPrototypeOf(SelectTable)).call(this, props));
+
+        _this.state = { row: false, cell: false, sort: false };
+        _this.onClickCell = _this.onClickCell.bind(_this);
+        return _this;
+    }
+
+    _createClass(SelectTable, [{
+        key: "render",
+        value: function render() {
+            var _this2 = this;
+
+            var items = this.props.rows.slice();
+
+            return React.createElement(_reactJsonTable2.default, {
+                rows: items,
+                onClickCell: function onClickCell() {
+                    return _this2.onClickCell(items);
+                } });
+        }
+    }, {
+        key: "onClickCell",
+        value: function onClickCell(items) {
+            var AnyReactComponent = function AnyReactComponent(_ref) {
+                var text = _ref.text;
+                return React.createElement(
+                    "div",
+                    { style: {
+                            position: 'relative', color: 'white', background: 'red',
+                            height: 40, width: 60, top: -20, left: -30
+                        } },
+                    text
+                );
+            };
+            var hello = _Latlon.latlon[items[0].rooms_shortname];
+            var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
+            render(React.createElement(
+                _googleMapReact2.default,
+                {
+                    defaultCenter: { lat: 49.2606052, lng: -123.2459939 },
+                    defaultZoom: 13
+                },
+                React.createElement(AnyReactComponent, {
+                    lat: hello.rooms_lat,
+                    lng: hello.rooms_lon,
+                    text: hello
+                })
+            ), document.getElementById("map"));
+            alert(hello2);
+            this.setState({ cell: true });
+        }
+    }]);
+
+    return SelectTable;
+}(React.Component);
 
 function queryAsyncRequest(query) {
     return new Promise(function (fulfill, reject) {
@@ -15937,6 +16007,9 @@ function queryAsyncRequest(query) {
 
 var onSubmit = function onSubmit(data, buttonValue, errors) {
     if (buttonValue == "Submit") {
+        if (typeof data == "undefined") {
+            alert("stop trolling");
+        }
         var query = {};
         if (Object.keys(errors).length != 0) {
             alert('Errors: ' + JSON.stringify(errors));
@@ -16169,10 +16242,12 @@ var onSubmit = function onSubmit(data, buttonValue, errors) {
         }
 
         queryAsyncRequest(query).then(function (data) {
-            render(React.createElement(_reactJsonTable2.default, { rows: data }), document.getElementById("table"));
+            render(React.createElement(SelectTable, { rows: data }), document.getElementById("table"));
         }).catch(function (err) {
             alert(err);
         });
+        data = {};
+        query = {};
     }
 };
 
@@ -16297,13 +16372,15 @@ render(React.createElement(
         "div",
         { tabTitle: "Courses Explorer" },
         React.createElement(_reactFormzilla2.default, { schema: _Querybuilder.schema,
-            onSubmit: onSubmit })
+            onSubmit: onSubmit,
+            submitOnChange: true })
     ),
     React.createElement(
         "div",
         { tabTitle: "Rooms Explorer" },
         React.createElement(_reactFormzilla2.default, { schema: _Rqb.room_schema,
-            onSubmit: onSubmit })
+            onSubmit: onSubmit,
+            submitOnChange: true })
     ),
     React.createElement(
         "div",
@@ -16327,7 +16404,7 @@ render(React.createElement(
 
 var emptyArr = [];
 
-render(React.createElement(_reactJsonTable2.default, { rows: emptyArr }), document.getElementById("table"));
+render(React.createElement(SelectTable, { rows: emptyArr }), document.getElementById("table"));
 
 render(React.createElement(_googleMapReact2.default, {
     defaultCenter: { lat: 49.2606052, lng: -123.2459939 },

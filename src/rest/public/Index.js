@@ -23,6 +23,54 @@ render(
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
 
 
+class SelectTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {row: false, cell: false, sort: false};
+        this.onClickCell = this.onClickCell.bind(this);
+    }
+
+
+    render() {
+        let items = this.props.rows.slice();
+
+        return (<JsonTable
+            rows={items}
+            onClickCell={ () => this.onClickCell(items) }/>);
+    }
+
+
+
+    onClickCell(items) {
+        var hello = latlon[items[0].rooms_shortname]
+        var hello2 = hello.rooms_lat + " " +  hello.rooms_lon;
+
+        alert(hello2);
+        this.setState({cell: true});
+    }
+}
+
+
+class SimpleMap extends Component {
+    static defaultProps = {
+        center: {lat: 59.95, lng: 30.33},
+        zoom: 11
+    };
+    
+
+    render() {
+        return (
+            <GoogleMapReact
+                defaultCenter={this.props.center}
+                defaultZoom={this.props.zoom}
+            >
+            </GoogleMapReact>
+        );
+    }
+}
+
+
+
 
 function queryAsyncRequest(query) {
     return new Promise((fulfill, reject) => {
@@ -289,7 +337,7 @@ var onSubmit = function (data, buttonValue, errors) {
         queryAsyncRequest(query)
             .then((data) => {
             render(
-                <JsonTable rows={data} />,
+                <SelectTable rows={data} />,
                 document.getElementById("table")
             )
         })
@@ -432,11 +480,13 @@ render(
     >
         <div tabTitle="Courses Explorer">
             <Form schema={schema}
-                onSubmit={onSubmit} />
+                onSubmit={onSubmit}
+                  submitOnChange={true}/>
         </div>
         <div tabTitle="Rooms Explorer">
             <Form schema={room_schema}
-                onSubmit={onSubmit} />
+                onSubmit={onSubmit}
+                  submitOnChange={true}/>
         </div>
         <div tabTitle="Rooms Scheduling">
             <h3> put your shit here </h3>
@@ -457,7 +507,7 @@ render(
 var emptyArr = [];
 
 render(
-    <JsonTable rows={emptyArr} />,
+    <SelectTable rows={emptyArr} />,
     document.getElementById("table")
 );
 

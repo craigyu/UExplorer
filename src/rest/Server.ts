@@ -65,7 +65,8 @@ export default class Server {
                 that.rest.get('/echo/:msg', Server.echo);
                 that.rest.get(/.*/, restify.serveStatic({
                     'directory': './src/rest/views',
-                    'default': 'index.html'
+                    'default': 'index.html',
+                    'maxAge': 5
                 }));
                 // that.rest.get(/.*/, restify.serveStatic({
                 //     'directory': './src/rest/views'

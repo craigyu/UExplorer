@@ -29,7 +29,8 @@ var Server = (function () {
                 that.rest.get('/echo/:msg', Server.echo);
                 that.rest.get(/.*/, restify.serveStatic({
                     'directory': './src/rest/views',
-                    'default': 'index.html'
+                    'default': 'index.html',
+                    'maxAge': 5
                 }));
                 that.rest.put('/dataset/:id', Server.add);
                 that.rest.del('/dataset/:id', Server.del);
