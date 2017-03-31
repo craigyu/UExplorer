@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
 import { title_image } from "./images";
 import { title, course } from "./lib";
 import { schema } from "./Querybuilder";
@@ -12,7 +11,9 @@ import Form from "react-formzilla";
 import JsonTable from "react-json-table";
 import "./stylesheets/table.css";
 import GoogleMapReact from 'google-map-react';
+import { latlon } from "./Latlon"
 const { render } = ReactDOM;
+
 
 
 render(
@@ -21,20 +22,6 @@ render(
 );
 
 //render(<Query fields={fields} combinators={combinators} operators={operators}/>, document.querySelector('.container'));
-
-
-function queryAsyncRequest(query) {
-    let request = require("superagent");
-    request.post("http://localhost:4321/query")
-        .send(query)
-        .end((err,res) => {
-            if(err) {
-                alert(err)
-            }
-            alert(res.text);
-        });
-
-}
 
 
 var onSubmit = function (data, buttonValue, errors) {
@@ -59,29 +46,22 @@ var onSubmit = function (data, buttonValue, errors) {
                     filter = filters[0];
                     let arr = new Array();
                     for (let i = 0; i < len; i++) {
-                        let obj = queryWhere[i];
-                        let objKeys = Object.keys(obj);
-                        let tempFilter = objKeys[1];
-                        let val = obj[tempFilter];
-                        let valKeys = Object.keys(val);
-                        let filterKey = valKeys[1];
-                        let filterVal = val[filterKey];
-                        let filterObj = {[filterKey]: filterVal};
-                        let realFilter = {[tempFilter]: filterObj};
+                        let obj = queryWhere[i]; let objKeys = Object.keys(obj); let tempFilter = objKeys[1]; let val = obj[tempFilter]; let valKeys = Object.keys(val); let filterKey = valKeys[1]; let filterVal = val[filterKey]; let filterObj = { [filterKey]: filterVal }; let realFilter = { [tempFilter]: filterObj };
                         arr.push(realFilter);
                     }
-                    queryWhere = {[filter]: arr};
+                    queryWhere = { [filter]: arr };
                 }
                 else {
                     let filters = Object.keys(queryWhere);
                     filter = filters[0];
-                    second = {[filters[1]]: queryWhere[filters[1]]};
-                    queryWhere = {[filter]: second};
+                    second = { [filters[1]]: queryWhere[filters[1]] };
+                    queryWhere = { [filter]: second };
                 }
             }
-            Object.assign(query, {"WHERE": queryWhere});
+            Object.assign(query, { "WHERE": queryWhere });
+            let dataKeys = Object.keys(data);
             let queryOption = data.OPTIONS;
-            if ("TRANSFORMATIONS" in data) {
+            if (dataKeys.includes("TRANSFORMATIONS")) {
                 let queryTrans = data.TRANSFORMATIONS.TRANSFORMATIONS;
                 let trans = {};
                 switch (queryTrans) {
@@ -129,17 +109,17 @@ var onSubmit = function (data, buttonValue, errors) {
                             queryOption.ORDER.keys.unshift("maxSections");
                         }
                         if (query.WHERE == {}) {
-                            query.WHERE = {"NOT": {"EQ": {"courses_year": 1900}}}
+                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
                         }
                         else {
                             let filters = Object.keys(query.WHERE);
                             let filter = filters[0];
                             if (filter == "AND" || filter == "OR") {
-                                query.WHERE.filter.push({"NOT": {"EQ": {"courses_year": 1900}}})
+                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
                             }
                             else {
                                 let temp = query.WHERE;
-                                query.WHERE = {"AND": [temp, {"NOT": {"EQ": {"courses_year": 1900}}}]}
+                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
                             }
                         }
                         break;
@@ -158,17 +138,17 @@ var onSubmit = function (data, buttonValue, errors) {
                             queryOption.ORDER.keys.unshift("mostPasses");
                         }
                         if (query.WHERE == {}) {
-                            query.WHERE = {"NOT": {"EQ": {"courses_year": 1900}}}
+                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
                         }
                         else {
                             let filters = Object.keys(query.WHERE);
                             let filter = filters[0];
                             if (filter == "AND" || filter == "OR") {
-                                query.WHERE.filter.push({"NOT": {"EQ": {"courses_year": 1900}}})
+                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
                             }
                             else {
                                 let temp = query.WHERE;
-                                query.WHERE = {"AND": [temp, {"NOT": {"EQ": {"courses_year": 1900}}}]}
+                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
                             }
                         }
                         break;
@@ -187,17 +167,17 @@ var onSubmit = function (data, buttonValue, errors) {
                             queryOption.ORDER.keys.unshift("mostFails");
                         }
                         if (query.WHERE == {}) {
-                            query.WHERE = {"NOT": {"EQ": {"courses_year": 1900}}}
+                            query.WHERE = { "NOT": { "EQ": { "courses_year": 1900 } } }
                         }
                         else {
                             let filters = Object.keys(query.WHERE);
                             let filter = filters[0];
                             if (filter == "AND" || filter == "OR") {
-                                query.WHERE.filter.push({"NOT": {"EQ": {"courses_year": 1900}}})
+                                query.WHERE.filter.push({ "NOT": { "EQ": { "courses_year": 1900 } } })
                             }
                             else {
                                 let temp = query.WHERE;
-                                query.WHERE = {"AND": [temp, {"NOT": {"EQ": {"courses_year": 1900}}}]}
+                                query.WHERE = { "AND": [temp, { "NOT": { "EQ": { "courses_year": 1900 } } }] }
                             }
                         }
                         break;
@@ -206,18 +186,93 @@ var onSubmit = function (data, buttonValue, errors) {
                         alert("Something's wrong, please refresh the page");
 
                 }
-                Object.assign(query, {"TRANSFORMATIONS": trans});
+                Object.assign(query, { "TRANSFORMATIONS": trans });
             }
-            Object.assign(query, {"OPTIONS": queryOption});
-            // alert('Data  : ' + JSON.stringify(query));
-            queryAsyncRequest(query);
+            Object.assign(query, { "OPTIONS": queryOption });
+            //alert('Data  : ' + JSON.stringify(data));
+            // alert("it gets here")
+            // alert(JSON.stringify(data));
+            // special search for rooms
+            if (dataKeys.includes("SPECIAL")) {
+                if (!"AND" in query.WHERE) {
+                    alert("Please follow the rules, refresh and retry")
+                }
+                let qSpecial = data.SPECIAL.SPECIAL;
+                let dist = data.SPECIAL.dist;
+                //Earth’s radius, sphere
+                let R = 6378137;
+                let and = query.WHERE.AND;
+                let Z = ""; let index;
 
-
+                for (let i = 0; i < and.length; i++) {
+                    let item = and[i];
+                    let keys = Object.keys(item);
+                    let key = keys[0];
+                    if (key == "IS") {
+                        let subObj = item.IS;
+                        let subks = Object.keys(subObj);
+                        let subk = subks[0];
+                        if (subk == "rooms_shortname") {
+                            Z = item.IS.rooms_shortname;
+                            index = i;
+                        }
+                    }
+                }
+                //alert(Z);
+                if (Z == "") {
+                    alert("Please follow the rules")
+                }
+                let zLatlon = latlon[Z];
+                let zLat = zLatlon["rooms_lat"];
+                let zLon = zLatlon["rooms_lon"];
+                let selected = [];
+                let latlonKeys = Object.keys(latlon);
+                //alert(latlonKeys.toString());
+                for (let i = 0; i < latlonKeys.length; i++) {
+                    let leName = latlonKeys[i];
+                    let obj = latlon[leName];
+                    let objLat = obj["rooms_lat"];
+                    let objLon = obj["rooms_lon"];
+                    if (leName == Z) {
+                        continue;
+                    }
+                    else {
+                        var dLat = deg2rad(objLat - zLat);  // deg2rad below
+                        var dLon = deg2rad(objLon - zLon);
+                        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                        var d = (R * c)  // Distance in meters
+                        if (d < dist) {
+                            selected.push(leName);
+                        }
+                    }
+                }
+                if (selected == []) alert("Range too small, no result found");
+                else {
+                    let orArr = [];
+                    orArr.push(and[index]);
+                    for (let i = 0; i < selected.length; i++) {
+                        let name = selected[i];
+                        let temp = { "IS": { "rooms_shortname": name } };
+                        orArr.push(temp);
+                    }
+                    query.OPTIONS.COLUMNS.unshift("rooms_name");
+                    if ("ORDER" in query.OPTIONS) {
+                        query.OPTIONS.ORDER.keys.unshift("rooms_name");
+                    }
+                    and[index] = { "OR": orArr };
+                    query.WHERE.AND = and;
+                }
+            }
+            alert(JSON.stringify(query));
         }
     }
+
 };
 
-
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
 
 function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
@@ -357,13 +412,19 @@ render(
     ,
     document.getElementById("query"));
 
-var resultQuery = [];
-
+var result = [
+    { courses_dept: 'elec', courses_avg: 76.48 },
+    { courses_dept: 'elec', courses_avg: 76.48 },
+    { courses_dept: 'dent', courses_avg: 82.5 },
+    { courses_dept: 'dent', courses_avg: 82.5 },
+    { courses_dept: 'dent', courses_avg: 85.4 },
+    { courses_dept: 'dent', courses_avg: 85.4 }
+];
 
 
 
 render(
-    <JsonTable rows={resultQuery} />,
+    <JsonTable rows={result} />,
     document.getElementById("table")
 )
 
@@ -375,4 +436,3 @@ render(
     </GoogleMapReact>,
     document.getElementById("map")
 )
-

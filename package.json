@@ -84,6 +84,7 @@
     "react-tab-panel": "^2.2.7",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.3",
+    "rest": "^2.0.0",
     "restify": "^4.0.3",
     "superagent": "^3.5.2",
     "ts-loader": "^2.0.2",
