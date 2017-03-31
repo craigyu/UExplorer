@@ -28,7 +28,7 @@ render(
 class SelectTable extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {row: false, cell: false, sort: false};
+        this.state = { row: false, cell: false, sort: false };
         this.onClickCell = this.onClickCell.bind(this);
     }
 
@@ -38,17 +38,17 @@ class SelectTable extends React.Component {
 
         return (<JsonTable
             rows={items}
-            onClickCell={ () => this.onClickCell(items) }/>);
+            onClickCell={() => this.onClickCell(items)} />);
     }
 
 
 
     onClickCell(items) {
         var hello = latlon[items[0].rooms_shortname]
-        var hello2 = hello.rooms_lat + " " +  hello.rooms_lon;
+        var hello2 = hello.rooms_lat + " " + hello.rooms_lon;
 
         alert(hello2);
-        this.setState({cell: true});
+        this.setState({ cell: true });
     }
 }
 
@@ -322,11 +322,11 @@ var crOnSubmit = function (data, buttonValue, errors) {
 
         queryAsyncRequest(query)
             .then((data) => {
-            render(
-                <SelectTable rows={data} />,
-                document.getElementById("table")
-            )
-        })
+                render(
+                    <SelectTable rows={data} />,
+                    document.getElementById("table")
+                )
+            })
             .catch((err) => {
                 alert(err);
             })
@@ -355,92 +355,53 @@ function roomSchedule(courses, rooms) {
     let switching = 0; // max is 1, when two then need to schedule past boundary
     let startTime = 800; // time in 100s
     let hasSwapped = false; // only to keep track of when i switched past boundary
-    for (let i = 0; i < allCourses.length; i++) {
-        for (let j = 0; j < allCourses[i].length; j++) {
-            let acc = 0;
+    while (rooms.length > 0) {
+        let oneRoom = rooms.pop();
+        let tempArr = [];
+        for (let i = 0; i < allCourses.length; i++) {
+            let oneCourse = allCourses.pop()
+            for (let j = 0; j < oneCourse.length; j++) {
+                let acc = 0;
 
-            if (switching % 2 == 0) { // if even #: treat as MWF
-                acc = 100;
-            } else if (switching % 2 == 1) { // if odd #: treat as T TH
-                acc = 130;
-            }
-            // two cases: before 1700 or after 1700
-            if (switching >= 2) {
-                startTime = 1700;
-                hasSwapped = true;
-            }
-
-
-            let scheduled = {
-                course: courses[i][j].courses_dept + " " + courses[i][j].courses_id,
-                room: rooms[j],
-                time: startTime,
-                day: switching % 2 // 0 is mwf 1 is t th
-            };
-            finalProduct.push(scheduled);
-            startTime += acc;
-
-            if (startTime == 1700 && !hasSwapped) { // this is to check for normal scheduling
-                switching++;
-            } else if (startTime == 2300 && hasSwapped) { // this is for compensating scheduling
-                switching++
-            } else { // we cant schedule anymore, not enough time slots for the given courses
-                break;
+                if (switching % 2 == 0) { // if even #: treat as MWF
+                    acc = 100;
+                } else if (switching % 2 == 1) { // if odd #: treat as T TH
+                    acc = 130;
+                }
+                // two cases: before 1700 or after 1700
+                if (switching >= 2 && !hasSwapped) {
+                    startTime = 1700;
+                    hasSwapped = true;
+                }
+                let weekdays;
+                if((switching % 2) == 0){
+                    weekdays = "MWF"
+                }
+                else{
+                    weekdays = "T,TH"
+                }
+                let scheduled = {
+                    course: oneCourse[j].courses_dept + " " + oneCourse[j].courses_id,
+                    room: oneRoom,
+                    time: startTime,
+                    day: weekdays  // 0 is mwf 1 is t th
+                };
+                tempArr.push(scheduled);
+                if ((startTime + acc) > 2400) {
+                    startTime = 800;
+                    if (!hasSwapped) {
+                        switching++;
+                    }
+                }
+                else {
+                    startTime += acc;
+                    switching++;
+                }
             }
         }
+        finalProduct = finalProduct.concat(tempArr);
     }
 
-
-
-
-    // for (let i = 0; i < toSearchDuplicatedScheduled; i++) {
-    //     for (let j = 0; j < toSearchDuplicatedScheduled; j++) {
-    //         duplicationSearchRecursion(toSearchDuplicatedScheduled[i], toSearchDuplicatedScheduled[j]);
-    //
-    //
-    //         function duplicationSearchRecursion(toSearch1, toSearch2) {
-    //             if (toSearch1.time == toSearch2[j].time
-    //                 && toSearch1.day == toSearch2.day) {
-    //                 // found a duplicate schedule
-    //
-    //
-    //                 let theCulprit = toSearch1;
-    //                 let theCulpritTime = toSearch1.time // grabbing the time of duplication
-    //                 let theRemedyIndex = finaProduct.indexOf(theCulprit) + 1;
-    //                 let theRemedy = finalProduct[theRemedyIndex];
-    //                 let theRemedyTime = theRemedy.time // grabbing the time for the +1
-    //
-    //                 // captured both values: theCulprit is the one coinciding with toSearch2
-    //                 // theRemedy is and should be the next time down (ie 9:00 should be 10:00 course)
-    //
-    //
-    //
-    //                 // swapping times
-    //                 theCulprit.time = theRemedyTime;
-    //                 theRemedy.time = theCulpritTime
-    //
-    //
-    //                 finalProduct[theRemedyIndex - 1] = theCulprit;
-    //                 finalProduct[theRemedyIndex] = theRemedy;
-    //
-    //                 // successfully swapped and put back into the array but could be possible the swapped are duplicates
-    //
-    //
-    //
-    //                 // finding the next culprit
-    //                 theNextCulprit = finalProduct.find((value) => {
-    //                     return value.course.courses_id == theRemedy.course.courses_id
-    //                         && value.course.courses_dept == theRemedy.course.courses_dept
-    //
-    //                 });
-    //
-    //                 if (theNextCulprit != undefined) {
-    //                     duplicationSearchRecursion(theRemedy, theNextCulprit)
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
     return finalProduct;
 }
 
@@ -586,7 +547,7 @@ var schedOnSubmit = function (data, buttonValue, errors) {
                         }
                     }
                     let allrooms = [];
-                    for(let i = 0; i < data2.length; i++){
+                    for (let i = 0; i < data2.length; i++) {
                         let temp = data2[i];
                         let name = temp["rooms_name"];
                         allrooms.push(name);
