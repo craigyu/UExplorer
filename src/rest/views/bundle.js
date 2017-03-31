@@ -16312,66 +16312,117 @@ function deg2rad(deg) {
 
 function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
-    var allCourses = courses;
+
     var finalProduct = [];
-    // naive approach for pushing duplicated items
-    // Proceed with Scheduling, MWF 1 hour block meaning 9 blocks
-    // T TH 1.5 hour blocks meaning 6 blocks
+    var sudoRooms = [];
+    sudoRooms = sudoRooms.concat(rooms);
+    while (sudoRooms.length > 0) {
+        var oneRoom = sudoRooms.pop();
+        var dayAcc = 0;
+        var time = 7;
+        for (var i = 0; i < courses.length; i++) {
+            if (dayAcc == 2) {
+                break;
+            }
+            var oneArr = courses[i];
+            var _cObj = {};
 
-    // associate each course to a room with a given time
+            if (oneArr.length == 0) {
 
-    // schedule all courses to rooms
-    var switching = 0; // max is 1, when two then need to schedule past boundary
-    var startTime = 800; // time in 100s
-    var hasSwapped = false; // only to keep track of when i switched past boundary
-    while (rooms.length > 0) {
-        var oneRoom = rooms.pop();
-        var tempArr = [];
-        for (var i = 0; i < allCourses.length; i++) {
-            var oneCourse = allCourses.pop();
-            for (var j = 0; j < oneCourse.length; j++) {
-                var acc = 0;
-
-                if (switching % 2 == 0) {
-                    // if even #: treat as MWF
-                    acc = 100;
-                } else if (switching % 2 == 1) {
-                    // if odd #: treat as T TH
-                    acc = 130;
-                }
-                // two cases: before 1700 or after 1700
-                if (switching >= 2 && !hasSwapped) {
-                    startTime = 1700;
-                    hasSwapped = true;
-                }
-                var weekdays = void 0;
-                if (switching % 2 == 0) {
-                    weekdays = "MWF";
-                } else {
-                    weekdays = "T,TH";
-                }
-                var scheduled = {
-                    course: oneCourse[j].courses_dept + " " + oneCourse[j].courses_id,
-                    room: oneRoom,
-                    time: startTime,
-                    day: weekdays // 0 is mwf 1 is t th
-                };
-                tempArr.push(scheduled);
-                if (startTime + acc > 2400) {
-                    startTime = 800;
-                    if (!hasSwapped) {
-                        switching++;
+                continue;
+            } else {
+                var oneCourse = oneArr.pop();
+                //alert(JSON.stringify(oneCourse));
+                var days = void 0;
+                if (dayAcc == 0) {
+                    if (time + 1 >= 17) {
+                        dayAcc++;
+                        time = 8;
+                        days = "T,TH";
+                    } else {
+                        days = "MWF";
+                        time = time + 1;
                     }
                 } else {
-                    startTime += acc;
-                    switching++;
+                    if (time + 1.5 >= 17) {
+                        dayAcc++;
+                        days = "MWF";
+                        time = time + 1;
+                    } else {
+                        days = "T,TH";
+                        time = time + 1.5;
+                    }
                 }
+                var clockTime = Math.floor(time) * 100 + time % 1 * 60;
+                var deptName = oneCourse.courses_dept;
+                var idName = oneCourse.courses_id;
+                var cName = deptName + "_" + idName;
+                _cObj = {
+                    "Course": cName,
+                    "Room": oneRoom,
+                    "Time": clockTime,
+                    "Days": days
+                };
+            }
+            if (_cObj != {}) {
+                finalProduct.push(_cObj);
             }
         }
-        finalProduct = finalProduct.concat(tempArr);
     }
-
-    return finalProduct;
+    var ar = [];
+    for (var _i4 = 0; _i4 < courses.length; _i4++) {
+        ar = ar.concat(courses[_i4]);
+    }
+    if (ar.length == 0) {
+        return finalProduct;
+    } else {
+        sudoRooms = sudoRooms.concat(rooms);
+        while (sudoRooms.length > 0 && ar.length > 0) {
+            var _oneRoom = sudoRooms.pop();
+            var _dayAcc = 0;
+            var _time = 17;
+            for (var _i5 = 0; _i5 < ar.length; _i5++) {
+                if (_dayAcc == 2) {
+                    break;
+                }
+                var unItem = ar.pop();
+                var _cObj2 = {};
+                var _days = void 0;
+                if (_dayAcc == 0) {
+                    if (_time + 1 >= 21) {
+                        _dayAcc++;
+                        _time = 17;
+                        _days = "T,TH";
+                    } else {
+                        _days = "MWF";
+                        _time = _time + 1;
+                    }
+                } else {
+                    if (_time + 1.5 >= 21) {
+                        _dayAcc++;
+                        _days = "MWF";
+                        _time = _time + 1;
+                    } else {
+                        _days = "T,TH";
+                        _time = _time + 1.5;
+                    }
+                }
+                var _clockTime = Math.floor(_time) * 100 + _time % 1 * 60;
+                var _deptName = unItem.courses_dept;
+                var _idName = unItem.courses_id;
+                var _cName = _deptName + "_" + _idName;
+                _cObj2 = {
+                    "Course": _cName,
+                    "Room": _oneRoom,
+                    "Time": _clockTime,
+                    "Days": _days
+                };
+            }
+            if (cObj != {}) {
+                finalProduct.push(cObj);
+            }
+        }
+    }
 }
 
 var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
@@ -16462,8 +16513,8 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
             if (selected == []) alert("Range too small, no result found");else {
                 var orArr = [];
                 orArr.push({ "IS": { "rooms_shortname": _building } });
-                for (var _i4 = 0; _i4 < selected.length; _i4++) {
-                    var name = selected[_i4];
+                for (var _i6 = 0; _i6 < selected.length; _i6++) {
+                    var name = selected[_i6];
                     var temp = { "IS": { "rooms_shortname": name } };
                     orArr.push(temp);
                 }
@@ -16489,18 +16540,18 @@ var schedOnSubmit = function schedOnSubmit(data, buttonValue, errors) {
                 alert("Nothing found");
             } else {
                 var group = groupParser(["courses_id"], data1);
-                for (var _i5 = 0; _i5 < group.length; _i5++) {
-                    var arr = group[_i5];
+                for (var _i7 = 0; _i7 < group.length; _i7++) {
+                    var arr = group[_i7];
                     var len = arr.length;
                     var num = Math.ceil(len / 3);
                     var dif = len - num;
                     for (var j = 0; j < dif; j++) {
-                        group[_i5].shift();
+                        group[_i7].shift();
                     }
                 }
                 var allrooms = [];
-                for (var _i6 = 0; _i6 < data2.length; _i6++) {
-                    var _temp4 = data2[_i6];
+                for (var _i8 = 0; _i8 < data2.length; _i8++) {
+                    var _temp4 = data2[_i8];
                     var _name = _temp4["rooms_name"];
                     allrooms.push(_name);
                 }
