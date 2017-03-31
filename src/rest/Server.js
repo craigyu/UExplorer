@@ -31,9 +31,6 @@ var Server = (function () {
                     'directory': './src/rest/views',
                     'default': 'index.html'
                 }));
-                that.rest.get(/.*/, restify.serveStatic({
-                    'directory': './src/rest/views'
-                }));
                 that.rest.put('/dataset/:id', Server.add);
                 that.rest.del('/dataset/:id', Server.del);
                 that.rest.post('/query', Server.query);

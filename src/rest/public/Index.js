@@ -11,7 +11,9 @@ import Form from "react-formzilla";
 import JsonTable from "react-json-table";
 import "./stylesheets/table.css";
 import GoogleMapReact from 'google-map-react';
+import { latlon } from "./Latlon"
 const { render } = ReactDOM;
+var rest = require('rest');
 
 
 
@@ -58,8 +60,9 @@ var onSubmit = function (data, buttonValue, errors) {
                 }
             }
             Object.assign(query, { "WHERE": queryWhere });
+            let dataKeys = Object.keys(data);
             let queryOption = data.OPTIONS;
-            if ("TRANSFORMATIONS" in data) {
+            if (dataKeys.includes("TRANSFORMATIONS")) {
                 let queryTrans = data.TRANSFORMATIONS.TRANSFORMATIONS;
                 let trans = {};
                 switch (queryTrans) {
@@ -187,24 +190,92 @@ var onSubmit = function (data, buttonValue, errors) {
                 Object.assign(query, { "TRANSFORMATIONS": trans });
             }
             Object.assign(query, { "OPTIONS": queryOption });
-           // alert('Data  : ' + JSON.stringify(query));
-           var response;
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "localhost:4321/query", false)
-            .send(query)
-            .then(function (res) {
-                response = JSON.parse(xhttp.responseText);
-            })
-            .catch(function (err) {
-                alert(err);
-            });
+            //alert('Data  : ' + JSON.stringify(data));
+            // alert("it gets here")
+            // alert(JSON.stringify(data));
+            // special search for rooms
+            if (dataKeys.includes("SPECIAL")) {
+                if (!"AND" in query.WHERE) {
+                    alert("Please follow the rules, refresh and retry")
+                }
+                let qSpecial = data.SPECIAL.SPECIAL;
+                let dist = data.SPECIAL.dist;
+                //Earth’s radius, sphere
+                let R = 6378137;
+                let and = query.WHERE.AND;
+                let Z = ""; let index;
 
-            alert(response);
+                for (let i = 0; i < and.length; i++) {
+                    let item = and[i];
+                    let keys = Object.keys(item);
+                    let key = keys[0];
+                    if (key == "IS") {
+                        let subObj = item.IS;
+                        let subks = Object.keys(subObj);
+                        let subk = subks[0];
+                        if (subk == "rooms_shortname") {
+                            Z = item.IS.rooms_shortname;
+                            index = i;
+                        }
+                    }
+                }
+                //alert(Z);
+                if (Z == "") {
+                    alert("Please follow the rules")
+                }
+                let zLatlon = latlon[Z];
+                let zlat = zLatlon["rooms_lat"];
+                let zlon = zLatlon["rooms_lon"];
+                let selected = [];
+                let latlonKeys = Object.keys(latlon);
+                //alert(latlonKeys.toString());
+                for (let i = 0; i < latlonKeys.length; i++) {
+                    let leName = latlonKeys[i];
+                    let obj = latlon[leName];
+                    let objLat = obj["rooms_lat"];
+                    let objLon = obj["rooms_lon"];
+                    if (leName == Z) {
+                        continue;
+                    }
+                    else {
+                        var dLat = deg2rad(objLat - zLat);  // deg2rad below
+                        var dLon = deg2rad(objLon - zLon);
+                        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(zLat)) * Math.cos(deg2rad(objLat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                        var d = (R * c) / 1000; // Distance in meters
+                        alert(d);
+                        if (d < dist) {
+                            selected.push(leName);
+                        }
+                    }
+                }
+                alert("it gets here after 2nd");
+                if (selected == []) alert("Range too small, no result found");
+                else {
+                    let orArr = [];
+                    orArr.push(and[index]);
+                    for (let i = 0; i < selected.length; i++) {
+                        let name = selected[i];
+                        let temp = { "IS": { "rooms_shortname": name } };
+                        orArr.push(temp);
+                    }
+                    query.OPTIONS.COLUMNS.unshift("rooms_name");
+                    if ("ORDER" in query.OPTIONS) {
+                        query.OPTIONS.ORDER.keys.unshift("rooms_name");
+                    }
+                    and[index] = { "OR": orArr };
+                    query.WHERE.AND = and;
+                }
+            }
+            alert(JSON.stringify(query));
         }
     }
+
 };
 
-
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
 
 function roomSchedule(courses, rooms) {
     // filter out the duplicate sections and deal first
@@ -368,4 +439,3 @@ render(
     </GoogleMapReact>,
     document.getElementById("map")
 )
-

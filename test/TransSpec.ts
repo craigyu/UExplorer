@@ -221,12 +221,12 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-          //  Log.test("Value: " + value);
+            //  Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
 
-          //  Log.test(err);
+            //  Log.test(err);
             expect.fail();
         })
     });
@@ -328,12 +328,12 @@ describe("Transformation Tests", function () {
 
         return insF.performQuery(queryR).then(function (value: any) {
 
-           // Log.test("Value: " + value);
+            // Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
 
-           // Log.test(err);
+            // Log.test(err);
             expect.fail();
         })
     });
@@ -434,7 +434,7 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-           // Log.test("Value: " + value);
+            // Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
@@ -563,7 +563,7 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-          //  Log.test("Value: " + value);
+            //  Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
@@ -625,7 +625,7 @@ describe("Transformation Tests", function () {
 
         }).catch(function (err: any) {
 
-          //  Log.test(err);
+            //  Log.test(err);
             expect.fail();
         })
     });
@@ -682,7 +682,7 @@ describe("Transformation Tests", function () {
 
         }).catch(function (err: any) {
 
-         //   Log.test(err);
+            //   Log.test(err);
             expect.fail();
         })
     });
@@ -750,7 +750,7 @@ describe("Transformation Tests", function () {
 
         }).catch(function (err: any) {
 
-           // Log.test(err);
+            // Log.test(err);
             expect.fail();
         })
     });
@@ -798,7 +798,7 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-           // Log.test("Value: " + value);
+            // Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
@@ -851,7 +851,7 @@ describe("Transformation Tests", function () {
 
 
         return insF.performQuery(queryR).then(function (value: any) {
-           // Log.test("Value: " + value);
+            // Log.test("Value: " + value);
             expect(value).to.deep.equal(queryROutput);
 
         }).catch(function (err: any) {
@@ -968,7 +968,7 @@ describe("Transformation Tests", function () {
             code: 200,
             body: {
                 "render": "TABLE",
-                "result": [{"rooms_shortname":"LSC","sumLat":295.57416,"sumLon":-492.97976,"avgLon":-123.2},{"rooms_shortname":"HEBB","sumLat":147.7983,"sumLon":-246.5033,"avgLon":-123.3},{"rooms_shortname":"OSBO","sumLat":147.78141,"sumLon":-246.48934,"avgLon":-123.2}]
+                "result": [{ "rooms_shortname": "LSC", "sumLat": 295.57416, "sumLon": -492.97976, "avgLon": -123.2 }, { "rooms_shortname": "HEBB", "sumLat": 147.7983, "sumLon": -246.5033, "avgLon": -123.3 }, { "rooms_shortname": "OSBO", "sumLat": 147.78141, "sumLon": -246.48934, "avgLon": -123.2 }]
             }
         };
 
@@ -984,6 +984,4 @@ describe("Transformation Tests", function () {
             expect.fail();
         })
     });
-
-
 });

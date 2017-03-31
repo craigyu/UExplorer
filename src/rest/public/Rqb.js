@@ -10,7 +10,7 @@ export const room_schema = {
             // "enum": ["AND", "OR", "IS", "GT", "EQ", "LT", "NOT"],
             "oneOf": [{
                 "properties": {
-                    "WHERE": { "enum": "" }
+                    "WHERE": { "enum": ["Empty"] }
                 }
             },
             {
@@ -573,8 +573,7 @@ export const room_schema = {
         },
         "SPECIAL": {
             "id": "special",
-            "title": "Advanced search term:  ",
-
+            "title": "Advanced search term:  X and Z filters are required, using And",
             "oneOf": [
                 {},
                 {
@@ -582,12 +581,20 @@ export const room_schema = {
                         "SPECIAL": {
                             "enum": ["Show all rooms over size X within Y meters of building Z"],
                         },
+                        "dist":{
+                            "title":"      Y = ",
+                            "type": "number"
+                        }
                     }
                 },
                 {
                     "properties": {
                         "SPECIAL": {
                             "enum": ["Show all rooms with type X within Y meters of building Z"],
+                        },
+                         "dist":{
+                             "title":"      Y = ",
+                            "type": "number"
                         }
                     }
                 },
@@ -595,6 +602,10 @@ export const room_schema = {
                     "properties": {
                         "SPECIAL": {
                             "enum": ["Show all rooms with furniture X within Y meters of building Z"],
+                        },
+                         "dist":{
+                            "title":"      Y = ",
+                            "type": "number"
                         }
                     }
                 },
